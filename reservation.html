@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réservation – Pump & Kite</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ===== STEPPER ===== */
+    .stepper { display:flex; justify-content:center; align-items:center; margin-bottom:48px; }
+    .step { display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .step-circle {
+      width:44px; height:44px; border-radius:50%;
+      background:#d0e8f0; color:#7a9ab0;
+      font-family:'Bebas Neue',sans-serif; font-size:20px;
+      display:flex; align-items:center; justify-content:center;
+      transition:all .3s; z-index:1;
+    }
+    .step.active .step-circle { background:linear-gradient(135deg,var(--wave),var(--mid)); color:white; box-shadow:0 4px 16px rgba(27,154,170,.4); }
+    .step.done   .step-circle { background:#2ecc71; color:white; }
+    .step-label  { font-size:12px; font-weight:700; color:#7a9ab0; text-transform:uppercase; letter-spacing:.5px; }
+    .step.active .step-label { color:var(--wave); }
+    .step.done   .step-label { color:#2ecc71; }
+    .step-line   { width:80px; height:2px; background:#d0e8f0; margin-bottom:22px; transition:background .3s; }
+    .step-line.done { background:#2ecc71; }
+
+    .panel { display:none; }
+    .panel.active { display:block; animation:fadeUp .4s ease forwards; }
+
+    /* ===== MATERIEL CHECKBOX ===== */
+    .materiel-check {
+      display:flex; align-items:center; gap:12px;
+      background:linear-gradient(135deg,rgba(27,154,170,.08),rgba(10,61,98,.06));
+      border:1.5px solid rgba(27,154,170,.25);
+      border-radius:12px; padding:16px 20px;
+      cursor:pointer; transition:all .2s;
+      grid-column: 1 / -1;
+    }
+    .materiel-check:hover { border-color:var(--wave); background:rgba(27,154,170,.12); }
+    .materiel-check input[type=checkbox] { width:20px; height:20px; accent-color:var(--wave); cursor:pointer; flex-shrink:0; }
+    .materiel-check-text { display:flex; flex-direction:column; gap:2px; }
+    .materiel-check-text strong { font-size:15px; color:var(--ocean); }
+    .materiel-check-text span   { font-size:13px; color:var(--text-light); }
+
+    /* ===== PRIX ESTIMÉ ===== */
+    .prix-badge {
+      display:none;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:white; border-radius:12px; padding:16px 24px;
+      text-align:center; grid-column:1/-1; margin-top:4px;
+    }
+    .prix-badge .prix-label { font-size:13px; opacity:.85; margin-bottom:4px; }
+    .prix-badge .prix-valeur { font-family:'Bebas Neue',sans-serif; font-size:36px; letter-spacing:2px; }
+    .prix-badge .prix-detail { font-size:12px; opacity:.8; margin-top:4px; }
+
+    /* ===== CALENDRIER ===== */
+    .calendar-wrapper {
+      background:white; border-radius:var(--radius);
+      box-shadow:var(--shadow); padding:28px;
+      max-width:440px; margin:0 auto 20px;
+    }
+    .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+    .cal-header h3 { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--ocean); letter-spacing:1px; }
+    .cal-nav {
+      background:none; border:2px solid var(--foam); border-radius:8px;
+      width:36px; height:36px; cursor:pointer; font-size:18px; color:var(--ocean);
+      display:flex; align-items:center; justify-content:center; transition:all .2s;
+    }
+    .cal-nav:hover { background:var(--ocean); color:white; border-color:var(--ocean); }
+    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+    .cal-day-name { text-align:center; font-size:11px; font-weight:700; color:var(--text-light); text-transform:uppercase; padding:4px 0 10px; }
+    .cal-day {
+      aspect-ratio:1; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      border-radius:8px; font-size:13px; font-weight:500;
+      cursor:pointer; transition:all .15s; gap:1px;
+    }
+    .cal-day:hover:not(.disabled):not(.empty):not(.past):not(.full) { background:var(--foam); color:var(--ocean); }
+    .cal-day.today    { border:2px solid var(--wave); color:var(--wave); font-weight:700; }
+    .cal-day.selected { background:linear-gradient(135deg,var(--wave),var(--mid)); color:white !important; font-weight:700; box-shadow:0 4px 12px rgba(27,154,170,.4); }
+    .cal-day.disabled { background:#fde8e8; color:#c0392b; cursor:not-allowed; }
+    .cal-day.full     { background:#f0f0f0; color:#aaa; cursor:not-allowed; }
+    .cal-day.partial  { background:#fff8e1; color:#b07000; cursor:pointer; }
+    .cal-day .day-tag { font-size:7px; font-weight:700; text-transform:uppercase; opacity:.85; line-height:1; }
+    .cal-day.past     { opacity:.25; cursor:not-allowed; }
+    .cal-day.empty    { cursor:default; }
+
+    /* ===== CRÉNEAUX ===== */
+    .slots-container {
+      max-width:440px; margin:0 auto 20px;
+      display:none;
+    }
+    .slots-title {
+      font-family:'Bebas Neue',sans-serif; font-size:20px;
+      color:var(--ocean); letter-spacing:1px; margin-bottom:14px;
+      text-align:center;
+    }
+    .slots-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .slot-card {
+      border-radius:12px; padding:20px 16px; text-align:center;
+      cursor:pointer; transition:all .2s; border:2px solid transparent;
+      position:relative; overflow:hidden;
+    }
+    .slot-card.available {
+      background:white; border-color:#d0e8f0;
+      box-shadow:0 2px 12px rgba(0,0,0,.08);
+    }
+    .slot-card.available:hover { border-color:var(--wave); box-shadow:0 4px 20px rgba(27,154,170,.2); }
+    .slot-card.selected-slot {
+      background:linear-gradient(135deg,var(--wave),var(--mid));
+      border-color:transparent; color:white;
+      box-shadow:0 4px 16px rgba(27,154,170,.4);
+    }
+    .slot-card.full-slot {
+      background:#f5f5f5; border-color:#e0e0e0;
+      cursor:not-allowed; opacity:.7;
+    }
+    .slot-icon  { font-size:28px; margin-bottom:8px; }
+    .slot-name  { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:1px; margin-bottom:4px; }
+    .slot-hours { font-size:13px; opacity:.75; margin-bottom:8px; }
+    .slot-places {
+      font-size:12px; font-weight:700; padding:4px 12px;
+      border-radius:50px; display:inline-block;
+    }
+    .slot-card.available .slot-places { background:rgba(27,154,170,.12); color:var(--wave); }
+    .slot-card.selected-slot .slot-places { background:rgba(255,255,255,.25); color:white; }
+    .slot-card.full-slot .slot-places { background:#e0e0e0; color:#999; }
+
+    /* ===== BADGES ===== */
+    .selected-date-badge {
+      background:linear-gradient(135deg,var(--wave),var(--mid));
+      color:white; border-radius:50px; padding:10px 24px;
+      text-align:center; font-weight:600; font-size:15px;
+      max-width:380px; margin:16px auto 8px; display:none;
+    }
+
+    /* ===== LEGEND ===== */
+    .legend { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:14px; }
+    .legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-light); }
+    .legend-dot  { width:12px; height:12px; border-radius:3px; flex-shrink:0; }
+
+    /* ===== LOADING ===== */
+    .loading-overlay {
+      display:none; position:fixed; top:0;left:0;right:0;bottom:0;
+      background:rgba(2,26,46,.78); z-index:9999;
+      align-items:center; justify-content:center;
+      flex-direction:column; gap:16px; color:white;
+      font-size:16px; font-weight:500;
+    }
+    .loading-overlay.active { display:flex; }
+    .spinner { width:48px; height:48px; border:4px solid rgba(255,255,255,.2); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    .cal-spinner { width:36px; height:36px; border:3px solid rgba(27,154,170,.2); border-top-color:var(--wave); border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 16px; }
+    .cal-loading { text-align:center; padding:40px; color:var(--text-light); }
+
+    /* ===== SUCCESS ===== */
+    .success-box { text-align:center; padding:50px 30px; }
+    .success-icon { font-size:72px; margin-bottom:16px; }
+    .success-box h2 { font-family:'Bebas Neue',sans-serif; font-size:36px; color:#2ecc71; letter-spacing:2px; margin-bottom:12px; }
+    .success-box p  { color:var(--text-light); font-size:16px; margin-bottom:12px; }
+    .success-recap  { background:var(--sky); border-radius:12px; padding:20px; text-align:left; margin:20px 0; font-size:14px; }
+    .success-recap div { padding:6px 0; border-bottom:1px solid #d0e8f0; display:flex; justify-content:space-between; }
+    .success-recap div:last-child { border-bottom:none; font-weight:700; color:var(--ocean); }
+
+    .error-msg { background:#fde8e8; border:1px solid #e07070; color:#c0392b; border-radius:10px; padding:14px 20px; font-size:14px; margin-bottom:20px; display:none; }
+
+    @media (max-width:600px) { .step-line { width:36px; } .slots-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <span id="loadingText">Envoi en cours...</span>
+</div>
+
+<nav class="menu">
+  <a href="index.html" class="logo">PUMP & KITE</a>
+  <a href="index.html">Accueil</a>
+  <a href="univers-kite.html">Univers Kite</a>
+  <a href="univers-foil.html">Univers Foil</a>
+  <a href="materiel.html">Matériel</a>
+  <a href="meteo.html">Météo</a>
+  <a href="contact.html">Contact</a>
+  <a href="reservation.html" class="active">Réservation</a>
+</nav>
+
+<div class="page-hero">
+  <h1>📅 Réservation</h1>
+  <p>Remplis tes infos puis choisis ta date et ton créneau</p>
+</div>
+
+<main style="max-width:700px;">
+
+  <!-- STEPPER -->
+  <div class="stepper">
+    <div class="step active" id="step1"><div class="step-circle">1</div><div class="step-label">Infos</div></div>
+    <div class="step-line" id="line1"></div>
+    <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">Date</div></div>
+    <div class="step-line" id="line2"></div>
+    <div class="step" id="step3"><div class="step-circle">✓</div><div class="step-label">Confirmé</div></div>
+  </div>
+
+  <!-- ===== PANEL 1 : FORMULAIRE ===== -->
+  <div class="panel active" id="panel1">
+    <div class="formulaire">
+      <h2 class="section-title" style="text-align:center;">Tes coordonnées</h2>
+      <div class="accent-line" style="margin:12px auto 30px;"></div>
+      <div class="error-msg" id="formError"></div>
+
+      <div class="grid-2">
+
+        <div class="form-group">
+          <label>Nom *</label>
+          <input type="text" id="nom" placeholder="Dupont">
+        </div>
+        <div class="form-group">
+          <label>Prénom *</label>
+          <input type="text" id="prenom" placeholder="Jean">
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="email" placeholder="jean@email.com">
+        </div>
+        <div class="form-group">
+          <label>Téléphone *</label>
+          <input type="tel" id="telephone" placeholder="06 XX XX XX XX">
+        </div>
+
+        <!-- DISCIPLINE -->
+        <div class="form-group">
+          <label>Discipline *</label>
+          <select id="discipline" onchange="onDisciplineChange()">
+            <option value="">-- Choisir --</option>
+            <option value="Kitesurf">🪁 Kitesurf</option>
+            <option value="Pumping foil">🏄 Pumping foil</option>
+          </select>
+        </div>
+
+        <!-- PRESTATION -->
+        <div class="form-group">
+          <label>Prestation *</label>
+          <select id="prestation" onchange="updatePrix()">
+            <option value="">-- Choisir une discipline d'abord --</option>
+          </select>
+        </div>
+
+        <!-- NIVEAU -->
+        <div class="form-group form-full">
+          <label>Niveau *</label>
+          <select id="niveau">
+            <option value="">-- Choisir --</option>
+            <option value="Première fois">Première fois</option>
+            <option value="Connais les bases">Connais les bases</option>
+            <option value="Bientôt Autonome">Bientôt Autonome</option>
+            <option value="Pour Perfectionnement">Pour Perfectionnement</option>
+          </select>
+        </div>
+
+        <!-- MATÉRIEL -->
+        <label class="materiel-check" id="materielLabel" style="display:none;">
+          <input type="checkbox" id="materiel" onchange="updatePrix()">
+          <div class="materiel-check-text">
+            <strong>🏄 J'ai mon propre matériel</strong>
+            <span>Tu bénéficies d'un tarif réduit si tu viens avec ton équipement</span>
+          </div>
+        </label>
+
+        <!-- PRIX ESTIMÉ -->
+        <div class="prix-badge" id="prixBadge">
+          <div class="prix-label">Tarif estimé pour cette prestation</div>
+          <div class="prix-valeur" id="prixValeur">—</div>
+          <div class="prix-detail" id="prixDetail"></div>
+        </div>
+
+        <div class="form-group form-full">
+          <label>Message (optionnel)</label>
+          <textarea id="message" placeholder="Dis-moi ce que tu sais déjà faire, tes attentes..."></textarea>
+        </div>
+
+      </div>
+
+      <button class="btn btn-accent" onclick="goToStep2()"
+        style="width:100%;margin-top:10px;font-size:16px;padding:16px;border-radius:10px;">
+        Choisir ma date →
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== PANEL 2 : CALENDRIER + CRÉNEAUX ===== -->
+  <div class="panel" id="panel2">
+    <div class="formulaire">
+      <h2 class="section-title" style="text-align:center;">Choisis ta date & ton créneau</h2>
+      <div class="accent-line" style="margin:12px auto 24px;"></div>
+
+      <div class="cal-loading" id="calLoading">
+        <div class="cal-spinner"></div>
+        Chargement des disponibilités...
+      </div>
+
+      <div id="calContent" style="display:none;">
+
+        <!-- CALENDRIER -->
+        <div class="calendar-wrapper">
+          <div class="cal-header">
+            <button class="cal-nav" onclick="prevMonth()">‹</button>
+            <h3 id="calTitle"></h3>
+            <button class="cal-nav" onclick="nextMonth()">›</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:linear-gradient(135deg,var(--wave),var(--mid));"></div><span>Sélectionné</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#fff8e1;border:1px solid #e0a800;"></div><span>Partiellement dispo</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f0f0f0;border:1px solid #ccc;"></div><span>Complet</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#fde8e8;border:1px solid #e07070;"></div><span>Absent</span></div>
+        </div>
+
+        <!-- CRÉNEAUX (apparaît après sélection d'une date) -->
+        <div class="slots-container" id="slotsContainer">
+          <div style="margin:24px 0 12px; text-align:center;">
+            <div class="selected-date-badge" id="selectedDateBadge" style="display:block; margin:0 auto 16px;"></div>
+            <p class="slots-title">Choisir un créneau</p>
+          </div>
+          <div class="slots-grid" id="slotsGrid"></div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:20px;">
+          <button class="btn btn-outline" onclick="goToPanel(1)" style="flex:1;">← Retour</button>
+          <button class="btn btn-accent" id="confirmBtn" onclick="submitReservation()" style="flex:2;" disabled>
+            Confirmer la réservation 🏄
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PANEL 3 : SUCCÈS ===== -->
+  <div class="panel" id="panel3">
+    <div class="formulaire">
+      <div class="success-box">
+        <div class="success-icon">🎉</div>
+        <h2>Demande envoyée !</h2>
+        <p>Ta réservation a bien été reçue.<br>Je te recontacte rapidement pour confirmer. 🤙</p>
+
+        <div class="success-recap" id="successRecap"></div>
+
+        <p style="font-size:13px;color:var(--text-light);">
+          📞 <a href="tel:+33651116896" style="color:var(--wave);">06 51 11 68 96</a>
+          &nbsp;|&nbsp;
+          ✉️ <a href="/cdn-cgi/l/email-protection#48222a3a3d21327b7b717d78082f25292124662b2725" style="color:var(--wave);"><span class="__cf_email__" data-cfemail="9ef4fcecebf7e4adada7abaedef9f3fff7f2b0fdf1f3">[email&#160;protected]</span></a>
+        </p>
+        <a href="index.html" class="btn btn-primary" style="margin-top:20px;">Retour à l'accueil</a>
+      </div>
+    </div>
+  </div>
+
+  <p style="text-align:center;color:var(--text-light);font-size:14px;margin-top:20px;">
+    📞 Tu peux aussi appeler directement :
+    <a href="tel:+33651116896" style="color:var(--wave);">06 51 11 68 96</a>
+  </p>
+
+</main>
+
+<footer>
+  <p>© 2025 Pump & Kite – École de kitesurf à Frontignan | <a href="contact.html">Contact</a></p>
+</footer>
+
+<script src="reservation.js"></script>
+
+</body>
+</html>

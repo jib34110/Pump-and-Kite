@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Météo – Pump & Kite</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .meteo-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .meteo-info-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      text-align: center;
+    }
+
+    .meteo-info-card .icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .meteo-info-card h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      color: var(--ocean);
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .meteo-info-card p {
+      font-size: 13px;
+      color: var(--text-light);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="menu">
+  <a href="index.html" class="logo">PUMP & KITE</a>
+  <a href="index.html">Accueil</a>
+  <a href="univers-kite.html">Univers Kite</a>
+  <a href="univers-foil.html">Univers Foil</a>
+  <a href="materiel.html">Matériel</a>
+  <a href="meteo.html" class="active">Météo</a>
+  <a href="contact.html">Contact</a>
+  <a href="reservation.html">Réservation</a>
+</nav>
+
+<div class="page-hero">
+  <h1>🌬️ Météo du Spot</h1>
+  <p>Conditions en direct sur l'étang d'Ingril – Frontignan</p>
+</div>
+
+<main>
+
+  <div class="meteo-info">
+    <div class="meteo-info-card fade-up-delay-1">
+      <div class="icon">💨</div>
+      <h4>Vent Minimum</h4>
+      <p>10 nœuds pour débuter en kite, 0 nœud pour le pumping foil !</p>
+    </div>
+    <div class="meteo-info-card fade-up-delay-2">
+      <div class="icon">⚡</div>
+      <h4>Vent Idéal</h4>
+      <p>15 à 25 nœuds — conditions parfaites pour tous les niveaux</p>
+    </div>
+    <div class="meteo-info-card fade-up-delay-3">
+      <div class="icon">🧭</div>
+      <h4>Vents Locaux</h4>
+      <p>Tramontane (NW) et Marin (SE) — Mistral (NE) et Thermique (SO) !
+    </div>
+    <div class="meteo-info-card fade-up-delay-4">
+      <div class="icon">🌊</div>
+      <h4>Eau Plate</h4>
+      <p>L'étang d'Ingril offre une eau calme, idéale pour l'apprentissage</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Winds-Up Live</h2>
+  <div class="accent-line"></div>
+  <p class="section-subtitle">Station météo en temps réel sur l'étang d'Ingril</p>
+
+  <div class="meteo-embed">
+    <IFRAME src="https://www.winds-up.com/api.php?id=3&set_width=80%&set_height=500&set_obs=1&set_obs_array=1&set_previs=1&set_webcam=1&set_map=&set_logo=&set_txt=&set_unite=1&output=embed&set_codeLive=1" width="80%" height="500" scrolling=no frameborder=0></IFRAME>
+  </div>
+
+  <div style="text-align: center; margin-top: 40px;">
+    <p style="color: var(--text-light); margin-bottom: 20px;">Une bonne fenêtre de vent en vue ? N'attends pas !</p>
+    <a href="reservation.html" class="btn btn-accent">Réserver un cours</a>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2025 Pump & Kite – École de kitesurf à Frontignan | <a href="contact.html">Contact</a></p>
+</footer>
+
+</body>
+</html>

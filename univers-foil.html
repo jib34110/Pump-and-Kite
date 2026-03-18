@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Univers Foil – Pump & Kite</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .foil-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+      margin-bottom: 60px;
+    }
+
+    .foil-intro img {
+      border-radius: var(--radius);
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      box-shadow: var(--shadow-lg);
+      order: -1;
+    }
+
+    .partie-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 30px;
+      border-left: 4px solid var(--wave);
+      transition: transform 0.3s;
+    }
+
+    .partie-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .partie-card h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: var(--ocean);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .pump-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 30px;
+    }
+
+    .pump-step {
+      background: linear-gradient(135deg, var(--deep), var(--ocean));
+      color: white;
+      border-radius: var(--radius);
+      padding: 30px 24px;
+      text-align: center;
+    }
+
+    .pump-step .icon {
+      font-size: 36px;
+      margin-bottom: 14px;
+    }
+
+    .pump-step h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .pump-step p {
+      font-size: 13px;
+      opacity: 0.75;
+    }
+
+    @media (max-width: 768px) {
+      .foil-intro {
+        grid-template-columns: 1fr;
+      }
+      .foil-intro img {
+        order: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="menu">
+  <a href="index.html" class="logo">PUMP & KITE</a>
+  <a href="index.html">Accueil</a>
+  <a href="univers-kite.html">Univers Kite</a>
+  <a href="univers-foil.html" class="active">Univers Foil</a>
+  <a href="materiel.html">Matériel</a>
+  <a href="meteo.html">Météo</a>
+  <a href="contact.html">Contact</a>
+  <a href="reservation.html">Réservation</a>
+</nav>
+
+<div class="page-hero">
+  <h1>🏄 Univers Foil</h1>
+  <p>Décolle au-dessus de l'eau et vis une sensation unique</p>
+</div>
+
+<main>
+
+  <!-- INTRO -->
+  <div class="foil-intro fade-up">
+    <div>
+      <h2 class="section-title">C'est quoi le Pumping Foil ?</h2>
+      <div class="accent-line"></div>
+      <p style="margin-bottom: 20px;">Le <strong>pumping foil</strong> (ou eFoil pump) est une discipline qui consiste à faire décoller une planche équipée d'un <strong>foil</strong> (hydroptère sous l'eau) en pompant avec son corps — sans vent, sans moteur, sans assistance.</p>
+      <p style="margin-bottom: 20px;">La sensation est incomparable : tu voles littéralement au-dessus de l'eau dans un silence total. La propulsion vient uniquement de tes mouvements de jambes qui transmettent de l'énergie au foil.</p>
+      <p>C'est la discipline la plus <strong>technique et physique</strong> de la glisse moderne. Une fois maîtrisée, elle devient addictive.</p>
+    </div>
+    <!-- Remplace par ta propre photo de foil -->
+    <img src="https://images.pexels.com/photos/1497580/pexels-photo-1497580.jpeg" alt="Pumping foil sur l'eau">
+  </div>
+
+  <!-- ANATOMIE DU FOIL -->
+  <h2 class="section-title">Anatomie d'un Foil</h2>
+  <div class="accent-line"></div>
+  <p class="section-subtitle">Comprendre son matériel pour mieux progresser</p>
+
+  <div class="card-grid" style="margin-bottom: 60px;">
+
+    <div class="partie-card fade-up-delay-1">
+      <h4>🛹 La Planche</h4>
+      <p style="color: var(--text-light); font-size: 15px;">En mousse ou carbone, elle sert de support. Pour le pumping, on utilise des planches courtes et légères (3 à 5 pieds) qui permettent de mieux pomper.</p>
+    </div>
+
+    <div class="partie-card fade-up-delay-2">
+      <h4>🔩 Le Mast (Mât)</h4>
+      <p style="color: var(--text-light); font-size: 15px;">La tige verticale en aluminium ou carbone qui relie la planche aux ailes. Sa longueur (60 à 90 cm) influence la stabilité et la hauteur de vol.</p>
+    </div>
+
+    <div class="partie-card fade-up-delay-3">
+      <h4>✈️ Le Fuselage</h4>
+      <p style="color: var(--text-light); font-size: 15px;">L'axe horizontal qui relie l'aile avant et l'aile arrière. Sa longueur affecte la stabilité longitudinale du foil.</p>
+    </div>
+
+    <div class="partie-card fade-up-delay-4">
+      <h4>🪶 Les Ailes</h4>
+      <p style="color: var(--text-light); font-size: 15px;">L'aile avant (grande, génère la portance) et l'aile arrière (stabilisatrice). La taille des ailes détermine la vitesse de décollage et les sensations de vol.</p>
+    </div>
+
+  </div>
+
+  <!-- ÉTAPES D'APPRENTISSAGE -->
+  <h2 class="section-title">Comment on apprend ?</h2>
+  <div class="accent-line"></div>
+  <p class="section-subtitle">Une progression structurée pour voler en toute sécurité</p>
+
+  <div class="pump-steps">
+
+    <div class="pump-step fade-up-delay-1">
+      <div class="icon">🏊</div>
+      <h4>Équilibre sur l'eau</h4>
+      <p>Apprendre à s'allonger sur la planche, trouver son centre de gravité, se lever progressivement.</p>
+    </div>
+
+    <div class="pump-step fade-up-delay-2">
+      <div class="icon">🌊</div>
+      <h4>Première glisse</h4>
+      <p>Tracter la planche avec un kite ou une corde pour sentir le comportement du foil dans l'eau.</p>
+    </div>
+
+    <div class="pump-step fade-up-delay-3">
+      <div class="icon">⬆️</div>
+      <h4>Premier décollage</h4>
+      <p>Apprendre à pomper pour générer de la portance et soulever la planche hors de l'eau.</p>
+    </div>
+
+    <div class="pump-step fade-up-delay-4">
+      <div class="icon">🕊️</div>
+      <h4>Vol autonome</h4>
+      <p>Maintenir le vol, gérer la hauteur, les virages, et enchaîner les pompes en rythme.</p>
+    </div>
+
+  </div>
+
+  <div style="text-align: center; margin-top: 50px;">
+    <p style="color: var(--text-light); margin-bottom: 24px; font-size: 16px;">Prêt à vivre la sensation du vol sur l'eau ?</p>
+    <a href="reservation.html" class="btn btn-accent">Réserver un cours Foil</a>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2025 Pump & Kite – École de kitesurf à Frontignan | <a href="contact.html">Contact</a></p>
+</footer>
+
+</body>
+</html>
