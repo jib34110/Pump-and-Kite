@@ -266,7 +266,7 @@
 <!-- NAVIGATION -->
 <nav class="menu">
   <a href="index.html" class="logo">
-    <img src="pk.png" alt="Pump & Kite" style="height:46px;width:auto;display:block;">
+    <img src="Image/pk.png" alt="Pump & Kite" style="height:46px;width:auto;display:block;">
   </a>
   <button class="hamburger" onclick="toggleMenu()" id="hamburger">
     <span></span>
@@ -441,5 +441,16 @@
   <p>© 2025 Pump & Kite – École de kitesurf à Frontignan | <a href="contact.html">Contact</a></p>
 </footer>
 
+  <script>
+function toggleMenu() {
+  document.getElementById('menuLinks').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.menu')) {
+    document.getElementById('menuLinks').classList.remove('open');
+  }
+});
+</script>
+  
 </body>
 </html>
