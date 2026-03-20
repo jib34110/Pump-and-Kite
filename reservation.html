@@ -176,16 +176,23 @@
 </div>
 
 <nav class="menu">
- <a href="index.html" class="logo">
-  <img src="Image/pk.png" alt="Pump & Kite" style="height: 140px; width: auto; display: block;">
-</a>
-  <a href="index.html">Accueil</a>
-  <a href="univers-kite.html">Univers Kite</a>
-  <a href="univers-foil.html">Univers Foil</a>
-  <a href="materiel.html">Matériel</a>
-  <a href="meteo.html">Météo</a>
-  <a href="contact.html">Contact</a>
-  <a href="reservation.html" class="active">Réservation</a>
+  <a href="index.html" class="logo">
+    <img src="Image/pk.png" alt="Pump & Kite" style="height:46px;width:auto;display:block;">
+  </a>
+  <button class="hamburger" onclick="toggleMenu()" id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  <div class="menu-links" id="menuLinks">
+    <a href="index.html">Accueil</a>
+    <a href="univers-kite.html">Univers Kite</a>
+    <a href="univers-foil.html">Univers Foil</a>
+    <a href="materiel.html">Matériel</a>
+    <a href="meteo.html">Météo</a>
+    <a href="contact.html">Contact</a>
+    <a href="reservation.html">Réservation</a>
+  </div>
 </nav>
 
 <div class="page-hero">
@@ -373,5 +380,16 @@
 
 <script src="reservation.js"></script>
 
+  <script>
+function toggleMenu() {
+  document.getElementById('menuLinks').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.menu')) {
+    document.getElementById('menuLinks').classList.remove('open');
+  }
+});
+</script>
+  
 </body>
 </html>
