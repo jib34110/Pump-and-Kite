@@ -6,20 +6,73 @@
   <title>Univers Kite – Pump & Kite</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .kite-intro {
+    /* ===== BLOCS ALTERNÉS ===== */
+    .kite-bloc {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 50px;
       align-items: center;
-      margin-bottom: 60px;
+      margin-bottom: 70px;
     }
 
-    .kite-intro img {
+    .kite-bloc-reverse {
+      direction: rtl;
+    }
+
+    .kite-bloc-reverse > * {
+      direction: ltr;
+    }
+
+    .kite-bloc-text p {
+      margin-bottom: 12px;
+      color: var(--text-light);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .kite-bloc-img {
+      position: relative;
       border-radius: var(--radius);
-      width: 100%;
-      height: 380px;
-      object-fit: cover;
+      overflow: hidden;
       box-shadow: var(--shadow-lg);
+    }
+
+    .kite-bloc-img img,
+    .kite-bloc-img video {
+      width: 100%;
+      height: 340px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .kite-bloc-img:hover img,
+    .kite-bloc-img:hover video {
+      transform: scale(1.04);
+    }
+
+    .kite-bloc-label {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(2, 26, 46, 0.82);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(6px);
+    }
+
+    @media (max-width: 768px) {
+      .kite-bloc {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .kite-bloc-reverse {
+        direction: ltr;
+      }
     }
 
     .etape-card {
@@ -98,17 +151,15 @@
       text-decoration: underline;
     }
 
-    @media (max-width: 768px) {
-      .kite-intro {
-        grid-template-columns: 1fr;
-      }
-    }
+
   </style>
 </head>
 <body>
 
 <nav class="menu">
-  <a href="index.html" class="logo">PUMP & KITE</a>
+ <a href="index.html" class="logo">
+  <img src="Image/pk.png" alt="Pump & Kite" style="height: 140px; width: auto; display: block;">
+</a>
   <a href="index.html">Accueil</a>
   <a href="univers-kite.html" class="active">Univers Kite</a>
   <a href="univers-foil.html">Univers Foil</a>
@@ -125,17 +176,82 @@
 
 <main>
 
-  <!-- INTRO -->
-  <div class="kite-intro fade-up">
-    <div>
+  <!-- BLOCS ALTERNÉS -->
+
+  <!-- BLOC 1 : texte gauche, photo droite -->
+  <div class="kite-bloc fade-up">
+    <div class="kite-bloc-text">
       <h2 class="section-title">C'est quoi le Kitesurf ?</h2>
       <div class="accent-line"></div>
-      <p style="margin-bottom: 20px;">Le kitesurf est un sport de glisse <strong>aérotracté</strong> qui combine deux éléments essentiels : <strong>le vent</strong> pour faire voler la voile (le "kite"), et <strong>l'eau</strong> pour glisser avec la planche.</p>
-      <p style="margin-bottom: 20px;">C'est un sport accessible dès 14 ans, qui se pratique sur l'eau mais aussi sur la neige (<em>snowkite</em>) ou sur le sable (<em>mountain kite</em>).</p>
-      <p>L'étang d'Ingril, avec ses eaux plates et son vent régulier (tramontane, marin), est l'un des meilleurs spots de la région pour débuter en toute sécurité.</p>
+      <p style="margin-bottom:16px;">Le kitesurf est un sport de glisse <strong>aérotracté</strong> qui combine deux éléments essentiels : <strong>le vent</strong> pour faire voler la voile (le "kite"), et <strong>l'eau</strong> pour glisser avec la planche.</p>
+      <p>L'étang d'Ingril, avec son eau peu profonde et son vent fréquent (tramontane, mistral, marin, thermique), est l'un des meilleurs spots de la région pour débuter en toute sécurité.</p>
     </div>
-    <!-- Remplace par ta propre photo -->
-    <img src="https://images.pexels.com/photos/10099284/pexels-photo-10099284.jpeg" alt="Kitesurf sur l'étang d'Ingril">
+    <div class="kite-bloc-img">
+      <!-- Remplace par ta propre photo de kitesurf sur l'eau -->
+      <img src="Image/DSC04401.JPG" alt="Kitesurf sur l'eau">
+      <div class="kite-bloc-label">🌊 Sur l'eau</div>
+    </div>
+  </div>
+
+  <!-- BLOC 2 : vidéo gauche, texte droite -->
+  <div class="kite-bloc kite-bloc-reverse fade-up-delay-1">
+    <div class="kite-bloc-img">
+      <!--
+        👇 REMPLACE "snowkite.mp4" par le nom de ta vidéo uploadée sur GitHub
+        La vidéo doit être au format MP4, idéalement courte (3-5 sec)
+        Elle se lance automatiquement, en boucle, sans son
+      -->
+      <video
+        src="Image/snowkite.mp4"
+        autoplay loop muted playsinline
+        poster="https://images.pexels.com/photos/848599/pexels-photo-848599.jpeg"
+      ></video>
+      <div class="kite-bloc-label">❄️ Sur la neige</div>
+    </div>
+    <div class="kite-bloc-text">
+      <h2 class="section-title">Le Snowkite</h2>
+      <div class="accent-line"></div>
+      <p style="margin-bottom:16px;">Sur les pistes enneigées, le kite prend une toute autre dimension. Le <strong>snowkite</strong> permet de glisser sur la neige avec des skis ou un snowboard, tracté uniquement par le vent.</p>
+      <p>Pas besoin de remontée mécanique — le kite te tire vers le haut ! Une discipline spectaculaire qui permet d'explorer des espaces immenses en totale liberté.</p>
+      <p><strong>ATTENTION</strong>, la montagne est un domaine <strong>DANGEUREUX</strong></p>
+    </div>
+  </div>
+
+  <!-- BLOC 3 : texte gauche, vidéo droite -->
+  <div class="kite-bloc fade-up-delay-2">
+    <div class="kite-bloc-text">
+      <h2 class="section-title">Le Mountain Kite</h2>
+      <div class="accent-line"></div>
+      <p style="margin-bottom:16px;">Le kite ne se limite pas à l'eau et à la neige ! Sur le <strong>sable ou la terre</strong>, avec un mountainboard (skateboard tout terrain), le kite devient une machine à sensations.</p>
+      <p>Idéal pour progresser dans le pilotage de la voile — se pratique par vent faible, sans plan d'eau.</p>
+    </div>
+    <div class="kite-bloc-img">
+      <!--
+        👇 REMPLACE "mountainkite.mp4" par le nom de ta vidéo uploadée sur GitHub
+      -->
+      <video
+        src="Image/video-1630485333.mp4"
+        autoplay loop muted playsinline
+        poster="https://images.pexels.com/photos/1365425/pexels-photo-1365425.jpeg"
+      ></video>
+      <div class="kite-bloc-label">🏜️ Sur le sable</div>
+    </div>
+  </div>
+
+  <!-- BLOC 4 : photo gauche, texte droite -->
+  <div class="kite-bloc kite-bloc-reverse fade-up-delay-3">
+    <div class="kite-bloc-img">
+      <!-- 👇 Mets ici la photo de ta fille ! ex: src="ma-fille-kite.jpg" -->
+      <img src="Image/elena ocean.jpg" alt="Enfant qui pilote un kite">
+      <div class="kite-bloc-label">👧 Dès le plus jeune âge !</div>
+    </div>
+    <div class="kite-bloc-text">
+      <h2 class="section-title">Accessible à tous !</h2>
+      <div class="accent-line"></div>
+      <p style="margin-bottom:16px;">Le kite s'adresse à <strong>tout le monde</strong> — petits et grands, débutants et confirmés. Avec une bonne progression pédagogique, les plus jeunes apprennent à piloter une voile en quelques minutes seulement !</p>
+      <p>La preuve en image 😄 — alors pourquoi pas toi ?</p>
+      <a href="reservation.html" class="btn btn-accent" style="margin-top:20px; display:inline-block;">Réserver un cours →</a>
+    </div>
   </div>
 
   <!-- PROGRESSION -->
@@ -156,8 +272,8 @@
     <div class="etape-card fade-up-delay-2">
       <div class="etape-number">2</div>
       <div>
-        <h3 style="color: var(--ocean); margin-bottom: 6px;">Pilotage du Kite à terre</h3>
-        <p style="color: var(--text-light); font-size: 15px;">On commence les pieds dans le sable. Apprendre à faire voler la voile, gérer la puissance, décollage et atterrissage maîtrisés.</p>
+        <h3 style="color: var(--ocean); margin-bottom: 6px;">Pilotage du Kite</h3>
+        <p style="color: var(--text-light); font-size: 15px;">On commence les pieds dans le sable ou dans l'eau. Apprendre à faire voler la voile, gérer la puissance, décollage et atterrissage maîtrisés.</p>
       </div>
     </div>
 
@@ -174,6 +290,14 @@
       <div>
         <h3 style="color: var(--ocean); margin-bottom: 6px;">Waterstart & Premier Ride</h3>
         <p style="color: var(--text-light); font-size: 15px;">Le grand moment ! Se mettre debout sur la planche et rider pour la première fois. Une sensation inoubliable garantie.</p>
+      </div>
+    </div>
+
+    <div class="etape-card fade-up-delay-5">
+      <div class="etape-number">5</div>
+      <div>
+        <h3 style="color: var(--ocean); margin-bottom: 6px;">Ride des 2 cotés & Upwind</h3>
+        <p style="color: var(--text-light); font-size: 15px;">Bientôt l'autonomie ! Tu remontes au vent, plus besoin de marcher !<br> Félicitation 🏆</p>
       </div>
     </div>
 
