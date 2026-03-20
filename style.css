@@ -387,38 +387,77 @@ footer a {
 .fade-up-delay-4 { animation-delay: 0.4s; opacity: 0; animation-fill-mode: forwards; animation-name: fadeUp; animation-duration: 0.6s; }
 
 /* ===== RESPONSIVE ===== */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 10px;
+  background: none;
+  border: none;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
 @media (max-width: 768px) {
   .menu {
-    flex-wrap: wrap;
-    padding: 10px 16px;
-    gap: 0;
+    flex-wrap: nowrap;
+    padding: 0 16px;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
   }
 
   .menu .logo {
-    width: 100%;
+    width: auto;
+    padding: 0;
+    margin-right: auto;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .menu-links {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: rgba(2, 26, 46, 0.98);
+    flex-direction: column;
     padding: 10px 0;
-    margin-bottom: 4px;
+    z-index: 999;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
   }
 
-  .menu a:not(.logo) {
-    padding: 10px 8px;
-    font-size: 13px;
+  .menu-links.open {
+    display: flex;
   }
 
-  main {
-    padding: 40px 20px;
+  .menu-links a {
+    padding: 14px 24px !important;
+    font-size: 15px !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    border-left: 3px solid transparent !important;
   }
 
-  .grid-2 {
-    grid-template-columns: 1fr;
+  .menu-links a.active,
+  .menu-links a:hover {
+    border-left-color: var(--accent) !important;
+    border-bottom-color: rgba(255,255,255,0.08) !important;
+    background: rgba(255,255,255,0.05);
   }
 
-  .contact-box,
-  .formulaire {
-    padding: 30px 20px;
-  }
-
-  .page-hero {
-    padding: 60px 20px 40px;
-  }
+  main { padding: 40px 20px; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .contact-box, .formulaire { padding: 30px 20px; }
+  .page-hero { padding: 60px 20px 40px; }
 }
