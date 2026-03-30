@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop Kitesurf & Foil – Matériel Pump & Kite Frontignan</title>
+  <meta name="description" content="Achetez votre matériel de kitesurf et foil chez Pump & Kite à Frontignan. Sélection d'équipements neufs et d'occasion. Conseils personnalisés par des experts.">
+  <meta name="keywords" content="shop kitesurf Frontignan, acheter matériel kite, vente foil Hérault, équipement kitesurf occasion, boutique kite 34, Pump and Kite shop">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Pump & Kite">
+  <link rel="canonical" href="https://www.pumpandkite.fr/magasin.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.pumpandkite.fr/magasin.html">
+  <meta property="og:title" content="Shop Kitesurf & Foil – Pump & Kite Frontignan">
+  <meta property="og:description" content="Achetez votre matériel de kitesurf et foil chez Pump & Kite à Frontignan. Équipements neufs et d'occasion, conseils personnalisés.">
+  <meta property="og:image" content="https://www.pumpandkite.fr/Image/logo.png">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Pump & Kite">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Shop Kitesurf & Foil – Pump & Kite Frontignan">
+  <meta name="twitter:description" content="Achetez votre matériel de kitesurf et foil chez Pump & Kite. Équipements neufs et d'occasion à Frontignan.">
+  <meta name="twitter:image" content="https://www.pumpandkite.fr/Image/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ===== VARIABLES (cohérence avec index.html) ===== */
+    :root {
+      --deep:    #0a1628;
+      --ocean:   #1a3a5c;
+      --mid:     #1e6091;
+      --wave:    #2ecc71;
+      --foam:    #48cae4;
+      --accent:  #f4a261;
+      --sky:     #f0f8ff;
+      --text:    #1a1a2e;
+      --text-light: #6b7280;
+      --radius:  14px;
+      --shadow:  0 4px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--sky);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ===== HERO ===== */
+    .shop-hero {
+      min-height: 42vh;
+      background: linear-gradient(160deg, var(--deep) 0%, var(--ocean) 50%, var(--mid) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      padding: 80px 30px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shop-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='20' viewBox='0 0 100 20'%3E%3Cpath d='M0 10 Q25 0 50 10 Q75 20 100 10 L100 20 L0 20 Z' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E") repeat-x bottom;
+      background-size: 200px 80px;
+      animation: waves 8s linear infinite;
+    }
+
+    @keyframes waves {
+      from { background-position: 0 bottom; }
+      to   { background-position: 400px bottom; }
+    }
+
+    .shop-hero-badge {
+      display: inline-block;
+      background: rgba(244,162,97,0.2);
+      border: 1px solid rgba(244,162,97,0.5);
+      color: var(--accent);
+      padding: 6px 20px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .shop-hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 10vw, 100px);
+      letter-spacing: 6px;
+      line-height: 0.95;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .shop-hero h1 span { color: var(--accent); }
+
+    .shop-hero p {
+      font-size: 17px;
+      font-weight: 300;
+      opacity: 0.8;
+      max-width: 500px;
+      position: relative;
+    }
+
+    /* ===== LAYOUT ===== */
+    .shop-wrapper {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 50px 24px 80px;
+    }
+
+    /* ===== FILTRES ===== */
+    .filters-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 40px;
+      align-items: center;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-right: 6px;
+    }
+
+    .filter-btn {
+      padding: 9px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 50px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--ocean);
+      color: var(--ocean);
+    }
+
+    .filter-btn.active {
+      background: var(--ocean);
+      border-color: var(--ocean);
+      color: white;
+    }
+
+    /* ===== SEARCH ===== */
+    .search-wrap {
+      margin-left: auto;
+      position: relative;
+    }
+
+    .search-wrap input {
+      padding: 9px 16px 9px 38px;
+      border: 2px solid #e5e7eb;
+      border-radius: 50px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 200px;
+      background: white;
+    }
+
+    .search-wrap input:focus { border-color: var(--ocean); }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+    }
+
+    /* ===== GRILLE ===== */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 28px;
+    }
+
+    /* ===== CARD ===== */
+    .product-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--ocean);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 2;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(135deg, #e8f4fd, #c3e6f7);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* Image remplit toute la zone */
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      position: absolute;
+      inset: 0;
+    }
+
+    /* Placeholder emoji si pas d'image */
+    .card-img .img-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 54px;
+    }
+
+    .card-body {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-brand {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .card-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: var(--ocean);
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.5;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    /* ===== VARIANTES — SWATCHES + TAILLES ===== */
+    .variant-section { margin-bottom: 12px; }
+
+    .variant-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 7px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .variant-label .selected-val {
+      color: var(--ocean);
+      font-weight: 700;
+      text-transform: none;
+    }
+
+    .swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2.5px solid transparent;
+      outline: 2px solid transparent;
+      outline-offset: 1px;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .swatch:hover  { transform: scale(1.18); }
+    .swatch.active { border-color: white; outline-color: var(--ocean); transform: scale(1.18); }
+
+    .sizes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .size-btn {
+      padding: 5px 10px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-light);
+      background: white;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .size-btn:hover    { border-color: var(--ocean); color: var(--ocean); }
+    .size-btn.active   { background: var(--ocean); border-color: var(--ocean); color: white; }
+    .size-btn.no-stock { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
+
+    /* ===== PRIX ===== */
+    .card-price-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .card-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .card-price-range {
+      font-size: 12px;
+      color: var(--text-light);
+      font-weight: 400;
+    }
+
+    /* ===== BOUTON AJOUT ===== */
+    .btn-add {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--ocean), var(--mid));
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-add:hover {
+      background: linear-gradient(135deg, var(--accent), #e8854a);
+      transform: translateY(-1px);
+    }
+
+    .btn-add:active { transform: translateY(0); }
+
+    /* ===== PANIER FLOTTANT ===== */
+    #cart-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: linear-gradient(135deg, var(--accent), #e8854a);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 22px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: 0 8px 24px rgba(244,162,97,0.5);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #cart-fab:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(244,162,97,0.6);
+    }
+
+    #cart-fab .badge {
+      background: white;
+      color: var(--accent);
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* ===== PANNEAU PANIER ===== */
+    #cart-panel {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 400px;
+      height: 100%;
+      background: white;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #cart-panel.open { right: 0; }
+
+    .cart-header {
+      background: linear-gradient(135deg, var(--deep), var(--ocean));
+      color: white;
+      padding: 28px 24px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .cart-header h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 2px;
+    }
+
+    .cart-close {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .cart-close:hover { background: rgba(255,255,255,0.25); }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .cart-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-light);
+    }
+
+    .cart-empty-icon { font-size: 48px; margin-bottom: 12px; }
+
+    .cart-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .cart-item-icon {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #e8f4fd, #c3e6f7);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .cart-item-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .cart-item-info { flex: 1; }
+
+    .cart-item-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .cart-item-detail {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 6px;
+    }
+
+    .cart-item-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      color: var(--accent);
+    }
+
+    .cart-item-remove {
+      background: none;
+      border: none;
+      color: #e5e7eb;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .cart-item-remove:hover { color: #ef4444; }
+
+    .cart-footer {
+      border-top: 2px solid #f3f4f6;
+      padding: 20px 24px;
+      flex-shrink: 0;
+    }
+
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .cart-total-label {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .cart-total-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      color: var(--ocean);
+    }
+
+    .btn-checkout {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), #e8854a);
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-checkout:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(244,162,97,0.4);
+    }
+
+    /* ===== OVERLAY ===== */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      backdrop-filter: blur(2px);
+    }
+
+    #overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      right: 28px;
+      background: var(--ocean);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1002;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== LOADING ===== */
+    .loading-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 28px;
+    }
+
+    .skeleton {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .skeleton-img {
+      height: 220px;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    .skeleton-body { padding: 22px; }
+
+    .skeleton-line {
+      height: 14px;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .skeleton-line.short { width: 60%; }
+    .skeleton-line.long  { width: 90%; }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ===== ÉTAT VIDE / ERREUR ===== */
+    .state-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-light);
+    }
+
+    .state-msg .state-icon { font-size: 52px; margin-bottom: 16px; }
+    .state-msg h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ocean); margin-bottom: 8px; }
+    .state-msg p  { font-size: 15px; }
+
+    /* ===== RÉSULTATS COUNT ===== */
+    .results-count {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+
+    .results-count strong { color: var(--ocean); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      #cart-panel { width: 100%; right: -100%; }
+      .search-wrap { margin-left: 0; width: 100%; }
+      .search-wrap input { width: 100%; }
+    }
+
+    /* ===== MODALE PRODUIT ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 22, 40, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-box {
+      background: white;
+      border-radius: 20px;
+      max-width: 860px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+    .modal-overlay.open .modal-box {
+      transform: translateY(0) scale(1);
+    }
+    .modal-img-col {
+      background: linear-gradient(135deg, #e8f4fd, #c3e6f7);
+      border-radius: 20px 0 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 420px;
+      overflow: hidden;
+      position: relative;
+    }
+    .modal-img-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      position: absolute;
+      inset: 0;
+      transition: opacity 0.25s ease;
+    }
+    .modal-img-col {
+      position: relative;
+    }
+    .modal-img-col .modal-emoji {
+      font-size: 80px;
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-info-col {
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 10;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: white; }
+    .modal-badge {
+      display: inline-block;
+      background: var(--ocean);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      width: fit-content;
+    }
+    .modal-brand {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    .modal-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      color: var(--ocean);
+      letter-spacing: 2px;
+      line-height: 1.1;
+    }
+    .modal-desc {
+      font-size: 14px;
+      color: var(--text-light);
+      line-height: 1.7;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 14px;
+    }
+    .modal-variant-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .modal-variant-label .selected-val {
+      color: var(--ocean);
+      font-weight: 700;
+      text-transform: none;
+    }
+    .modal-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 44px;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .modal-price-sub {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 2px;
+    }
+    .modal-add-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--ocean), var(--mid));
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: auto;
+    }
+    .modal-add-btn:hover {
+      background: linear-gradient(135deg, var(--accent), #e8854a);
+      transform: translateY(-2px);
+    }
+    /* Card — curseur pointer + "Voir détail" au hover */
+    .product-card { cursor: pointer; }
+    .card-img { position: relative; }
+    .card-img-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10,22,40,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      border-radius: 0;
+    }
+    .product-card:hover .card-img-overlay { opacity: 1; }
+    .card-img-overlay span {
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      background: rgba(255,255,255,0.15);
+      padding: 8px 18px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.4);
+      backdrop-filter: blur(4px);
+    }
+    /* Responsive modale */
+    @media (max-width: 680px) {
+      .modal-box { grid-template-columns: 1fr; }
+      .modal-img-col { min-height: 240px; border-radius: 20px 20px 0 0; }
+      .modal-info-col { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="menu">
+  <a href="index.html" class="logo">
+    <img src="Image/logo.png" alt="Pump & Kite" style="height:46px;width:auto;display:block;">
+  </a>
+  <button class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="menu-links" id="menuLinks">
+    <a href="index.html">Accueil</a>
+    <a href="univers-kite.html">Univers Kite</a>
+    <a href="univers-foil.html">Univers Foil</a>
+    <a href="materiel.html">Matériel</a>
+    <a href="meteo.html">Météo</a>
+    <a href="contact.html">Contact</a>
+    <a href="reservation.html">Réservation</a>
+    <a href="client.html">Mon Espace</a>
+    <a href="magasin.html" class="active">Shop</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="shop-hero">
+  <div class="shop-hero-badge">🏪 Matériel Kitesurf</div>
+  <h1>Le <span>Shop</span></h1>
+  <p>Ailes, planches, accessoires – tout le matériel pour rider comme un pro</p>
+</section>
+
+<!-- SHOP BODY -->
+<div class="shop-wrapper">
+
+  <!-- FILTRES + SEARCH -->
+  <div class="filters-bar">
+    <span class="filter-label">Catégorie :</span>
+    <button class="filter-btn active" data-cat="tous">Tout</button>
+    <button class="filter-btn" data-cat="kite">🪁 Kites</button>
+    <button class="filter-btn" data-cat="planche">🏄 Planches</button>
+    <button class="filter-btn" data-cat="surfboard">Surfboards</button>
+    <button class="filter-btn" data-cat="barre">Barres</button>
+    <button class="filter-btn" data-cat="accessoire">Accessoires</button>
+    <button class="filter-btn" data-cat="fixation">Fixations</button>
+    <button class="filter-btn" data-cat="foilboard">Foilboards</button>
+
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="Rechercher..." oninput="filterProducts()">
+    </div>
+  </div>
+
+  <!-- COUNT -->
+  <p class="results-count" id="results-count"></p>
+
+  <!-- GRILLE -->
+  <div id="products-grid" class="products-grid">
+    <!-- Skeletons de chargement -->
+    ${Array(6).fill(0).map(() => `
+    <div class="skeleton">
+      <div class="skeleton-img"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line"></div>
+      </div>
+    </div>`).join('')}
+  </div>
+
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" onclick="closeCart()"></div>
+
+<!-- MODALE PRODUIT -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+
+    <!-- Colonne image -->
+    <div class="modal-img-col" id="modal-img-col">
+      <span class="modal-emoji" id="modal-emoji">📦</span>
+    </div>
+
+    <!-- Colonne infos -->
+    <div class="modal-info-col">
+      <div class="modal-badge" id="modal-badge"></div>
+      <div class="modal-brand" id="modal-brand"></div>
+      <div class="modal-name"  id="modal-name"></div>
+      <div class="modal-desc"  id="modal-desc"></div>
+
+      <!-- Swatches couleur -->
+      <div id="modal-color-wrap" style="display:none;">
+        <div class="modal-variant-label">
+          Couleur <span class="selected-val" id="modal-color-label"></span>
+        </div>
+        <div class="swatches" id="modal-swatches"></div>
+      </div>
+
+      <!-- Tailles -->
+      <div id="modal-size-wrap" style="display:none;">
+        <div class="modal-variant-label">Taille</div>
+        <div class="sizes" id="modal-sizes"></div>
+      </div>
+
+      <!-- Prix -->
+      <div>
+        <div class="modal-price"><span id="modal-price">–</span> €</div>
+        <div class="modal-price-sub" id="modal-price-sub"></div>
+      </div>
+
+      <button class="modal-add-btn" id="modal-add-btn">+ Ajouter au panier</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- PANNEAU PANIER -->
+<div id="cart-panel">
+  <div class="cart-header">
+    <h3>🛒 Mon Panier</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty">
+      <div class="cart-empty-icon">🛒</div>
+      <p>Votre panier est vide</p>
+    </div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total-row">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-price"><span id="cart-total">0</span> €</span>
+    </div>
+    <button class="btn-checkout" onclick="checkout()">Passer commande</button>
+  </div>
+</div>
+
+<!-- BOUTON PANIER FLOTTANT -->
+<button id="cart-fab" onclick="toggleCart()">
+  🛒 Panier
+  <span class="badge" id="cart-count">0</span>
+</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Pump & Kite – École de kitesurf à Frontignan | <a href="contact.html">Contact</a></p>
+</footer>
+
+<script>
+/* ====================================================
+   CONFIG SUPABASE
+   ==================================================== */
+const SUPA_URL = 'https://qwuyrwfjxbedziuzbasw.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3dXlyd2ZqeGJlZHppdXpiYXN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyNjU2ODEsImV4cCI6MjA4OTg0MTY4MX0.uNMVbEcJ7xvxNYfqT_1z8QP9HyCP-WVv4o2UhmxTWOI';
+
+const HEADERS = {
+  apikey: SUPA_KEY,
+  Authorization: 'Bearer ' + SUPA_KEY,
+  'Content-Type': 'application/json'
+};
+
+/* ====================================================
+   ÉTAT GLOBAL
+   ==================================================== */
+let allProducts  = [];   // produits_avec_prix
+let allVariantes = {};   // { produit_id: [ variante, ... ] }
+let cart         = [];
+let activeFilter = 'tous';
+
+/* Emoji par catégorie */
+const CAT_EMOJI = {
+  kite:       '🪁',
+  planche:    '🏄',
+  surfboard:  '🏄',
+  barre:      '🎮',
+  accessoire: '🔧',
+  fixation:   '⚙️',
+  foilboard:  '✈️',
+};
+
+/* ====================================================
+   CHARGEMENT DONNÉES
+   ==================================================== */
+async function loadData() {
+  try {
+    /* Produits */
+    const resProd = await fetch(
+      `${SUPA_URL}/rest/v1/produits_avec_prix?select=*&order=nom.asc`,
+      { headers: HEADERS }
+    );
+    if (!resProd.ok) throw new Error('Erreur produits');
+    allProducts = await resProd.json();
+
+    /* Variantes */
+    const resVar = await fetch(
+      `${SUPA_URL}/rest/v1/variantes?select=id,produit_id,taille,couleur,prix,stock,image`,
+      { headers: HEADERS }
+    );
+    if (!resVar.ok) throw new Error('Erreur variantes');
+    const variantes = await resVar.json();
+
+    /* Indexer variantes par produit_id */
+    allVariantes = {};
+    variantes.forEach(v => {
+      if (!allVariantes[v.produit_id]) allVariantes[v.produit_id] = [];
+      allVariantes[v.produit_id].push(v);
+    });
+
+    renderProducts(allProducts);
+  } catch (err) {
+    console.error(err);
+    document.getElementById('products-grid').innerHTML = `
+      <div class="state-msg">
+        <div class="state-icon">⚠️</div>
+        <h3>Erreur de chargement</h3>
+        <p>Impossible de contacter le serveur. Veuillez réessayer.</p>
+      </div>`;
+  }
+}
+
+/* ====================================================
+   RENDU GRILLE
+   ==================================================== */
+function renderProducts(products) {
+  const grid = document.getElementById('products-grid');
+  const count = document.getElementById('results-count');
+
+  if (!products.length) {
+    grid.innerHTML = `
+      <div class="state-msg">
+        <div class="state-icon">🔍</div>
+        <h3>Aucun produit trouvé</h3>
+        <p>Essayez une autre catégorie ou un autre mot-clé.</p>
+      </div>`;
+    count.innerHTML = '';
+    return;
+  }
+
+  count.innerHTML = `<strong>${products.length}</strong> produit${products.length > 1 ? 's' : ''} trouvé${products.length > 1 ? 's' : ''}`;
+
+  grid.innerHTML = products.map(p => buildCard(p)).join('');
+}
+
+/* ====================================================
+   MAPPING COULEUR → CSS
+   ==================================================== */
+const COLOR_MAP = {
+  // Couleurs communes kite
+  'orange':       '#f97316',
+  'turquoise':    '#06b6d4',
+  'deep purple':  '#7c3aed',
+  'rubine red':   '#be123c',
+  'white':        '#f8fafc',
+  'black':        '#0f172a',
+  'blue':         '#2563eb',
+  'blue / red':   'linear-gradient(135deg,#2563eb 50%,#dc2626 50%)',
+  'red':          '#dc2626',
+  'green':        '#16a34a',
+  'yellow':       '#eab308',
+  'pink':         '#ec4899',
+  'grey':         '#6b7280',
+  'gray':         '#6b7280',
+  'titanium':     '#78716c',
+  'ombre blue':   'linear-gradient(135deg,#1e3a8a,#06b6d4)',
+  'seasalt green':'#4ade80',
+};
+
+function getColorCSS(couleur) {
+  if (!couleur) return '#9ca3af';
+  const key = couleur.toLowerCase().trim();
+  return COLOR_MAP[key] || stringToColor(couleur);
+}
+
+/* Génère une couleur déterministe depuis une chaîne */
+function stringToColor(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  const h = Math.abs(hash) % 360;
+  return `hsl(${h},60%,55%)`;
+}
+
+/* ====================================================
+   ÉTAT PAR CARD (couleur + taille sélectionnées)
+   ==================================================== */
+const cardState = {}; // { produit_id: { couleurIdx, tailleIdx } }
+
+/* ====================================================
+   CONSTRUCTION D'UNE CARD
+   ==================================================== */
+function buildCard(p) {
+  const vars  = allVariantes[p.id] || [];
+  const emoji = CAT_EMOJI[p.categorie] || '📦';
+  const hasPic = p.image && p.image.trim() !== '' && !p.image.includes('NULL');
+  const badgeLabel = p.sous_type || p.categorie || '';
+
+  /* Init état card */
+  if (!cardState[p.id]) cardState[p.id] = { couleurIdx: 0, tailleIdx: 0 };
+
+  /* Image — priorité variante couleur si dispo, sinon produit */
+  const getVarImage = (couleur) => {
+    const vars2 = allVariantes[p.id] || [];
+    const v2 = vars2.find(v => v.image && v.image.trim() && !v.image.includes('NULL') &&
+      (!couleur || v.couleur === couleur));
+    return v2?.image || (hasPic ? p.image : null);
+  };
+  const firstImg = getVarImage(null);
+  const imgHtml = firstImg
+    ? `<img src="${firstImg}" alt="${p.nom}" onerror="this.outerHTML='<div class=img-placeholder>${emoji}</div>'">`
+    : `<div class="img-placeholder">${emoji}</div>`;
+
+  /* ---- Construire listes couleurs & tailles uniques ---- */
+  let variantBlock = '';
+  if (vars.length > 0) {
+    const couleurs = [...new Map(vars.map(v => [v.couleur, v])).values()]
+      .filter(v => v.couleur);
+    const tailles  = [...new Set(vars.map(v => v.taille).filter(Boolean))];
+
+    /* Swatches couleur */
+    let swatchesHtml = '';
+    if (couleurs.length > 1) {
+      const dots = couleurs.map((v, i) => {
+        const css    = getColorCSS(v.couleur);
+        const isGrad = css.includes('gradient');
+        const style  = isGrad ? `background:${css}` : `background-color:${css}`;
+        return `<span class="swatch${i === 0 ? ' active' : ''}"
+                  style="${style}"
+                  title="${v.couleur}"
+                  onclick="selectColor('${p.id}', ${i})"></span>`;
+      }).join('');
+      const firstColor = couleurs[0]?.couleur || '';
+      swatchesHtml = `
+        <div class="variant-label">Couleur <span class="selected-val" id="color-label-${p.id}">${firstColor}</span></div>
+        <div class="swatches" id="swatches-${p.id}">${dots}</div>`;
+    }
+
+    /* Boutons taille */
+    let sizesHtml = '';
+    if (tailles.length > 0) {
+      const btns = tailles.map((t, i) => {
+        return `<button class="size-btn${i === 0 ? ' active' : ''}"
+                  onclick="selectSize('${p.id}', ${i})"
+                  id="size-${p.id}-${i}">${t}</button>`;
+      }).join('');
+      sizesHtml = `
+        <div class="variant-label" style="margin-top:8px;">Taille</div>
+        <div class="sizes" id="sizes-${p.id}">${btns}</div>`;
+    }
+
+    variantBlock = swatchesHtml + sizesHtml;
+  }
+
+  /* Prix initial */
+  const firstVar = vars[0];
+  const prixInit = firstVar ? firstVar.prix
+    : (p.prix_min || '–');
+  const prixRange = (p.prix_min && p.prix_max && p.prix_min !== p.prix_max && vars.length > 0)
+    ? `<span class="card-price-range">de ${p.prix_min}€</span>` : '';
+
+  return `
+    <div class="product-card" id="card-${p.id}" data-cat="${p.categorie || ''}" data-nom="${(p.nom || '').toLowerCase()}" onclick="handleCardClick(event, '${p.id}')">
+      ${badgeLabel ? `<div class="card-badge">${badgeLabel}</div>` : ''}
+      <div class="card-img">
+        ${imgHtml}
+        <div class="card-img-overlay"><span>👁 Voir le produit</span></div>
+      </div>
+      <div class="card-body">
+        <div class="card-brand">${p.marque || ''}</div>
+        <div class="card-name">${p.nom || 'Sans nom'}</div>
+        <div class="card-desc" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.description || ''}</div>
+
+        ${variantBlock}
+
+        <div class="card-price-row" style="margin-top:12px;">
+          <div class="card-price" id="price-${p.id}">${prixInit ? prixInit + ' €' : '–'}</div>
+          ${prixRange}
+        </div>
+
+        <button class="btn-add" onclick="addToCart('${p.id}')">
+          + Ajouter au panier
+        </button>
+      </div>
+    </div>`;
+}
+
+/* ====================================================
+   SÉLECTION COULEUR
+   ==================================================== */
+function selectColor(produitId, idx) {
+  const vars    = allVariantes[produitId] || [];
+  const couleurs= [...new Map(vars.map(v => [v.couleur, v])).values()].filter(v => v.couleur);
+  const couleur = couleurs[idx]?.couleur;
+
+  cardState[produitId].couleurIdx = idx;
+
+  /* Mettre à jour swatches */
+  const swatchesEl = document.getElementById('swatches-' + produitId);
+  if (swatchesEl) {
+    swatchesEl.querySelectorAll('.swatch').forEach((s, i) => s.classList.toggle('active', i === idx));
+  }
+
+  /* Mettre à jour label couleur */
+  const labelEl = document.getElementById('color-label-' + produitId);
+  if (labelEl) labelEl.textContent = couleur || '';
+
+  /* Mettre à jour image carte selon couleur */
+  const p2   = allProducts.find(x => x.id === produitId);
+  const vars2 = allVariantes[produitId] || [];
+  const vImg  = vars2.find(v => v.image && v.image.trim() && !v.image.includes('NULL') && v.couleur === couleur);
+  const imgUrl2 = vImg?.image || (p2?.image && !p2.image.includes('NULL') ? p2.image : null);
+  const cardImgEl = document.querySelector('#card-' + produitId + ' .card-img img');
+  const cardImgContainer = document.querySelector('#card-' + produitId + ' .card-img');
+  if (cardImgEl && imgUrl2) {
+    cardImgEl.src = imgUrl2;
+  } else if (cardImgContainer && imgUrl2) {
+    const emoji2 = CAT_EMOJI[p2?.categorie] || '📦';
+    cardImgContainer.innerHTML = `<img src="${imgUrl2}" alt="${p2?.nom || ''}" onerror="this.outerHTML='<div class=img-placeholder>${emoji2}</div>'">
+      <div class="card-img-overlay"><span>👁 Voir le produit</span></div>`;
+  }
+
+  /* Recalc prix */
+  refreshPrice(produitId);
+}
+
+/* ====================================================
+   SÉLECTION TAILLE
+   ==================================================== */
+function selectSize(produitId, idx) {
+  cardState[produitId].tailleIdx = idx;
+
+  /* Mettre à jour boutons */
+  const sizesEl = document.getElementById('sizes-' + produitId);
+  if (sizesEl) {
+    sizesEl.querySelectorAll('.size-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  }
+
+  /* Recalc prix */
+  refreshPrice(produitId);
+}
+
+/* ====================================================
+   RECALCUL PRIX SELON COULEUR + TAILLE SÉLECTIONNÉES
+   ==================================================== */
+function refreshPrice(produitId) {
+  const vars     = allVariantes[produitId] || [];
+  const state    = cardState[produitId] || { couleurIdx: 0, tailleIdx: 0 };
+  const couleurs = [...new Map(vars.map(v => [v.couleur, v])).values()].filter(v => v.couleur);
+  const tailles  = [...new Set(vars.map(v => v.taille).filter(Boolean))];
+
+  const couleurChoisie = couleurs[state.couleurIdx]?.couleur || null;
+  const tailleChoisie  = tailles[state.tailleIdx]  || null;
+
+  /* Cherche la variante exacte */
+  let variante = vars.find(v =>
+    (!couleurChoisie || v.couleur === couleurChoisie) &&
+    (!tailleChoisie  || v.taille  === tailleChoisie)
+  );
+  if (!variante) variante = vars[0]; /* fallback */
+
+  const priceEl = document.getElementById('price-' + produitId);
+  if (priceEl && variante) priceEl.textContent = variante.prix + ' €';
+}
+
+
+/* ====================================================
+   ÉTAT MODALE
+   ==================================================== */
+let modalProduitId  = null;
+let modalCouleurIdx = 0;
+let modalTailleIdx  = 0;
+
+/* ====================================================
+   OPEN MODAL
+   ==================================================== */
+function openModal(produitId) {
+  const p    = allProducts.find(x => x.id === produitId);
+  const vars = allVariantes[produitId] || [];
+  if (!p) return;
+
+  modalProduitId  = produitId;
+  modalCouleurIdx = cardState[produitId]?.couleurIdx || 0;
+  modalTailleIdx  = cardState[produitId]?.tailleIdx  || 0;
+
+  const emoji = CAT_EMOJI[p.categorie] || '📦';
+
+  /* Badge + nom + marque + desc */
+  document.getElementById('modal-badge').textContent = p.sous_type || p.categorie || '';
+  document.getElementById('modal-brand').textContent = p.marque || '';
+  document.getElementById('modal-name').textContent  = p.nom    || '';
+  document.getElementById('modal-desc').textContent  = p.description || 'Aucune description disponible.';
+
+  /* Image initiale */
+  refreshModalImage(vars, emoji, p);
+
+  /* Swatches */
+  const couleurs = [...new Map(vars.map(v => [v.couleur, v])).values()].filter(v => v.couleur);
+  const tailles  = [...new Set(vars.map(v => v.taille).filter(Boolean))];
+
+  const colorWrap = document.getElementById('modal-color-wrap');
+  const swatchEl  = document.getElementById('modal-swatches');
+  const colorLbl  = document.getElementById('modal-color-label');
+
+  if (couleurs.length > 1) {
+    colorWrap.style.display = 'block';
+    colorLbl.textContent    = couleurs[modalCouleurIdx]?.couleur || '';
+    swatchEl.innerHTML = couleurs.map((v, i) => {
+      const css    = getColorCSS(v.couleur);
+      const isGrad = css.includes('gradient');
+      const style  = isGrad ? `background:${css}` : `background-color:${css}`;
+      return `<span class="swatch${i === modalCouleurIdx ? ' active' : ''}"
+                style="${style}" title="${v.couleur}"
+                onclick="modalSelectColor(${i})"></span>`;
+    }).join('');
+  } else {
+    colorWrap.style.display = 'none';
+  }
+
+  /* Tailles */
+  const sizeWrap = document.getElementById('modal-size-wrap');
+  const sizesEl  = document.getElementById('modal-sizes');
+
+  if (tailles.length > 0) {
+    sizeWrap.style.display = 'block';
+    sizesEl.innerHTML = tailles.map((t, i) =>
+      `<button class="size-btn${i === modalTailleIdx ? ' active' : ''}"
+         onclick="modalSelectSize(${i})">${t}</button>`
+    ).join('');
+  } else {
+    sizeWrap.style.display = 'none';
+  }
+
+  /* Prix */
+  refreshModalPrice(vars, p);
+
+  /* Bouton panier */
+  document.getElementById('modal-add-btn').onclick = () => {
+    addToCartFromModal(produitId);
+  };
+
+  /* Ouvrir */
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function refreshModalImage(vars, emoji, p) {
+  const imgCol = document.getElementById('modal-img-col');
+  const couleurs = [...new Map(vars.map(v => [v.couleur, v])).values()].filter(v => v.couleur);
+  const couleurChoisie = couleurs[modalCouleurIdx]?.couleur || null;
+
+  /* Cherche image dans variante (par couleur) */
+  const varAvecImage = vars.find(v =>
+    v.image && v.image.trim() !== '' && !v.image.includes('NULL') &&
+    (!couleurChoisie || v.couleur === couleurChoisie)
+  );
+
+  const imgUrl = varAvecImage?.image ||
+    (p.image && !p.image.includes('NULL') ? p.image : null);
+
+  imgCol.innerHTML = imgUrl
+    ? `<img src="${imgUrl}" alt="${p.nom}" onerror="this.outerHTML='<div class=modal-emoji>${emoji}</div>'">`
+    : `<div class="modal-emoji">${emoji}</div>`;
+}
+
+function refreshModalPrice(vars, p) {
+  const couleurs = [...new Map(vars.map(v => [v.couleur, v])).values()].filter(v => v.couleur);
+  const tailles  = [...new Set(vars.map(v => v.taille).filter(Boolean))];
+  const couleurChoisie = couleurs[modalCouleurIdx]?.couleur || null;
+  const tailleChoisie  = tailles[modalTailleIdx]  || null;
+
+  let variante = vars.find(v =>
+    (!couleurChoisie || v.couleur === couleurChoisie) &&
+    (!tailleChoisie  || v.taille  === tailleChoisie)
+  );
+  if (!variante) variante = vars[0];
+
+  const prix = variante?.prix ?? p.prix_min ?? '–';
+  document.getElementById('modal-price').textContent = prix;
+
+  /* Sous-titre (fourchette si applicable) */
+  if (p.prix_min && p.prix_max && p.prix_min !== p.prix_max) {
+    document.getElementById('modal-price-sub').textContent = `De ${p.prix_min} € à ${p.prix_max} €`;
+  } else {
+    document.getElementById('modal-price-sub').textContent = '';
+  }
+}
+
+function modalSelectColor(idx) {
+  const p    = allProducts.find(x => x.id === modalProduitId);
+  const vars = allVariantes[modalProduitId] || [];
+  const couleurs = [...new Map(vars.map(v => [v.couleur, v])).values()].filter(v => v.couleur);
+  modalCouleurIdx = idx;
+
+  /* Swatches */
+  document.querySelectorAll('#modal-swatches .swatch').forEach((s, i) =>
+    s.classList.toggle('active', i === idx));
+  document.getElementById('modal-color-label').textContent = couleurs[idx]?.couleur || '';
+
+  /* Image */
+  const emoji = CAT_EMOJI[p?.categorie] || '📦';
+  refreshModalImage(vars, emoji, p);
+
+  /* Prix */
+  refreshModalPrice(vars, p);
+
+  /* Sync cardState */
+  if (cardState[modalProduitId]) cardState[modalProduitId].couleurIdx = idx;
+}
+
+function modalSelectSize(idx) {
+  const p    = allProducts.find(x => x.id === modalProduitId);
+  const vars = allVariantes[modalProduitId] || [];
+  modalTailleIdx = idx;
+
+  document.querySelectorAll('#modal-sizes .size-btn').forEach((b, i) =>
+    b.classList.toggle('active', i === idx));
+
+  refreshModalPrice(vars, p);
+  if (cardState[modalProduitId]) cardState[modalProduitId].tailleIdx = idx;
+}
+
+function addToCartFromModal(produitId) {
+  const p    = allProducts.find(x => x.id === produitId);
+  const vars = allVariantes[produitId] || [];
+  const couleurs = [...new Map(vars.map(v => [v.couleur, v])).values()].filter(v => v.couleur);
+  const tailles  = [...new Set(vars.map(v => v.taille).filter(Boolean))];
+
+  const couleurChoisie = couleurs[modalCouleurIdx]?.couleur || null;
+  const tailleChoisie  = tailles[modalTailleIdx]  || null;
+
+  let variante = vars.find(v =>
+    (!couleurChoisie || v.couleur === couleurChoisie) &&
+    (!tailleChoisie  || v.taille  === tailleChoisie)
+  );
+  if (!variante && vars.length > 0) variante = vars[0];
+
+  const prix   = variante ? variante.prix : p.prix_min;
+  const detail = variante ? [variante.taille, variante.couleur].filter(Boolean).join(' – ') : '';
+
+  if (!prix) { showToast('⚠️ Prix non disponible'); return; }
+
+  cart.push({
+    id:     produitId + '_' + Date.now(),
+    nom:    p.nom,
+    marque: p.marque,
+    detail,
+    prix:   parseFloat(prix),
+    image:  variante?.image || p.image
+  });
+
+  renderCart();
+  closeModalDirect();
+  showToast(`✅ ${p.nom} ajouté au panier`);
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModalDirect();
+}
+
+function closeModalDirect() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ====================================================
+   FILTRES
+   ==================================================== */
+/* ====================================================
+   FILTRES
+   ==================================================== */
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.getAttribute('data-cat');
+    filterProducts();
+  });
+});
+
+function filterProducts() {
+  const q = (document.getElementById('search-input').value || '').toLowerCase();
+
+  const filtered = allProducts.filter(p => {
+    const catMatch  = activeFilter === 'tous' || p.categorie === activeFilter;
+    const nomMatch  = (p.nom || '').toLowerCase().includes(q)
+                   || (p.description || '').toLowerCase().includes(q)
+                   || (p.marque || '').toLowerCase().includes(q);
+    return catMatch && nomMatch;
+  });
+
+  renderProducts(filtered);
+}
+
+/* ====================================================
+   PANIER
+   ==================================================== */
+function addToCart(produitId) {
+  const p    = allProducts.find(x => x.id === produitId);
+  const vars = allVariantes[produitId] || [];
+
+  /* Récupère couleur + taille depuis cardState */
+  const state    = cardState[produitId] || { couleurIdx: 0, tailleIdx: 0 };
+  const couleurs = [...new Map(vars.map(v => [v.couleur, v])).values()].filter(v => v.couleur);
+  const tailles  = [...new Set(vars.map(v => v.taille).filter(Boolean))];
+
+  const couleurChoisie = couleurs[state.couleurIdx]?.couleur || null;
+  const tailleChoisie  = tailles[state.tailleIdx]  || null;
+
+  /* Cherche la variante exacte */
+  let variante = vars.find(v =>
+    (!couleurChoisie || v.couleur === couleurChoisie) &&
+    (!tailleChoisie  || v.taille  === tailleChoisie)
+  );
+  if (!variante && vars.length > 0) variante = vars[0];
+
+  let prix   = variante ? variante.prix : p.prix_min;
+  let detail = variante ? [variante.taille, variante.couleur].filter(Boolean).join(' – ') : '';
+
+  if (!prix) {
+    showToast('⚠️ Prix non disponible pour ce produit');
+    return;
+  }
+
+  cart.push({
+    id:     produitId + '_' + Date.now(),
+    nom:    p.nom,
+    marque: p.marque,
+    detail,
+    prix:   parseFloat(prix),
+    image:  p.image
+  });
+
+  renderCart();
+  showToast(`✅ ${p.nom} ajouté au panier`);
+}
+
+function handleCardClick(e, produitId) {
+  /* Ne pas ouvrir la modale si on clique sur btn-add, swatch, size-btn */
+  if (e.target.closest('.btn-add') ||
+      e.target.closest('.swatch')  ||
+      e.target.closest('.size-btn')) return;
+  openModal(produitId);
+}
+
+function removeFromCart(itemId) {
+  cart = cart.filter(i => i.id !== itemId);
+  renderCart();
+}
+
+function renderCart() {
+  const itemsEl  = document.getElementById('cart-items');
+  const countEl  = document.getElementById('cart-count');
+  const totalEl  = document.getElementById('cart-total');
+
+  countEl.textContent = cart.length;
+
+  if (cart.length === 0) {
+    itemsEl.innerHTML = `
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <p>Votre panier est vide</p>
+      </div>`;
+    totalEl.textContent = '0';
+    return;
+  }
+
+  const total = cart.reduce((s, i) => s + i.prix, 0);
+  totalEl.textContent = total.toFixed(2);
+
+  const hasPic = img => img && img.trim() !== '' && !img.includes('NULL');
+
+  itemsEl.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-icon">
+        ${hasPic(item.image)
+          ? `<img src="${item.image}" alt="${item.nom}" onerror="this.parentElement.innerHTML='📦'">`
+          : '📦'}
+      </div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.nom}</div>
+        ${item.detail ? `<div class="cart-item-detail">${item.detail}</div>` : ''}
+        <div class="cart-item-price">${item.prix.toFixed(2)} €</div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart('${item.id}')">✕</button>
+    </div>`).join('');
+}
+
+function toggleCart() {
+  const panel   = document.getElementById('cart-panel');
+  const overlay = document.getElementById('overlay');
+  panel.classList.toggle('open');
+  overlay.classList.toggle('show');
+}
+
+function closeCart() {
+  document.getElementById('cart-panel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function checkout() {
+  if (cart.length === 0) {
+    showToast('🛒 Votre panier est vide');
+    return;
+  }
+  showToast('🚀 Redirection vers le paiement…');
+  /* TODO: intégrer Stripe ou rediriger vers page commande */
+}
+
+/* ====================================================
+   TOAST
+   ==================================================== */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ====================================================
+   HAMBURGER (identique index.html)
+   ==================================================== */
+function toggleMenu() {
+  document.getElementById('menuLinks').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.menu')) {
+    document.getElementById('menuLinks').classList.remove('open');
+  }
+});
+
+/* ====================================================
+   INIT
+   ==================================================== */
+loadData();
+</script>
+
+</body>
+</html>

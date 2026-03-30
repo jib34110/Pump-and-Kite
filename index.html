@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pump & Kite – École de Kitesurf & Foil à Frontignan | Étang d'Ingril</title>
+  <meta name="description" content="École de kitesurf et foil à Frontignan sur l'Étang d'Ingril (34). Cours débutants et perfectionnement, pumping foil, location de matériel. Réservez votre stage !">
+  <meta name="keywords" content="kitesurf Frontignan, école kitesurf Hérault, cours kitesurf Étang d'Ingril, foil Frontignan, pumping foil, stage kitesurf 34, Pump and Kite">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Pump & Kite">
+  <link rel="canonical" href="https://www.pumpandkite.fr/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.pumpandkite.fr/">
+  <meta property="og:title" content="Pump & Kite – École de Kitesurf & Foil à Frontignan">
+  <meta property="og:description" content="École de kitesurf et foil à Frontignan sur l'Étang d'Ingril. Cours tous niveaux, pumping foil et location de matériel. Réservez votre stage !">
+  <meta property="og:image" content="https://www.pumpandkite.fr/Image/logo.png">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Pump & Kite">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pump & Kite – École de Kitesurf & Foil à Frontignan">
+  <meta name="twitter:description" content="École de kitesurf et foil à Frontignan sur l'Étang d'Ingril. Cours tous niveaux, pumping foil et location de matériel.">
+  <meta name="twitter:image" content="https://www.pumpandkite.fr/Image/logo.png">
+
+  <!-- Données structurées JSON-LD (LocalBusiness) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsActivityLocation",
+    "name": "Pump & Kite",
+    "description": "École de kitesurf et foil à Frontignan sur l'Étang d'Ingril. Cours débutants et perfectionnement, pumping foil, location de matériel.",
+    "url": "https://www.pumpandkite.fr",
+    "telephone": "+33651116896",
+    "image": "https://www.pumpandkite.fr/Image/logo.png",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Étang d'Ingril",
+      "addressLocality": "Frontignan",
+      "postalCode": "34110",
+      "addressCountry": "FR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 43.448,
+      "longitude": 3.756
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+      "opens": "09:00",
+      "closes": "19:00"
+    },
+    "priceRange": "€€",
+    "sameAs": []
+  }
+  </script>
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ===== HERO ACCUEIL ===== */
+    .hero {
+      min-height: 92vh;
+      background: linear-gradient(160deg, var(--deep) 0%, var(--ocean) 40%, var(--mid) 70%, var(--wave) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      padding: 60px 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='20' viewBox='0 0 100 20'%3E%3Cpath d='M0 10 Q25 0 50 10 Q75 20 100 10 L100 20 L0 20 Z' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E") repeat-x bottom;
+      background-size: 200px 80px;
+      animation: waves 8s linear infinite;
+    }
+
+    @keyframes waves {
+      from { background-position: 0 bottom; }
+      to { background-position: 400px bottom; }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(244, 162, 97, 0.2);
+      border: 1px solid rgba(244, 162, 97, 0.5);
+      color: var(--accent);
+      padding: 6px 20px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(64px, 12vw, 130px);
+      letter-spacing: 6px;
+      line-height: 0.9;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero h2 {
+      font-size: clamp(16px, 2.5vw, 22px);
+      font-weight: 300;
+      opacity: 0.85;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ===== STATS ===== */
+    .stats-bar {
+      background: var(--ocean);
+      color: white;
+      padding: 30px 40px;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ===== ACTIVITÉS CARDS ===== */
+    .activite-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .activite-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .activite-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .activite-card-body {
+      padding: 28px;
+    }
+
+    .activite-card-body h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--ocean);
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .activite-card-body p {
+      color: var(--text-light);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    /* ===== TARIFS ===== */
+    .tarif-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 40px 30px;
+      text-align: center;
+      transition: transform 0.3s ease;
+      border-top: 4px solid var(--foam);
+    }
+
+    .tarif-card.featured {
+      border-top-color: var(--accent);
+      transform: scale(1.04);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tarif-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .tarif-card.featured:hover {
+      transform: scale(1.04) translateY(-4px);
+    }
+
+    .tarif-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      color: var(--ocean);
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .tarif-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      color: var(--accent);
+      line-height: 1;
+      margin: 14px 0 6px;
+    }
+
+    .tarif-price span {
+      font-size: 20px;
+      color: var(--text-light);
+    }
+
+    .tarif-desc {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 24px;
+    }
+
+    .tarif-list {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tarif-list li {
+      font-size: 14px;
+      color: var(--text);
+      padding-left: 22px;
+      position: relative;
+    }
+
+    .tarif-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--wave);
+      font-weight: 700;
+    }
+
+    /* ===== ZONE ===== */
+    .zone-section {
+      background: linear-gradient(135deg, var(--deep), var(--ocean));
+      color: white;
+      padding: 80px 30px;
+      text-align: center;
+    }
+
+    .zone-section .section-title {
+      color: white;
+    }
+
+    .zone-section p {
+      color: rgba(255,255,255,0.75);
+      max-width: 600px;
+      margin: 0 auto 30px;
+      font-size: 17px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="menu">
+  <a href="index.html" class="logo">
+    <img src="Image/logo.png" alt="Pump & Kite" style="height:46px;width:auto;display:block;">
+  </a>
+  <button class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="menu-links" id="menuLinks">
+    <a href="index.html"class="active">Accueil</a>
+    <a href="univers-kite.html">Univers Kite</a>
+    <a href="univers-foil.html">Univers Foil</a>
+    <a href="materiel.html">Matériel</a>
+    <a href="meteo.html">Météo</a>
+    <a href="contact.html">Contact</a>
+    <a href="reservation.html">Réservation</a>
+    <a href="client.html">Mon Espace</a>
+    <a href="magasin.html">Shop</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  
+  <a href="index.html" class="logo">
+  <img src="Image/pk.png" alt="Pump & Kite" style="height: 400px; width: auto; display: block;">
+</a>
+<div class="hero-badge">📍 Montpellier - Sète </div>
+  <h2 class="fade-up-delay-1">Apprends le kitesurf et le pumping foil<br>sur les eaux de l'étang d'Ingril</h2>
+  <div class="hero-cta fade-up-delay-2">
+    <a href="reservation.html" class="btn btn-accent">Réserver un cours</a>
+    <a href="univers-kite.html" class="btn btn-outline">Découvrir l'école</a>
+  </div>
+  <div class="hero-scroll">
+    <span>Découvrir</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-number">2</div>
+    <div class="stat-label">Disciplines</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">Plusieurs</div>
+    <div class="stat-label">Spots exceptionnels</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">Infini</div>
+    <div class="stat-label">Sensations</div>
+  </div>
+</div>
+
+<!-- ACTIVITÉS -->
+<main>
+  <div style="text-align:center; margin-bottom: 0;">
+    <h2 class="section-title">Nos Activités</h2>
+    <div class="accent-line" style="margin: 12px auto 10px;"></div>
+    <p class="section-subtitle">Deux disciplines, une passion : le vent et l'eau</p>
+  </div>
+
+  <div class="card-grid">
+
+    <div class="activite-card fade-up-delay-1">
+      <!-- Remplace l'URL par ta propre photo -->
+      <img src="Image/DSC04401.JPG" alt="Kitesurf sur l'étang d'Ingril">
+      <div class="activite-card-body">
+        <h3>🪁 Univers Kite</h3>
+        <p>Le kitesurf est un sport de glisse aérotracté qui combine la puissance du vent et l'adrénaline de la glisse. Idéal pour les débutants comme les confirmés.</p>
+        <a href="univers-kite.html" class="btn btn-primary">En savoir plus</a>
+      </div>
+    </div>
+
+    <div class="activite-card fade-up-delay-2">
+      <!-- Remplace l'URL par ta propre photo -->
+      <img src="Image/pumping.jpg" alt="Foil sur l'eau">
+      <div class="activite-card-body">
+        <h3>🏄 Univers Foil</h3>
+        <p>Décolle littéralement au-dessus de l'eau ! Le pumping foil est la discipline la plus technique et la plus grisante de la glisse moderne.</p>
+        <a href="univers-foil.html" class="btn btn-primary">En savoir plus</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- TARIFS -->
+<section style="background: var(--sky); padding: 80px 30px;">
+  <div style="max-width: 1100px; margin: 0 auto; text-align: center;">
+    <h2 class="section-title">Tarifs</h2>
+    <div class="accent-line" style="margin: 12px auto 10px;"></div>
+    <p class="section-subtitle">Des prestations adaptées à ton niveau et tes envies</p>
+
+    <div class="card-grid" style="max-width: 900px; margin: 0 auto;">
+      
+      <div class="tarif-card featured fade-up-delay-1">
+        <div class="tarif-name">Cours Particulier Kitesurf</div>
+        <div class="tarif-price">60<span>€</span></div>
+        <div class="tarif-desc">1h • Tous niveaux</div>
+        <ul class="tarif-list">
+          <li>Cours 100% personnalisé</li>
+          <li>Progression rapide</li>
+          <li>Tarif à l'heure (Max 4h/j)</li>
+        </ul>
+        <a href="reservation.html" class="btn btn-accent">Réserver</a>
+      </div>
+
+       <div class="tarif-card featured fade-up-delay-2">
+        <div class="tarif-name">Cours Particulier Pumping Foil</div>
+        <div class="tarif-price">50<span>€</span></div>
+        <div class="tarif-desc">1h • Tous niveaux</div>
+        <ul class="tarif-list">
+          <li>Cours 100% personnalisé</li>
+          <li>Progression rapide</li>
+          <li>40€/h si vous avez votre matériel</li>
+        </ul>
+        <a href="reservation.html" class="btn btn-accent">Réserver</a>
+      </div>
+
+      <div class="tarif-card fade-up-delay-3">
+        <div class="tarif-name">Découverte du Kitesurf</div>
+        <div class="tarif-price">80<span>€</span></div>
+        <div class="tarif-desc">2h • Découverte</div>
+        <ul class="tarif-list">
+          <li>Matériel fourni</li>
+          <li>Théorie + pratique</li>
+          <li>Sécurité & réglementation</li>
+          <li>Idéal Première fois</li>
+        </ul>
+        <a href="reservation.html" class="btn btn-outline">Réserver</a>
+      </div>
+
+      <div class="tarif-card fade-up-delay-4">
+        <div class="tarif-name">Pack 10 H Kitesurf</div>
+        <div class="tarif-price">500<span>€</span></div>
+        <div class="tarif-desc">10h • Progression garantie</div>
+        <ul class="tarif-list">          
+          <li>Suivi de progression</li>
+          <li>Flexibilité planning</li>
+          <li>Meilleur tarif/heure</li>
+        </ul>
+        <a href="reservation.html" class="btn btn-outline">Réserver</a>
+      </div>
+
+      <div class="tarif-card fade-up-delay-4">
+        <div class="tarif-name">Pack 10 H Pumping</div>
+        <div class="tarif-price">400<span>€</span></div>
+        <div class="tarif-desc">10h • Progression garantie</div>
+        <ul class="tarif-list">          
+          <li>Synchronisation Jambes / Bras</li>
+          <li>Correction de la posture</li>
+          <li>Meilleur tarif/heure</li>
+        </ul>
+        <a href="reservation.html" class="btn btn-outline">Réserver</a>
+      </div>
+
+    </div>
+    <p style="margin-top: 20px; color: var(--text-light); font-size: 14px; font-style: italic;">💡 Tarifs indicatifs – contacte-moi pour un devis personnalisé</p>
+  </div>
+</section>
+
+<!-- ZONE -->
+<section class="zone-section">
+  <h2 class="section-title">Les Spots</h2>
+  <div class="accent-line" style="margin: 12px auto 20px; background: linear-gradient(90deg, var(--accent), var(--foam));"></div>
+  <p>L'étang d'Ingril à Frontignan est un spot idéal pour apprendre : eau plate, vent fréquent, et absence de courants et de vagues. Un terrain de jeu sécurisé à seulement 15 minutes de Montpellier.</p>
+  <a href="meteo.html" class="btn btn-accent">Voir la météo du spot</a><br><br>
+  <p>La plage des Aresquiers, longue de 9 km, elle demarre à Palavas et fini à Frontignan : Préférences pour les personnes qui savent déjà remontés au vent ou pour faire un cours de Kitefoil !</p>
+  <a href="meteo.html" class="btn btn-accent">Voir la météo du spot</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Pump & Kite – École de kitesurf à Frontignan | <a href="contact.html">Contact</a></p>
+</footer>
+
+// HAMBURGER
+
+<script>
+function toggleMenu() { document.getElementById('menuLinks').classList.toggle('open'); }
+document.addEventListener('click', e => {
+  if (!e.target.closest('.menu')) document.getElementById('menuLinks').classList.remove('open');
+});
+</script>
+
+</body>
+</html>

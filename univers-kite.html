@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cours de Kitesurf à Frontignan – Univers Kite | Pump & Kite</title>
+  <meta name="description" content="Apprenez le kitesurf sur l'Étang d'Ingril à Frontignan. Cours pour débutants et perfectionnement avec Pump & Kite. Instructeurs diplômés d'État, matériel fourni.">
+  <meta name="keywords" content="cours kitesurf Frontignan, apprendre kitesurf Hérault, stage kitesurf débutant, école kitesurf Étang d'Ingril, kitesurf 34">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Pump & Kite">
+  <link rel="canonical" href="https://www.pumpandkite.fr/univers-kite.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.pumpandkite.fr/univers-kite.html">
+  <meta property="og:title" content="Cours de Kitesurf à Frontignan – Pump & Kite">
+  <meta property="og:description" content="Apprenez le kitesurf sur l'Étang d'Ingril à Frontignan. Cours pour débutants et perfectionnement, matériel fourni.">
+  <meta property="og:image" content="https://www.pumpandkite.fr/Image/logo.png">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Pump & Kite">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cours de Kitesurf à Frontignan – Pump & Kite">
+  <meta name="twitter:description" content="Apprenez le kitesurf sur l'Étang d'Ingril à Frontignan. Cours pour débutants et perfectionnement, matériel fourni.">
+  <meta name="twitter:image" content="https://www.pumpandkite.fr/Image/logo.png">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ===== BLOCS ALTERNÉS ===== */
+    .kite-bloc {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+      margin-bottom: 70px;
+    }
+
+    .kite-bloc-reverse {
+      direction: rtl;
+    }
+
+    .kite-bloc-reverse > * {
+      direction: ltr;
+    }
+
+    .kite-bloc-text p {
+      margin-bottom: 12px;
+      color: var(--text-light);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .kite-bloc-img {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .kite-bloc-img img,
+    .kite-bloc-img video {
+      width: 100%;
+      height: 340px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .kite-bloc-img:hover img,
+    .kite-bloc-img:hover video {
+      transform: scale(1.04);
+    }
+
+    .kite-bloc-label {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(2, 26, 46, 0.82);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(6px);
+    }
+
+    @media (max-width: 768px) {
+      .kite-bloc {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .kite-bloc-reverse {
+        direction: ltr;
+      }
+    }
+
+    .etape-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 30px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      transition: transform 0.3s;
+    }
+
+    .etape-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .etape-number {
+      background: linear-gradient(135deg, var(--wave), var(--mid));
+      color: white;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .lecon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-top: 30px;
+    }
+
+    .lecon-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .lecon-card-header {
+      background: linear-gradient(135deg, var(--ocean), var(--mid));
+      color: white;
+      padding: 20px 24px;
+    }
+
+    .lecon-card-header h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 1px;
+    }
+
+    .lecon-card-body {
+      padding: 20px 24px;
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    .lecon-card-body a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--wave);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 14px;
+      margin-top: 12px;
+    }
+
+    .lecon-card-body a:hover {
+      text-decoration: underline;
+    }
+
+
+  </style>
+</head>
+<body>
+
+<nav class="menu">
+  <a href="index.html" class="logo">
+    <img src="Image/logo.png" alt="Pump & Kite" style="height:46px;width:auto;display:block;">
+  </a>
+  <button class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="menu-links" id="menuLinks">
+    <a href="index.html">Accueil</a>
+    <a href="univers-kite.html"class="active">Univers Kite</a>
+    <a href="univers-foil.html">Univers Foil</a>
+    <a href="materiel.html">Matériel</a>
+    <a href="meteo.html">Météo</a>
+    <a href="contact.html">Contact</a>
+    <a href="reservation.html">Réservation</a>
+    <a href="client.html">Mon Espace</a>
+    <a href="magasin.html">Shop</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <h1>🪁 Univers Kite</h1>
+  <p>Tout ce que tu dois savoir pour commencer le kitesurf</p>
+</div>
+
+<main>
+
+  <!-- BLOCS ALTERNÉS -->
+
+  <!-- BLOC 1 : texte gauche, photo droite -->
+  <div class="kite-bloc fade-up">
+    <div class="kite-bloc-text">
+      <h2 class="section-title">C'est quoi le Kitesurf ?</h2>
+      <div class="accent-line"></div>
+      <p style="margin-bottom:16px;">Le kitesurf est un sport de glisse <strong>aérotracté</strong> qui combine deux éléments essentiels : <strong>le vent</strong> pour faire voler la voile (le "kite"), et <strong>l'eau</strong> pour glisser avec la planche.</p>
+      <p>L'étang d'Ingril, avec son eau peu profonde et son vent fréquent (tramontane, mistral, marin, thermique), est l'un des meilleurs spots de la région pour débuter en toute sécurité.</p>
+    </div>
+    <div class="kite-bloc-img">
+      <!-- Remplace par ta propre photo de kitesurf sur l'eau -->
+      <img src="Image/DSC04401.JPG" alt="Kitesurf sur l'eau">
+      <div class="kite-bloc-label">🌊 Sur l'eau</div>
+    </div>
+  </div>
+
+  <!-- BLOC 2 : vidéo gauche, texte droite -->
+  <div class="kite-bloc kite-bloc-reverse fade-up-delay-1">
+    <div class="kite-bloc-img">
+      <!--
+        👇 REMPLACE "snowkite.mp4" par le nom de ta vidéo uploadée sur GitHub
+        La vidéo doit être au format MP4, idéalement courte (3-5 sec)
+        Elle se lance automatiquement, en boucle, sans son
+      -->
+      <video
+        src="Image/snowkite.mp4"
+        autoplay loop muted playsinline
+        poster="https://images.pexels.com/photos/848599/pexels-photo-848599.jpeg"
+      ></video>
+      <div class="kite-bloc-label">❄️ Sur la neige</div>
+    </div>
+    <div class="kite-bloc-text">
+      <h2 class="section-title">Le Snowkite</h2>
+      <div class="accent-line"></div>
+      <p style="margin-bottom:16px;">Sur les pistes enneigées, le kite prend une toute autre dimension. Le <strong>snowkite</strong> permet de glisser sur la neige avec des skis ou un snowboard, tracté uniquement par le vent.</p>
+      <p>Pas besoin de remontée mécanique — le kite te tire vers le haut ! Une discipline spectaculaire qui permet d'explorer des espaces immenses en totale liberté.</p>
+      <p><strong>ATTENTION</strong>, la montagne est un domaine <strong>DANGEUREUX</strong></p>
+    </div>
+  </div>
+
+  <!-- BLOC 3 : texte gauche, vidéo droite -->
+  <div class="kite-bloc fade-up-delay-2">
+    <div class="kite-bloc-text">
+      <h2 class="section-title">Le Mountain Kite</h2>
+      <div class="accent-line"></div>
+      <p style="margin-bottom:16px;">Le kite ne se limite pas à l'eau et à la neige ! Sur le <strong>sable ou la terre</strong>, avec un mountainboard (skateboard tout terrain), le kite devient une machine à sensations.</p>
+      <p>Idéal pour progresser dans le pilotage de la voile — se pratique par vent faible, sans plan d'eau.</p>
+    </div>
+    <div class="kite-bloc-img">
+      <!--
+        👇 REMPLACE "mountainkite.mp4" par le nom de ta vidéo uploadée sur GitHub
+      -->
+      <video
+        src="Image/video-1630485333.mp4"
+        autoplay loop muted playsinline
+        poster="https://images.pexels.com/photos/1365425/pexels-photo-1365425.jpeg"
+      ></video>
+      <div class="kite-bloc-label">🏜️ Sur le sable</div>
+    </div>
+  </div>
+
+  <!-- BLOC 4 : photo gauche, texte droite -->
+  <div class="kite-bloc kite-bloc-reverse fade-up-delay-3">
+    <div class="kite-bloc-img">
+      <!-- 👇 Mets ici la photo de ta fille ! ex: src="ma-fille-kite.jpg" -->
+      <img src="Image/elena ocean.jpg" alt="Enfant qui pilote un kite">
+      <div class="kite-bloc-label">👧 Dès le plus jeune âge !</div>
+    </div>
+    <div class="kite-bloc-text">
+      <h2 class="section-title">Accessible à tous !</h2>
+      <div class="accent-line"></div>
+      <p style="margin-bottom:16px;">Le kite s'adresse à <strong>tout le monde</strong> — petits et grands, débutants et confirmés. Avec une bonne progression pédagogique, les plus jeunes apprennent à piloter une voile en quelques minutes seulement !</p>
+      <p>La preuve en image 😄 — alors pourquoi pas toi ?</p>
+      <a href="reservation.html" class="btn btn-accent" style="margin-top:20px; display:inline-block;">Réserver un cours →</a>
+    </div>
+  </div>
+
+  <!-- PROGRESSION -->
+  <h2 class="section-title">Progression d'apprentissage</h2>
+  <div class="accent-line"></div>
+  <p class="section-subtitle">Les grandes étapes pour devenir autonome</p>
+
+  <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 60px;">
+
+    <div class="etape-card fade-up-delay-1">
+      <div class="etape-number">1</div>
+      <div>
+        <h3 style="color: var(--ocean); margin-bottom: 6px;">Théorie & Sécurité</h3>
+        <p style="color: var(--text-light); font-size: 15px;">Connaissance du matériel, règles de sécurité, zones de pratique, météo. Avant de rider, il faut comprendre son environnement.</p>
+      </div>
+    </div>
+
+    <div class="etape-card fade-up-delay-2">
+      <div class="etape-number">2</div>
+      <div>
+        <h3 style="color: var(--ocean); margin-bottom: 6px;">Pilotage du Kite</h3>
+        <p style="color: var(--text-light); font-size: 15px;">On commence les pieds dans le sable ou dans l'eau. Apprendre à faire voler la voile, gérer la puissance, décollage et atterrissage maîtrisés.</p>
+      </div>
+    </div>
+
+    <div class="etape-card fade-up-delay-3">
+      <div class="etape-number">3</div>
+      <div>
+        <h3 style="color: var(--ocean); margin-bottom: 6px;">Bodydrag & Gestion dans l'eau</h3>
+        <p style="color: var(--text-light); font-size: 15px;">Dans l'eau sans planche : se laisser tracter par le kite pour apprendre à contrôler la voile en conditions réelles.</p>
+      </div>
+    </div>
+
+    <div class="etape-card fade-up-delay-4">
+      <div class="etape-number">4</div>
+      <div>
+        <h3 style="color: var(--ocean); margin-bottom: 6px;">Waterstart & Premier Ride</h3>
+        <p style="color: var(--text-light); font-size: 15px;">Le grand moment ! Se mettre debout sur la planche et rider pour la première fois. Une sensation inoubliable garantie.</p>
+      </div>
+    </div>
+
+    <div class="etape-card fade-up-delay-5">
+      <div class="etape-number">5</div>
+      <div>
+        <h3 style="color: var(--ocean); margin-bottom: 6px;">Ride des 2 cotés & Upwind</h3>
+        <p style="color: var(--text-light); font-size: 15px;">Bientôt l'autonomie ! Tu remontes au vent, plus besoin de marcher !<br> Félicitation 🏆</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LEÇONS VIDÉO -->
+  <h2 class="section-title">Leçons en Vidéo</h2>
+  <div class="accent-line"></div>
+  <p class="section-subtitle">Complète tes cours avec ces ressources pédagogiques</p>
+
+  <div class="lecon-grid">
+
+    <div class="lecon-card fade-up-delay-1">
+      <div class="lecon-card-header">
+        <h4>Leçon 1 — Décollage & Atterrissage</h4>
+      </div>
+      <div class="lecon-card-body">
+        <p>Les bases du décollage et de l'atterrissage sont fondamentales. Avant de courir, il faut savoir marcher !</p>
+        <a href="https://www.youtube.com/watch?v=VA1R0XNoo8Y" target="_blank">▶ Voir la leçon</a>
+      </div>
+    </div>
+
+    <div class="lecon-card fade-up-delay-2">
+      <div class="lecon-card-header">
+        <h4>Leçon 2 — Le Waterstart</h4>
+      </div>
+      <div class="lecon-card-body">
+        <p>Tu maîtrises la voile, tu peux décoller et atterrir sans difficulté... Tu es prêt pour le waterstart !</p>
+        <a href="https://www.youtube.com/watch?v=e633HllDKmw" target="_blank">▶ Voir la leçon</a>
+      </div>
+    </div>
+
+    <div class="lecon-card fade-up-delay-3">
+      <div class="lecon-card-header">
+        <h4>Tu veux aller plus vite ?</h4>
+      </div>
+      <div class="lecon-card-body">
+        <p>Rien ne remplace un cours en présentiel avec un moniteur. Réserve ta session dès maintenant !</p>
+        <a href="reservation.html">📅 Réserver un cours →</a>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2025 Pump & Kite – École de kitesurf à Frontignan | <a href="contact.html">Contact</a></p>
+</footer>
+
+// HAMBURGER
+
+<script>
+function toggleMenu() { document.getElementById('menuLinks').classList.toggle('open'); }
+document.addEventListener('click', e => {
+  if (!e.target.closest('.menu')) document.getElementById('menuLinks').classList.remove('open');
+});
+</script>
+
+</body>
+</html>
