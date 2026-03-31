@@ -36,7 +36,7 @@ const TARIFS = {
     discipline: 'Kitesurf',
   },
   'Pack 10H Kitesurf': {
-    sans:   500,
+    sans:   700,
     avec:   500,
     label:  '10h matériel inclus – tarif/pers',
     hourly: false,
@@ -51,25 +51,20 @@ const TARIFS = {
 
   // ---- PUMPING FOIL ----
   'Cours particulier Pumping foil': {
-    // Le prix/h varie selon la durée → voir DURATION_RATES_FOIL
+    sans:   50,   // 50 €/h fixe – pas de dégressif
+    avec:   40,   // 40 €/h avec matériel perso
     label:  '€/h/pers',
     hourly: true,
-    useDurationRates: true,
+    useDurationRates: false,  // tarif fixe, pas de dégressif durée
     discipline: 'Pumping foil',
   },
   'Pack 10H Pumping': {
-    sans:   400,
-    avec:   400,
+    sans:   450,
+    avec:   350,
     label:  '10h – tarif/pers',
     hourly: false,
   },
-  'Navigation surveillée Foil': {
-    sans:   40,
-    avec:   30,
-    label:  '€/h – encadrement sur l\'eau',
-    hourly: true,
-    useDurationRates: false,
-  },
+ 
 };
 
 // ============================================================
@@ -115,7 +110,6 @@ const PRESTATIONS = {
   'Pumping foil': [
     'Cours particulier Pumping foil',
     'Pack 10H Pumping',
-    'Navigation surveillée Foil',
   ],
 };
 
@@ -678,7 +672,7 @@ async function submitReservation() {
       dureeHtml +
       '<div><span>📅 Date</span><span>'           + dateLabel            + '</span></div>' +
       '<div><span>🕐 Créneau</span><span>'        + selectedSlot         + '</span></div>' +
-      '<div><span>🏄 Matériel perso</span><span>' + (avecMat ? 'Oui (−20€/h)' : 'Non (fourni)') + '</span></div>' +
+      '<div><span>🏄 Matériel perso</span><span>' + (avecMat ? 'Oui (réduction appliquée)' : 'Non (fourni)') + '</span></div>' +
       '<div><span>💶 Tarif estimé</span><span>'   + tarifDetail          + '</span></div>';
 
     overlay.classList.remove('active');
