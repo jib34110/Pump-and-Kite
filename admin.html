@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin – Pump & Kite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ocean:  #0c6291;
+      --wave:   #1b9aaa;
+      --mid:    #06a77d;
+      --accent: #f4a261;
+      --deep:   #021a2e;
+      --sky:    #f0f7fc;
+      --text:   #1a2e3b;
+      --text-light: #7a9ab0;
+      --ok:     #27ae60;
+      --warn:   #e67e22;
+      --danger: #e74c3c;
+      --info:   #2980b9;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--sky);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── ÉCRAN MOT DE PASSE ── */
+    #lockScreen {
+      position: fixed; inset: 0;
+      background: linear-gradient(160deg, var(--deep) 0%, var(--ocean) 60%, var(--mid) 100%);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+    }
+
+    .lock-card {
+      background: white;
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%; max-width: 400px;
+      box-shadow: 0 32px 80px rgba(2,26,46,0.5);
+      text-align: center;
+    }
+
+    .lock-logo { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ocean); letter-spacing: 3px; margin-bottom: 8px; }
+    .lock-sub  { color: var(--text-light); font-size: 13px; margin-bottom: 32px; }
+
+    .lock-field {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-bottom: 20px; text-align: left;
+    }
+    .lock-field label { font-size: 11px; font-weight: 700; color: var(--ocean); text-transform: uppercase; letter-spacing: 0.8px; }
+    .lock-field input {
+      padding: 14px 16px; border: 2px solid #e8f0f6; border-radius: 12px;
+      font-family: 'Outfit', sans-serif; font-size: 15px; outline: none;
+      transition: all 0.2s; background: var(--sky); color: var(--text);
+    }
+    .lock-field input:focus { border-color: var(--wave); background: white; box-shadow: 0 0 0 4px rgba(27,154,170,0.1); }
+
+    .lock-error {
+      background: #fff0f0; border-left: 4px solid var(--danger); color: var(--danger);
+      border-radius: 10px; padding: 11px 14px; font-size: 13px;
+      margin-bottom: 16px; display: none;
+    }
+
+    .btn-lock {
+      width: 100%; padding: 15px; border: none; border-radius: 12px;
+      background: linear-gradient(135deg, var(--wave), var(--ocean));
+      color: white; font-family: 'Outfit', sans-serif; font-size: 15px;
+      font-weight: 700; cursor: pointer; letter-spacing: 0.5px;
+      transition: opacity 0.2s;
+    }
+    .btn-lock:hover { opacity: 0.88; }
+
+    /* ── DASHBOARD ── */
+    #adminApp { display: none; }
+
+    header {
+      background: var(--deep);
+      color: white;
+      padding: 16px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .header-brand { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; }
+    .header-brand span { color: var(--accent); }
+
+    .header-actions { display: flex; align-items: center; gap: 16px; }
+
+    .btn-logout {
+      padding: 8px 18px; border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 8px; background: none; color: white;
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.1); }
+
+    .main { padding: 32px; max-width: 1400px; margin: 0 auto; }
+
+    /* ── KPI CARDS ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .kpi-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(2,26,46,0.07);
+      border-top: 4px solid var(--wave);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .kpi-card.ok     { border-top-color: var(--ok); }
+    .kpi-card.warn   { border-top-color: var(--warn); }
+    .kpi-card.danger { border-top-color: var(--danger); }
+    .kpi-card.money  { border-top-color: var(--accent); }
+
+    .kpi-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-light); }
+    .kpi-value { font-family: 'Bebas Neue', sans-serif; font-size: 44px; color: var(--text); letter-spacing: 1px; line-height: 1; }
+    .kpi-sub   { font-size: 12px; color: var(--text-light); }
+
+    /* ── DEUX COLONNES ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+
+    .chart-card {
+      background: white; border-radius: 16px; padding: 24px;
+      box-shadow: 0 4px 20px rgba(2,26,46,0.07);
+    }
+
+    .card-title {
+      font-size: 14px; font-weight: 700; color: var(--ocean);
+      margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.8px;
+    }
+
+    /* Barres horizontales */
+    .bar-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .bar-item { display: flex; flex-direction: column; gap: 4px; }
+    .bar-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
+    .bar-track { height: 10px; background: #eef4f8; border-radius: 99px; overflow: hidden; }
+    .bar-fill  { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+
+    .bar-ocean  { background: var(--ocean); }
+    .bar-wave   { background: var(--wave); }
+    .bar-ok     { background: var(--ok); }
+    .bar-warn   { background: var(--warn); }
+    .bar-danger { background: var(--danger); }
+    .bar-accent { background: var(--accent); }
+    .bar-info   { background: var(--info); }
+
+    /* ── FILTRES ── */
+    .filters-bar {
+      background: white; border-radius: 16px; padding: 20px 24px;
+      box-shadow: 0 4px 20px rgba(2,26,46,0.07);
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-label { font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.8px; margin-right: 4px; }
+
+    .filter-select {
+      padding: 8px 14px; border: 2px solid #e8f0f6; border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+      color: var(--text); background: var(--sky); outline: none; cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .filter-select:focus { border-color: var(--wave); }
+
+    .filter-search {
+      padding: 8px 14px; border: 2px solid #e8f0f6; border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 13px;
+      color: var(--text); background: var(--sky); outline: none;
+      transition: border-color 0.2s; min-width: 200px;
+    }
+    .filter-search:focus { border-color: var(--wave); }
+
+    .filter-count { margin-left: auto; font-size: 12px; color: var(--text-light); font-weight: 600; }
+
+    /* ── TABLEAU ── */
+    .table-card {
+      background: white; border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(2,26,46,0.07);
+      overflow: hidden; margin-bottom: 32px;
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    thead tr { background: var(--deep); }
+    thead th {
+      padding: 14px 16px; text-align: left;
+      color: rgba(255,255,255,0.8); font-size: 11px;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+      white-space: nowrap;
+    }
+
+    tbody tr { border-bottom: 1px solid #eef4f8; transition: background 0.15s; }
+    tbody tr:hover { background: #f7fbff; }
+    tbody tr:last-child { border-bottom: none; }
+
+    tbody td { padding: 14px 16px; font-size: 13px; vertical-align: middle; }
+
+    .td-name { font-weight: 700; color: var(--text); }
+    .td-email { color: var(--text-light); font-size: 12px; }
+    .td-date  { font-weight: 600; white-space: nowrap; }
+
+    /* Badges */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px; border-radius: 50px;
+      font-size: 11px; font-weight: 700; white-space: nowrap;
+    }
+    .badge-attente  { background: rgba(241,196,15,0.15);  color: #b8860b; }
+    .badge-confirme { background: rgba(46,204,113,0.15);  color: var(--ok); }
+    .badge-annule   { background: rgba(231,76,60,0.15);   color: var(--danger); }
+    .badge-paye     { background: rgba(46,204,113,0.15);  color: var(--ok); }
+    .badge-acompte  { background: rgba(41,128,185,0.15);  color: var(--info); }
+    .badge-rembourse{ background: rgba(231,76,60,0.12);   color: var(--danger); }
+
+    /* Actions inline */
+    .actions-cell { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .btn-action {
+      padding: 5px 10px; border-radius: 8px; border: none;
+      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s; white-space: nowrap;
+    }
+    .btn-action:hover { opacity: 0.78; }
+    .btn-action:disabled { opacity: 0.4; cursor: default; }
+
+    .btn-confirmer  { background: rgba(46,204,113,0.15); color: var(--ok); }
+    .btn-paye       { background: rgba(41,128,185,0.15); color: var(--info); }
+    .btn-acompte    { background: rgba(230,126,34,0.15); color: var(--warn); }
+    .btn-annuler    { background: rgba(231,76,60,0.12);  color: var(--danger); }
+    .btn-attente    { background: rgba(241,196,15,0.12); color: #b8860b; }
+
+    /* Édition inline montants */
+    .editable-amount {
+      display: inline-flex; align-items: center; gap: 6px;
+      cursor: pointer;
+    }
+    .editable-amount .amount-val {
+      font-weight: 700; color: var(--text);
+      border-bottom: 1.5px dashed var(--wave);
+      padding-bottom: 1px;
+    }
+    .editable-amount .edit-icon {
+      font-size: 11px; color: var(--text-light); opacity: 0.6;
+    }
+    .editable-amount:hover .amount-val { color: var(--wave); }
+    .editable-amount:hover .edit-icon  { opacity: 1; }
+
+    .inline-edit-wrap {
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .inline-input {
+      width: 90px; padding: 5px 9px;
+      border: 2px solid var(--wave); border-radius: 8px;
+      font-family: 'Outfit', sans-serif; font-size: 13px;
+      font-weight: 700; color: var(--text); outline: none;
+      background: white;
+    }
+    .btn-save-inline {
+      padding: 5px 9px; border-radius: 8px; border: none;
+      background: var(--ok); color: white;
+      font-size: 13px; cursor: pointer; font-weight: 700;
+    }
+    .btn-cancel-inline {
+      padding: 5px 9px; border-radius: 8px; border: none;
+      background: #eef4f8; color: var(--text-light);
+      font-size: 13px; cursor: pointer; font-weight: 700;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: var(--deep); color: white;
+      padding: 14px 22px; border-radius: 12px;
+      font-size: 14px; font-weight: 600;
+      box-shadow: 0 8px 32px rgba(2,26,46,0.35);
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.3s; z-index: 9998;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { border-left: 4px solid var(--ok); }
+    #toast.error   { border-left: 4px solid var(--danger); }
+
+    /* Spinner */
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(27,154,170,0.2);
+      border-top-color: var(--wave);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 40px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-state { text-align: center; padding: 40px; color: var(--text-light); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .two-col { grid-template-columns: 1fr; }
+      .main { padding: 16px; }
+    }
+    @media (max-width: 600px) {
+      .kpi-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── ÉCRAN MOT DE PASSE ── -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-logo">PUMP & KITE</div>
+    <div class="lock-sub">Espace administration privé</div>
+    <div class="lock-field">
+      <label>Mot de passe</label>
+      <input type="password" id="pwdInput" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="lock-error" id="lockError">❌ Mot de passe incorrect.</div>
+    <button class="btn-lock" onclick="checkPassword()">Accéder au dashboard</button>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ADMIN ── -->
+<div id="adminApp">
+
+  <header>
+    <div class="header-brand">PUMP <span>&</span> KITE — Admin</div>
+    <div class="header-actions">
+      <span id="headerDate" style="font-size:13px;color:rgba(255,255,255,0.5);"></span>
+      <button class="btn-logout" onclick="logout()">🔒 Déconnexion</button>
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- KPI -->
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="loading-state"><div class="spinner"></div></div>
+    </div>
+
+    <!-- Graphiques -->
+    <div class="two-col" id="chartsRow" style="display:none;">
+      <div class="chart-card">
+        <div class="card-title">📊 Statut des réservations</div>
+        <div class="bar-list" id="barStatut"></div>
+      </div>
+      <div class="chart-card">
+        <div class="card-title">💳 État des paiements</div>
+        <div class="bar-list" id="barPaiement"></div>
+      </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="filters-bar">
+      <span class="filter-label">Filtrer :</span>
+      <select class="filter-select" id="filterStatut" onchange="applyFilters()">
+        <option value="">Tous les statuts</option>
+        <option>En attente</option>
+        <option>Confirmé</option>
+        <option>Annulé</option>
+      </select>
+      <select class="filter-select" id="filterPaiement" onchange="applyFilters()">
+        <option value="">Tous les paiements</option>
+        <option>En attente de paiement</option>
+        <option>Acompte versé</option>
+        <option>Payé</option>
+        <option>Remboursé</option>
+      </select>
+      <select class="filter-select" id="filterDiscipline" onchange="applyFilters()">
+        <option value="">Toutes les disciplines</option>
+        <option>Kitesurf</option>
+        <option>Pumping foil</option>
+      </select>
+      <input class="filter-search" id="filterSearch" placeholder="🔍 Rechercher un nom, email..." oninput="applyFilters()">
+      <span class="filter-count" id="filterCount"></span>
+    </div>
+
+    <!-- Tableau réservations -->
+    <div class="table-card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Date</th>
+              <th>Discipline</th>
+              <th>Prestation</th>
+              <th>Créneau</th>
+              <th>Tarif total</th>
+              <th>Acompte versé</th>
+              <th>Statut</th>
+              <th>Paiement</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reservationsBody">
+            <tr><td colspan="9"><div class="loading-state"><div class="spinner"></div></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /.main -->
+</div><!-- /#adminApp -->
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   PUMP & KITE — Dashboard Admin
+   ⚠️  Remplace MOT_DE_PASSE_ADMIN par ton mot de passe
+============================================================ */
+const ADMIN_PASSWORD = 'MOT_DE_PASSE_ADMIN';
+
+const SUPA_URL = 'https://qwuyrwfjxbedziuzbasw.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3dXlyd2ZqeGJlZHppdXpiYXN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyNjU2ODEsImV4cCI6MjA4OTg0MTY4MX0.uNMVbEcJ7xvxNYfqT_1z8QP9HyCP-WVv4o2UhmxTWOI';
+
+let allReservations = [];
+
+/* ── Authentification locale ── */
+function checkPassword() {
+  const val = document.getElementById('pwdInput').value;
+  if (val === ADMIN_PASSWORD) {
+    sessionStorage.setItem('pk_admin', '1');
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display   = 'block';
+    init();
+  } else {
+    const err = document.getElementById('lockError');
+    err.style.display = 'block';
+    document.getElementById('pwdInput').value = '';
+    document.getElementById('pwdInput').focus();
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('pk_admin');
+  document.getElementById('adminApp').style.display   = 'none';
+  document.getElementById('lockScreen').style.display = 'flex';
+  document.getElementById('pwdInput').value = '';
+  document.getElementById('lockError').style.display = 'none';
+}
+
+/* ── Requête Supabase ── */
+async function supaFetch(endpoint, options = {}) {
+  const res = await fetch(SUPA_URL + endpoint, {
+    ...options,
+    headers: {
+      'apikey':        SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+      'Content-Type':  'application/json',
+      'Prefer':        'return=representation',
+      ...(options.headers || {})
+    }
+  });
+  return res.json();
+}
+
+/* ── Toast ── */
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent  = msg;
+  t.className    = 'show ' + type;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.className = ''; }, 3200);
+}
+
+/* ── Initialisation ── */
+async function init() {
+  const now = new Date();
+  document.getElementById('headerDate').textContent = now.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+  const data = await supaFetch('/rest/v1/reservations?select=*&order=created_at.desc');
+  allReservations = Array.isArray(data) ? data : [];
+  renderKPI(allReservations);
+  renderCharts(allReservations);
+  applyFilters();
+}
+
+/* ── KPI ── */
+function renderKPI(data) {
+  const total     = data.length;
+  const confirmes = data.filter(r => r.statut === 'Confirmé').length;
+  const attente   = data.filter(r => r.statut === 'En attente').length;
+  const annules   = data.filter(r => r.statut === 'Annulé').length;
+  const payes     = data.filter(r => r.paiement === 'Payé').length;
+  const acomptes  = data.filter(r => r.paiement === 'Acompte versé').length;
+  const caTotal   = data
+    .filter(r => r.statut === 'Confirmé' && r.tarif)
+    .reduce((s, r) => s + Number(r.tarif), 0);
+  const caPercu   = data
+    .filter(r => r.paiement === 'Payé' && r.tarif)
+    .reduce((s, r) => s + Number(r.tarif), 0);
+  const caAcomptes = data
+    .filter(r => r.acompte_verse && Number(r.acompte_verse) > 0)
+    .reduce((s, r) => s + Number(r.acompte_verse), 0);
+
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">Total réservations</div>
+      <div class="kpi-value">${total}</div>
+      <div class="kpi-sub">${confirmes} confirmées · ${attente} en attente · ${annules} annulées</div>
+    </div>
+    <div class="kpi-card ok">
+      <div class="kpi-label">Confirmées</div>
+      <div class="kpi-value">${confirmes}</div>
+      <div class="kpi-sub">${total ? Math.round(confirmes/total*100) : 0}% du total</div>
+    </div>
+    <div class="kpi-card money">
+      <div class="kpi-label">CA confirmé</div>
+      <div class="kpi-value">${caTotal} €</div>
+      <div class="kpi-sub">Réservations confirmées</div>
+    </div>
+    <div class="kpi-card ok">
+      <div class="kpi-label">CA encaissé</div>
+      <div class="kpi-value">${caPercu + caAcomptes} €</div>
+      <div class="kpi-sub">${payes} payées · ${acomptes} acomptes (${caAcomptes} €)</div>
+    </div>
+    <div class="kpi-card warn">
+      <div class="kpi-label">En attente</div>
+      <div class="kpi-value">${attente}</div>
+      <div class="kpi-sub">À traiter</div>
+    </div>
+    <div class="kpi-card danger">
+      <div class="kpi-label">Annulées</div>
+      <div class="kpi-value">${annules}</div>
+      <div class="kpi-sub">Non comptabilisées</div>
+    </div>
+  `;
+}
+
+/* ── Graphiques barres ── */
+function renderCharts(data) {
+  document.getElementById('chartsRow').style.display = 'grid';
+  const total = data.length || 1;
+
+  const statuts = [
+    { label: 'Confirmé',   count: data.filter(r => r.statut === 'Confirmé').length,   cls: 'bar-ok' },
+    { label: 'En attente', count: data.filter(r => r.statut === 'En attente').length,  cls: 'bar-warn' },
+    { label: 'Annulé',     count: data.filter(r => r.statut === 'Annulé').length,      cls: 'bar-danger' },
+  ];
+
+  const paiements = [
+    { label: 'Payé',                  count: data.filter(r => r.paiement === 'Payé').length,                  cls: 'bar-ok' },
+    { label: 'Acompte versé',         count: data.filter(r => r.paiement === 'Acompte versé').length,         cls: 'bar-info' },
+    { label: 'En attente',            count: data.filter(r => r.paiement === 'En attente de paiement').length, cls: 'bar-warn' },
+    { label: 'Remboursé',             count: data.filter(r => r.paiement === 'Remboursé').length,             cls: 'bar-danger' },
+  ];
+
+  const buildBars = (items) => items.map(it => {
+    const pct = Math.round(it.count / total * 100);
+    return `<div class="bar-item">
+      <div class="bar-header"><span>${it.label}</span><span>${it.count} (${pct}%)</span></div>
+      <div class="bar-track"><div class="bar-fill ${it.cls}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('barStatut').innerHTML   = buildBars(statuts);
+  document.getElementById('barPaiement').innerHTML = buildBars(paiements);
+}
+
+/* ── Filtres ── */
+function applyFilters() {
+  const statut     = document.getElementById('filterStatut').value;
+  const paiement   = document.getElementById('filterPaiement').value;
+  const discipline = document.getElementById('filterDiscipline').value;
+  const search     = document.getElementById('filterSearch').value.toLowerCase().trim();
+
+  const filtered = allReservations.filter(r => {
+    if (statut     && r.statut     !== statut)     return false;
+    if (paiement   && r.paiement   !== paiement)   return false;
+    if (discipline && r.discipline !== discipline) return false;
+    if (search) {
+      const hay = `${r.nom} ${r.prenom} ${r.email} ${r.telephone || ''}`.toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('filterCount').textContent = `${filtered.length} réservation(s)`;
+  renderTable(filtered);
+}
+
+/* ── Tableau ── */
+function renderTable(data) {
+  if (!data.length) {
+    document.getElementById('reservationsBody').innerHTML =
+      `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text-light);">Aucune réservation trouvée</td></tr>`;
+    return;
+  }
+
+  document.getElementById('reservationsBody').innerHTML = data.map(r => {
+    const dateStr = r.date
+      ? new Date(r.date + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' })
+      : '—';
+
+    const statutBadge = {
+      'Confirmé':   '<span class="badge badge-confirme">✅ Confirmé</span>',
+      'En attente': '<span class="badge badge-attente">⏳ En attente</span>',
+      'Annulé':     '<span class="badge badge-annule">❌ Annulé</span>',
+    }[r.statut] || r.statut;
+
+    const paiementBadge = {
+      'Payé':                  '<span class="badge badge-paye">💚 Payé</span>',
+      'Acompte versé':         '<span class="badge badge-acompte">🔵 Acompte</span>',
+      'En attente de paiement':'<span class="badge badge-attente">⏳ En attente</span>',
+      'Remboursé':             '<span class="badge badge-rembourse">↩️ Remboursé</span>',
+    }[r.paiement] || r.paiement;
+
+    const id      = r.id;
+    const actions = buildActions(id, r.statut, r.paiement);
+    const tarif   = r.tarif != null ? Number(r.tarif) : null;
+    const acompte = r.acompte_verse != null ? Number(r.acompte_verse) : null;
+
+    return `<tr id="row-${id}">
+      <td>
+        <div class="td-name">${r.prenom || ''} ${r.nom || ''}</div>
+        <div class="td-email">${r.email || ''}</div>
+        ${r.telephone ? `<div class="td-email">${r.telephone}</div>` : ''}
+      </td>
+      <td class="td-date">${dateStr}</td>
+      <td>${r.discipline || '—'}</td>
+      <td style="font-size:12px;">${r.prestation || '—'}</td>
+      <td style="font-size:12px;">${r.creneau || '—'}</td>
+      <td id="tarif-cell-${id}">${editableAmount(id, 'tarif', tarif)}</td>
+      <td id="acompte-cell-${id}">${editableAmount(id, 'acompte', acompte)}</td>
+      <td>${statutBadge}</td>
+      <td>${paiementBadge}</td>
+      <td><div class="actions-cell" id="actions-${id}">${actions}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── Montant cliquable ── */
+function editableAmount(id, field, value) {
+  const display = value != null ? value + ' €' : '— €';
+  return `<span class="editable-amount" onclick="startEditAmount('${id}','${field}',${value ?? 0})">
+    <span class="amount-val">${display}</span>
+    <span class="edit-icon">✏️</span>
+  </span>`;
+}
+
+function startEditAmount(id, field, currentVal) {
+  const cellId = field === 'tarif' ? `tarif-cell-${id}` : `acompte-cell-${id}`;
+  const cell   = document.getElementById(cellId);
+  if (!cell) return;
+  cell.innerHTML = `
+    <div class="inline-edit-wrap">
+      <input class="inline-input" id="input-${field}-${id}" type="number" min="0" value="${currentVal}" />
+      <button class="btn-save-inline" onclick="saveAmount('${id}','${field}')">✅</button>
+      <button class="btn-cancel-inline" onclick="cancelEditAmount('${id}','${field}')">✕</button>
+    </div>`;
+  const inp = document.getElementById(`input-${field}-${id}`);
+  inp.focus(); inp.select();
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  saveAmount(id, field);
+    if (e.key === 'Escape') cancelEditAmount(id, field);
+  });
+}
+
+function cancelEditAmount(id, field) {
+  const r = allReservations.find(r => r.id === id);
+  if (!r) return;
+  const val    = field === 'tarif' ? r.tarif : r.acompte_verse;
+  const cellId = field === 'tarif' ? `tarif-cell-${id}` : `acompte-cell-${id}`;
+  document.getElementById(cellId).innerHTML = editableAmount(id, field, val != null ? Number(val) : null);
+}
+
+async function saveAmount(id, field) {
+  const inp = document.getElementById(`input-${field}-${id}`);
+  if (!inp) return;
+  const newVal = parseFloat(inp.value);
+  if (isNaN(newVal) || newVal < 0) { showToast('⚠️ Montant invalide', 'error'); return; }
+
+  inp.disabled = true;
+
+  const body = { p_id: id };
+  if (field === 'tarif')   body.p_tarif   = newVal;
+  if (field === 'acompte') body.p_acompte = newVal;
+
+  const result = await supaFetch('/rest/v1/rpc/admin_update_reservation', {
+    method: 'POST',
+    body:   JSON.stringify(body)
+  });
+
+  if (result?.success === false) {
+    showToast('❌ Erreur : ' + (result.error || 'inconnue'), 'error');
+    inp.disabled = false; return;
+  }
+
+  // Mise à jour locale
+  const idx = allReservations.findIndex(r => r.id === id);
+  if (idx !== -1) {
+    if (field === 'tarif')   allReservations[idx].tarif         = newVal;
+    if (field === 'acompte') allReservations[idx].acompte_verse = newVal;
+  }
+
+  showToast('✅ Montant mis à jour');
+  renderKPI(allReservations);
+
+  const cellId = field === 'tarif' ? `tarif-cell-${id}` : `acompte-cell-${id}`;
+  document.getElementById(cellId).innerHTML = editableAmount(id, field, newVal);
+}
+
+function buildActions(id, statut, paiement) {
+  const btns = [];
+
+  if (statut !== 'Confirmé')
+    btns.push(`<button class="btn-action btn-confirmer" onclick="updateResa('${id}','Confirmé',null)">✅ Confirmer</button>`);
+  if (statut !== 'Annulé')
+    btns.push(`<button class="btn-action btn-annuler" onclick="updateResa('${id}','Annulé',null)">❌ Annuler</button>`);
+  if (statut !== 'En attente')
+    btns.push(`<button class="btn-action btn-attente" onclick="updateResa('${id}','En attente',null)">⏳ Remettre en attente</button>`);
+
+  if (paiement !== 'Payé')
+    btns.push(`<button class="btn-action btn-paye" onclick="updateResa('${id}',null,'Payé')">💚 Marquer payé</button>`);
+  if (paiement !== 'Acompte versé')
+    btns.push(`<button class="btn-action btn-acompte" onclick="updateResa('${id}',null,'Acompte versé')">🔵 Acompte</button>`);
+
+  return btns.join('');
+}
+
+/* ── Mise à jour Supabase (via fonction SECURITY DEFINER) ── */
+async function updateResa(id, newStatut, newPaiement) {
+  // Désactiver les boutons de la ligne
+  const actionsDiv = document.getElementById('actions-' + id);
+  if (actionsDiv) actionsDiv.querySelectorAll('button').forEach(b => b.disabled = true);
+
+  const result = await supaFetch('/rest/v1/rpc/admin_update_reservation', {
+    method: 'POST',
+    body: JSON.stringify({
+      p_id:      id,
+      p_statut:  newStatut,
+      p_paiement: newPaiement
+    })
+  });
+
+  if (result?.success === false) {
+    showToast('❌ Erreur : ' + (result.error || 'inconnue'), 'error');
+    if (actionsDiv) actionsDiv.querySelectorAll('button').forEach(b => b.disabled = false);
+    return;
+  }
+
+  // Mettre à jour localement
+  const idx = allReservations.findIndex(r => r.id === id);
+  if (idx !== -1) {
+    if (newStatut)   allReservations[idx].statut   = newStatut;
+    if (newPaiement) allReservations[idx].paiement = newPaiement;
+  }
+
+  showToast('✅ Réservation mise à jour');
+  renderKPI(allReservations);
+  renderCharts(allReservations);
+  applyFilters();
+}
+
+/* ── Init ── */
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('pk_admin') === '1') {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display   = 'block';
+    init();
+  }
+  document.getElementById('pwdInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPassword();
+  });
+});
+</script>
+
+</body>
+</html>

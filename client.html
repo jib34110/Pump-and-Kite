@@ -887,6 +887,7 @@
               </div>
               <button class="btn btn-accent" id="loginBtn" onclick="login()">Se connecter</button>
             </div>
+            <p class="auth-divider" style="margin-top:4px;">Mot de passe oublié ? <a href="#" onclick="switchTab('forgot')">Réinitialiser →</a></p>
             <p class="auth-divider">Pas encore de compte ? <a href="#" onclick="switchTab('register')">Créer mon espace →</a></p>
           </div>
 
@@ -1013,6 +1014,49 @@
               <button class="btn btn-primary" id="registerBtn" onclick="register()">Créer mon compte</button>
             </div>
             <p class="auth-divider">Déjà un compte ? <a href="#" onclick="switchTab('login')">Se connecter →</a></p>
+          </div>
+
+          <!-- MOT DE PASSE OUBLIÉ -->
+          <div class="auth-panel" id="panelForgot">
+            <div class="auth-icon">🔑</div>
+            <div class="auth-title">Mot de passe oublié</div>
+            <div class="auth-subtitle">Saisis ton email pour recevoir un lien de réinitialisation</div>
+            <div class="auth-error" id="forgotError"></div>
+            <div class="auth-success" id="forgotSuccess"></div>
+            <div class="auth-form">
+              <div class="field">
+                <label>Email</label>
+                <input type="email" id="forgotEmail" placeholder="ton@email.com" autocomplete="email">
+              </div>
+              <button class="btn btn-accent" id="forgotBtn" onclick="forgotPassword()">Envoyer le lien</button>
+            </div>
+            <p class="auth-divider"><a href="#" onclick="switchTab('login')">← Retour à la connexion</a></p>
+          </div>
+
+          <!-- RÉINITIALISATION MOT DE PASSE -->
+          <div class="auth-panel" id="panelReset">
+            <div class="auth-icon">🔒</div>
+            <div class="auth-title">Nouveau mot de passe</div>
+            <div class="auth-subtitle">Choisis ton nouveau mot de passe</div>
+            <div class="auth-error" id="resetError"></div>
+            <div class="auth-success" id="resetSuccess"></div>
+            <div class="auth-form">
+              <div class="field">
+                <label>Nouveau mot de passe * (min. 8 caractères)</label>
+                <div class="pwd-wrap">
+                  <input type="password" id="resetPassword" placeholder="Choisis un mot de passe sécurisé">
+                  <button type="button" class="pwd-eye" onclick="togglePwd('resetPassword', this)">👁</button>
+                </div>
+              </div>
+              <div class="field">
+                <label>Confirmer le mot de passe *</label>
+                <div class="pwd-wrap">
+                  <input type="password" id="resetConfirm" placeholder="Répète ton mot de passe">
+                  <button type="button" class="pwd-eye" onclick="togglePwd('resetConfirm', this)">👁</button>
+                </div>
+              </div>
+              <button class="btn btn-accent" id="resetBtn" onclick="resetPassword()">Changer le mot de passe</button>
+            </div>
           </div>
 
         </div>
@@ -1157,6 +1201,8 @@ function switchTab(tab) {
   );
   document.getElementById('panelLogin').classList.toggle('active', tab === 'login');
   document.getElementById('panelRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('panelForgot').classList.toggle('active', tab === 'forgot');
+  document.getElementById('panelReset').classList.toggle('active', tab === 'reset');
 }
 
 /* ---- Supabase ---- */
@@ -1214,6 +1260,70 @@ function sessionExpired() {
   const err = document.getElementById('loginError');
   err.textContent    = '⏰ Votre session a expiré. Reconnectez-vous.';
   err.style.display  = 'block';
+}
+
+/* ---- Mot de passe oublié ---- */
+async function forgotPassword() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  const err   = document.getElementById('forgotError');
+  const suc   = document.getElementById('forgotSuccess');
+  const btn   = document.getElementById('forgotBtn');
+  err.style.display = 'none'; suc.style.display = 'none';
+  if (!email) {
+    err.textContent = '⚠️ Merci de saisir ton adresse email.';
+    err.style.display = 'block'; return;
+  }
+  btn.innerHTML = '<span class="spinner-sm"></span> Envoi...'; btn.disabled = true;
+  await fetch(SUPA_URL + '/auth/v1/recover', {
+    method: 'POST',
+    headers: { 'apikey': SUPA_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  });
+  suc.textContent = '✅ Si un compte existe avec cet email, un lien de réinitialisation a été envoyé. Vérifie ta boîte mail.';
+  suc.style.display = 'block';
+  btn.innerHTML = 'Envoyer le lien'; btn.disabled = false;
+}
+
+/* ---- Réinitialisation mot de passe ---- */
+async function resetPassword() {
+  const pwd   = document.getElementById('resetPassword').value;
+  const conf  = document.getElementById('resetConfirm').value;
+  const err   = document.getElementById('resetError');
+  const suc   = document.getElementById('resetSuccess');
+  const btn   = document.getElementById('resetBtn');
+  const token = window._recoveryToken;
+  err.style.display = 'none'; suc.style.display = 'none';
+  if (pwd.length < 8) {
+    err.textContent = '⚠️ Le mot de passe doit faire au moins 8 caractères.';
+    err.style.display = 'block'; return;
+  }
+  if (pwd !== conf) {
+    err.textContent = '❌ Les mots de passe ne correspondent pas.';
+    err.style.display = 'block'; return;
+  }
+  btn.innerHTML = '<span class="spinner-sm"></span> Mise à jour...'; btn.disabled = true;
+  const r = await fetch(SUPA_URL + '/auth/v1/user', {
+    method: 'PUT',
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ password: pwd })
+  });
+  const data = await r.json();
+  if (data.error) {
+    err.textContent = '❌ ' + data.error;
+    err.style.display = 'block';
+    btn.innerHTML = 'Changer le mot de passe'; btn.disabled = false; return;
+  }
+  suc.textContent = '✅ Mot de passe mis à jour ! Redirection vers la connexion...';
+  suc.style.display = 'block';
+  btn.innerHTML = 'Changer le mot de passe'; btn.disabled = false;
+  setTimeout(() => {
+    window.history.replaceState(null, '', window.location.pathname);
+    switchTab('login');
+  }, 2000);
 }
 
 /* ---- Connexion ---- */
@@ -1689,6 +1799,33 @@ async function createClientAirtable(prenom, nom, email, tel, dept, pays) {
 
 /* ---- Init ---- */
 window.addEventListener('DOMContentLoaded', () => {
+  // Détecter les paramètres Supabase Auth dans l'URL
+  const hash = window.location.hash;
+  if (hash) {
+    const params = new URLSearchParams(hash.slice(1));
+    const type   = params.get('type');
+    const token  = params.get('access_token');
+    const error  = params.get('error_code');
+
+    if (type === 'recovery' && token) {
+      // Lien de réinitialisation valide → afficher le formulaire
+      window._recoveryToken = token;
+      window.history.replaceState(null, '', window.location.pathname);
+      switchTab('reset');
+      return;
+    }
+
+    if (error === 'otp_expired') {
+      // Lien expiré → afficher un message explicite sur le panneau "mot de passe oublié"
+      window.history.replaceState(null, '', window.location.pathname);
+      switchTab('forgot');
+      const err = document.getElementById('forgotError');
+      err.textContent = '⏰ Le lien de réinitialisation a expiré. Saisis ton email pour en recevoir un nouveau.';
+      err.style.display = 'block';
+      return;
+    }
+  }
+
   const s = getSession();
   if (s?.token) showDashboard(s);
   document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });

@@ -295,25 +295,272 @@
       font-weight: 700;
     }
 
-    /* ===== ZONE ===== */
-    .zone-section {
-      background: linear-gradient(135deg, var(--deep), var(--ocean));
+    /* ===== SECTION MONITEUR ===== */
+    .moniteur-section {
+      padding: 90px 30px;
+      background: linear-gradient(135deg, #f4a261 0%, #e76f51 28%, #0c6291 72%, #021a2e 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Effet texture légère par-dessus le dégradé */
+    .moniteur-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='24' viewBox='0 0 120 24'%3E%3Cpath d='M0 12 Q30 0 60 12 Q90 24 120 12 L120 24 L0 24 Z' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E") repeat-x bottom;
+      background-size: 240px 80px;
+      pointer-events: none;
+    }
+
+    .moniteur-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 70px;
+      align-items: center;
+    }
+
+    .moniteur-photo-wrap {
+      position: relative;
+    }
+
+    .moniteur-photo-wrap img {
+      width: 100%;
+      object-fit: cover;
+      aspect-ratio: 4/5;
+      display: block;
+      -webkit-mask-image: radial-gradient(ellipse 80% 88% at 48% 48%, black 40%, transparent 100%);
+      mask-image: radial-gradient(ellipse 50% 55% at 48% 48%, black 70%, transparent 90%);
+    }
+
+    .moniteur-badge-photo {
+      position: absolute;
+      bottom: -18px;
+      right: -18px;
+      background: linear-gradient(135deg, var(--wave), var(--ocean));
       color: white;
-      padding: 80px 30px;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(27,154,170,0.35);
+      line-height: 1.5;
+    }
+
+    .moniteur-badge-photo span {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      opacity: 0.85;
+    }
+
+    .moniteur-content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .moniteur-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      width: fit-content;
+      backdrop-filter: blur(4px);
+    }
+
+    .moniteur-content h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      line-height: 1;
+      color: white;
+      letter-spacing: 2px;
+    }
+
+    .moniteur-content h2 em {
+      color: #ffd6b0;
+      font-style: normal;
+    }
+
+    .moniteur-content p {
+      font-size: 16px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.88);
+    }
+
+    .moniteur-content p strong {
+      color: white;
+      font-weight: 700;
+    }
+
+    .moniteur-diplomes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .diplome-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+      backdrop-filter: blur(4px);
+    }
+
+    .moniteur-zone {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255,255,255,0.75);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .moniteur-cta {
+      margin-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .moniteur-inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .moniteur-photo-wrap img { aspect-ratio: 3/2; max-height: 360px; }
+      .moniteur-badge-photo { bottom: -14px; right: 12px; }
+      .moniteur-content h2 { font-size: 40px; }
+    }
+
+    /* ===== AVIS CLIENTS ===== */
+    .avis-section {
+      background: var(--sky);
+      padding: 90px 30px;
       text-align: center;
     }
 
-    .zone-section .section-title {
-      color: white;
+    .avis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 48px auto 0;
     }
 
-    .zone-section p {
-      color: rgba(255,255,255,0.75);
-      max-width: 600px;
-      margin: 0 auto 30px;
-      font-size: 17px;
+    .avis-card {
+      background: white;
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: 0 8px 32px rgba(2,26,46,0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+    }
+
+    .avis-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(2,26,46,0.13);
+    }
+
+    .avis-card::before {
+      content: '"';
+      position: absolute;
+      top: 16px; right: 24px;
+      font-family: Georgia, serif;
+      font-size: 80px;
+      line-height: 1;
+      color: rgba(27,154,170,0.1);
+      pointer-events: none;
+    }
+
+    .avis-stars {
+      display: flex;
+      gap: 3px;
+      font-size: 18px;
+    }
+
+    .avis-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #4a6275;
+      flex: 1;
+    }
+
+    .avis-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 14px;
+      border-top: 1px solid #eef4f8;
+    }
+
+    .avis-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--wave), var(--ocean));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 15px; color: white;
+      flex-shrink: 0;
+    }
+
+    .avis-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ocean);
+    }
+
+    .avis-date {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .avis-google-badge {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    .avis-section-note {
+      margin-top: 36px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .avis-section-note a {
+      color: var(--wave);
+      font-weight: 600;
+      text-decoration: none;
     }
   </style>
+  <!-- Redirection Supabase Auth (reset mot de passe, magic link, etc.) -->
+  <script>
+    (function() {
+      const hash = window.location.hash;
+      if (hash && (hash.includes('access_token=') || hash.includes('error='))) {
+        window.location.replace('client.html' + hash);
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -345,7 +592,7 @@
   <img src="Image/pk.png" alt="Pump & Kite" style="height: 400px; width: auto; display: block;">
 </a>
 <div class="hero-badge">📍 Montpellier - Sète </div>
-  <h2 class="fade-up-delay-1">Apprends le kitesurf et le pumping foil<br>sur les eaux de l'étang d'Ingril</h2>
+  <h2 class="fade-up-delay-1">Viens apprendre le kitesurf et le pumping foil<br>avec nous !</h2>
   <div class="hero-cta fade-up-delay-2">
     <a href="reservation.html" class="btn btn-accent">Réserver un cours</a>
     <a href="univers-kite.html" class="btn btn-outline">Découvrir l'école</a>
@@ -371,6 +618,55 @@
     <div class="stat-label">Sensations</div>
   </div>
 </div>
+
+<!-- MONITEUR -->
+<section class="moniteur-section">
+  <div class="moniteur-inner">
+
+    <div class="moniteur-photo-wrap fade-up">
+      <img src="Image/Jb_profil.jpeg" alt="JB – Moniteur Pump & Kite">
+      <div class="moniteur-badge-photo">
+        🏆 Premier moniteur<br>Pumping Foil en Occitanie
+        <span>Depuis + de 3 ans</span>
+      </div>
+    </div>
+
+    <div class="moniteur-content fade-up-delay-1">
+
+      <div class="moniteur-tag">🏄 Ton moniteur</div>
+
+      <h2>Salut, moi c'est <em>JB !</em></h2>
+
+      <p>
+        Passionné de glisse depuis toujours, je pratique et enseigne le <strong>kitesurf depuis plus de 5 ans</strong> sur les eaux de l'étang d'Ingril, à Frontignan. Ce spot naturel exceptionnel, entre Montpellier et Sète, est l'endroit idéal pour apprendre dans de bonnes conditions.
+      </p>
+
+      <p>
+        Côté <strong>pumping foil</strong>, je suis l'un des rares moniteurs officiellement diplômés en Occitanie — une discipline que j'enseigne depuis plus de 3 ans et qui me passionne tout autant. Que tu sois totalement débutant ou que tu cherches à progresser, je m'adapte à ton niveau et à ton rythme.
+      </p>
+
+      <p>
+        Basé à <strong>Frontignan</strong>, je peux me déplacer sur les spots alentours selon les conditions et tes envies. L'objectif ? Que tu repars avec le sourire et l'envie de remonter sur ta planche au plus vite. 🤙
+      </p>
+
+      <div class="moniteur-diplomes">
+        <div class="diplome-chip">🎓 BPJEPS Kitesurf</div>
+        <div class="diplome-chip">🏄 Moniteur Pumping Foil</div>
+        <div class="diplome-chip">📍 Frontignan – Hérault</div>
+      </div>
+
+      <div class="moniteur-zone">
+        <span>📍</span>
+        <span>Frontignan · Sète · Montpellier et alentours</span>
+      </div>
+
+      <div class="moniteur-cta">
+        <a href="reservation.html" class="btn" style="background:white; color:#0c6291; font-weight:700; padding:15px 32px; border-radius:12px; text-decoration:none; display:inline-block; box-shadow:0 8px 24px rgba(0,0,0,0.2); transition:opacity 0.2s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Réserver un cours avec JB</a>
+      </div>
+
+    </div>
+  </div>
+</section>
 
 <!-- ACTIVITÉS -->
 <main>
@@ -492,15 +788,75 @@
   </div>
 </section>
 
-<!-- ZONE -->
-<section class="zone-section">
-  <h2 class="section-title">Les Spots</h2>
-  <div class="accent-line" style="margin: 12px auto 20px; background: linear-gradient(90deg, var(--accent), var(--foam));"></div>
-  <p>L'étang d'Ingril à Frontignan est un spot idéal pour apprendre : eau plate, vent fréquent, et absence de courants et de vagues. Un terrain de jeu sécurisé à seulement 15 minutes de Montpellier.</p>
-  <a href="meteo.html" class="btn btn-accent">Voir la météo du spot</a><br><br>
-  <p>La plage des Aresquiers, longue de 9 km, elle demarre à Palavas et fini à Frontignan : Préférences pour les personnes qui savent déjà remontés au vent ou pour faire un cours de Kitefoil !</p>
-  <a href="meteo.html" class="btn btn-accent">Voir la météo du spot</a>
+<!-- AVIS CLIENTS -->
+<section class="avis-section">
+  <h2 class="section-title">Les clients en parlent le mieux</h2>
+  <div class="accent-line" style="margin: 12px auto 0;"></div>
+  <div class="avis-grid" id="avisGrid"></div>
+  <p class="avis-section-note">
+    Avis vérifiés sur <a href="https://www.google.com/maps/search/Pump+%26+Kite+Frontignan" target="_blank" rel="noopener">Google Maps ↗</a>
+  </p>
 </section>
+
+<script>
+/* ============================================================
+   AVIS GOOGLE — modifie simplement ce tableau pour mettre à jour
+   les avis quand tu en reçois de nouveaux.
+   Champs : nom, initiales, texte, etoiles (1-5), date
+============================================================ */
+const AVIS = [
+  {
+    nom:       "Test Avis.",
+    initiales: "TA",
+    texte:     "Test avis google .",
+    etoiles:   5,
+    date:      "05/04/2026"
+  },
+  {
+    nom:       "Prénom N.",
+    initiales: "PN",
+    texte:     "Deuxième avis à remplacer. Tu peux copier-coller le texte depuis ta fiche Google Maps directement ici.",
+    etoiles:   5,
+    date:      "Bientôt"
+  },
+  {
+    nom:       "Prénom N.",
+    initiales: "PN",
+    texte:     "Troisième avis à remplacer. Pense aussi à mettre la date visible sur Google (ex: \"mars 2025\").",
+    etoiles:   5,
+    date:      "Bientôt"
+  }
+];
+
+(function() {
+  const grid = document.getElementById('avisGrid');
+  if (!grid) return;
+  grid.innerHTML = AVIS.map(a => {
+    const stars = '⭐'.repeat(a.etoiles) + (a.etoiles < 5 ? '☆'.repeat(5 - a.etoiles) : '');
+    return `
+    <div class="avis-card">
+      <div class="avis-stars">${stars}</div>
+      <p class="avis-text">${a.texte}</p>
+      <div class="avis-footer">
+        <div class="avis-avatar">${a.initiales}</div>
+        <div>
+          <div class="avis-name">${a.nom}</div>
+          <div class="avis-date">${a.date}</div>
+        </div>
+        <div class="avis-google-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Google
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+})();
+</script>
 
 <!-- FOOTER -->
 <footer>
@@ -511,7 +867,6 @@
   <p>© 2026 Pump & Kite – École de kitesurf à Frontignan | <a href="contact.html">Contact</a></p>
 </footer>
 
-// HAMBURGER
 
 <script>
 function toggleMenu() { document.getElementById('menuLinks').classList.toggle('open'); }
@@ -521,4 +876,4 @@ document.addEventListener('click', e => {
 </script>
 
 </body>
-</html>
+</html>               
