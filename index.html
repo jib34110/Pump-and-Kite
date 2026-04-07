@@ -435,14 +435,63 @@
       margin-top: 8px;
     }
 
+    /* Tablette */
     @media (max-width: 900px) {
+      .moniteur-section { padding: 70px 24px; }
       .moniteur-inner {
         grid-template-columns: 1fr;
-        gap: 48px;
+        gap: 40px;
       }
-      .moniteur-photo-wrap img { aspect-ratio: 3/2; max-height: 360px; }
+      .moniteur-photo-wrap img { aspect-ratio: 3/2; max-height: 380px; }
       .moniteur-badge-photo { bottom: -14px; right: 12px; }
-      .moniteur-content h2 { font-size: 40px; }
+      .moniteur-content h2 { font-size: 42px; }
+    }
+
+    /* Téléphone */
+    @media (max-width: 600px) {
+      .moniteur-section { padding: 52px 20px; }
+      .moniteur-inner { gap: 28px; }
+
+      /* Photo : carrée et plus petite, centrée */
+      .moniteur-photo-wrap { max-width: 280px; margin: 0 auto; }
+      .moniteur-photo-wrap img {
+        aspect-ratio: 1/1;
+        max-height: 280px;
+        width: 100%;
+      }
+
+      /* Badge photo : en dessous, centré */
+      .moniteur-badge-photo {
+        position: static;
+        display: block;
+        text-align: center;
+        margin: 12px auto 0;
+        width: fit-content;
+        border-radius: 12px;
+        font-size: 12px;
+        padding: 10px 16px;
+      }
+
+      .moniteur-content { gap: 18px; }
+      .moniteur-content h2 { font-size: 34px; }
+      .moniteur-content p  { font-size: 15px; }
+
+      /* Chips diplômes : plus petits */
+      .diplome-chip { font-size: 12px; padding: 6px 11px; }
+
+      /* CTA pleine largeur */
+      .moniteur-cta a {
+        display: block !important;
+        text-align: center;
+        width: 100%;
+      }
+    }
+
+    /* Très petit téléphone */
+    @media (max-width: 380px) {
+      .moniteur-content h2 { font-size: 28px; }
+      .moniteur-photo-wrap { max-width: 240px; }
+      .moniteur-photo-wrap img { max-height: 240px; }
     }
 
     /* ===== AVIS CLIENTS ===== */
@@ -876,4 +925,4 @@ document.addEventListener('click', e => {
 </script>
 
 </body>
-</html>               
+</html>                                                                                                                                          
