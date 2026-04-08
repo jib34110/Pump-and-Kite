@@ -44,10 +44,10 @@ server {
     server_name pumpandkite.fr www.pumpandkite.fr;
 
     root /var/www/pumpandkite.fr;
-    index client.html index.html;
+    index index.html;
 
     location / {
-        try_files $uri $uri/ /client.html;
+        try_files $uri $uri/ /index.html;
     }
 
     # Compression gzip
