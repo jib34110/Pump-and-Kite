@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pump & Kite – Cours Kitesurf & Pumping Foil à Frontignan | Montpellier – Sète</title>
+  <meta name="description" content="École de kitesurf et pumping foil à Frontignan (34), entre Montpellier et Sète. Cours privés kitesurf, leçons de pumping foil, dockstart, tous niveaux. Moniteur BPJEPS, 1er moniteur pumping foil officiel en Occitanie.">
+  <meta name="keywords" content="cours de kite, leçon de kite, kite Montpellier, école de kite, kite Sète, cours privé kitesurf, cours de pumping, cours de pumping foil, école de pumping foil, dockstart, cours de dockstart, apprendre le pumping, apprendre le kitesurf, kitesurf Frontignan, pumping foil Frontignan, moniteur pumping foil Occitanie, cours foil Hérault, étang d'Ingril, Pump and Kite">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="JB – Pump & Kite">
+  <link rel="canonical" href="https://www.pumpandkite.fr/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.pumpandkite.fr/">
+  <meta property="og:title" content="Pump & Kite – Cours Kitesurf & Pumping Foil à Frontignan">
+  <meta property="og:description" content="Cours privés kitesurf et pumping foil à Frontignan, entre Montpellier et Sète. Moniteur BPJEPS, 1er moniteur pumping foil officiel en Occitanie. Tous niveaux, dockstart, étang d'Ingril.">
+  <meta property="og:image" content="https://www.pumpandkite.fr/Image/pk.png">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Pump & Kite">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pump & Kite – Cours Kitesurf & Pumping Foil à Frontignan">
+  <meta name="twitter:description" content="Cours privés kitesurf et pumping foil à Frontignan. Moniteur BPJEPS, 1er moniteur pumping foil en Occitanie. Tous niveaux, dockstart.">
+  <meta name="twitter:image" content="https://www.pumpandkite.fr/Image/pk.png">
+
+  <!-- Données structurées JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsActivityLocation",
+    "name": "Pump & Kite",
+    "description": "École de kitesurf et pumping foil à Frontignan. Cours privés kitesurf, pumping foil, dockstart. 1er moniteur pumping foil officiel en Occitanie. Moniteur BPJEPS.",
+    "url": "https://www.pumpandkite.fr",
+    "telephone": "+33651116896",
+    "image": "https://www.pumpandkite.fr/Image/pk.png",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Étang d'Ingril",
+      "addressLocality": "Frontignan",
+      "postalCode": "34110",
+      "addressCountry": "FR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 43.448,
+      "longitude": 3.756
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+      "opens": "09:00",
+      "closes": "19:00"
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Cours de glisse",
+      "itemListElement": [
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Cours de kitesurf", "description": "Cours privé kitesurf tous niveaux, étang d'Ingril Frontignan" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Cours de pumping foil", "description": "Cours de pumping foil et dockstart, Frontignan et Carnon" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Cours de dockstart", "description": "Apprentissage du dockstart, technique de départ pumping foil" } }
+      ]
+    },
+    "priceRange": "€€",
+    "areaServed": ["Frontignan", "Montpellier", "Sète", "Carnon", "Hérault", "Occitanie"]
+  }
+  </script>
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ===== HERO ACCUEIL ===== */
+    .hero {
+      min-height: 92vh;
+      background: linear-gradient(160deg, var(--deep) 0%, var(--ocean) 40%, var(--mid) 70%, var(--wave) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      padding: 60px 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='20' viewBox='0 0 100 20'%3E%3Cpath d='M0 10 Q25 0 50 10 Q75 20 100 10 L100 20 L0 20 Z' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E") repeat-x bottom;
+      background-size: 200px 80px;
+      animation: waves 8s linear infinite;
+    }
+
+    @keyframes waves {
+      from { background-position: 0 bottom; }
+      to { background-position: 400px bottom; }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(244, 162, 97, 0.2);
+      border: 1px solid rgba(244, 162, 97, 0.5);
+      color: var(--accent);
+      padding: 6px 20px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(64px, 12vw, 130px);
+      letter-spacing: 6px;
+      line-height: 0.9;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero h2 {
+      font-size: clamp(16px, 2.5vw, 22px);
+      font-weight: 300;
+      opacity: 0.85;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ===== STATS ===== */
+    .stats-bar {
+      background: var(--ocean);
+      color: white;
+      padding: 30px 40px;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ===== ACTIVITÉS CARDS ===== */
+    .activite-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .activite-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .activite-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .activite-card-body {
+      padding: 28px;
+    }
+
+    .activite-card-body h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--ocean);
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .activite-card-body p {
+      color: var(--text-light);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    /* ===== TARIFS ===== */
+    .tarif-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 40px 30px;
+      text-align: center;
+      transition: transform 0.3s ease;
+      border-top: 4px solid var(--foam);
+    }
+
+    .tarif-card.featured {
+      border-top-color: var(--accent);
+      transform: scale(1.04);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tarif-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .tarif-card.featured:hover {
+      transform: scale(1.04) translateY(-4px);
+    }
+
+    .tarif-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      color: var(--ocean);
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .tarif-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      color: var(--accent);
+      line-height: 1;
+      margin: 14px 0 6px;
+    }
+
+    .tarif-price span {
+      font-size: 20px;
+      color: var(--text-light);
+    }
+
+    .tarif-desc {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 24px;
+    }
+
+    .tarif-list {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tarif-list li {
+      font-size: 14px;
+      color: var(--text);
+      padding-left: 22px;
+      position: relative;
+    }
+
+    .tarif-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--wave);
+      font-weight: 700;
+    }
+
+    /* ===== SECTION MONITEUR ===== */
+    .moniteur-section {
+      padding: 90px 30px;
+      background: linear-gradient(135deg, #f4a261 0%, #e76f51 28%, #0c6291 72%, #021a2e 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Effet texture légère par-dessus le dégradé */
+    .moniteur-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='24' viewBox='0 0 120 24'%3E%3Cpath d='M0 12 Q30 0 60 12 Q90 24 120 12 L120 24 L0 24 Z' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E") repeat-x bottom;
+      background-size: 240px 80px;
+      pointer-events: none;
+    }
+
+    .moniteur-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 70px;
+      align-items: center;
+    }
+
+    .moniteur-photo-wrap {
+      position: relative;
+    }
+
+    .moniteur-photo-wrap img {
+      width: 100%;
+      object-fit: cover;
+      aspect-ratio: 4/5;
+      display: block;
+      -webkit-mask-image: radial-gradient(ellipse 80% 88% at 48% 48%, black 40%, transparent 100%);
+      mask-image: radial-gradient(ellipse 50% 55% at 48% 48%, black 70%, transparent 90%);
+    }
+
+    .moniteur-badge-photo {
+      position: absolute;
+      bottom: -18px;
+      right: -18px;
+      background: linear-gradient(135deg, var(--wave), var(--ocean));
+      color: white;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(27,154,170,0.35);
+      line-height: 1.5;
+    }
+
+    .moniteur-badge-photo span {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      opacity: 0.85;
+    }
+
+    .moniteur-content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .moniteur-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      width: fit-content;
+      backdrop-filter: blur(4px);
+    }
+
+    .moniteur-content h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      line-height: 1;
+      color: white;
+      letter-spacing: 2px;
+    }
+
+    .moniteur-content h2 em {
+      color: #ffd6b0;
+      font-style: normal;
+    }
+
+    .moniteur-content p {
+      font-size: 16px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.88);
+    }
+
+    .moniteur-content p strong {
+      color: white;
+      font-weight: 700;
+    }
+
+    .moniteur-diplomes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .diplome-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+      backdrop-filter: blur(4px);
+    }
+
+    .moniteur-zone {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255,255,255,0.75);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .moniteur-cta {
+      margin-top: 8px;
+    }
+
+    /* Tablette */
+    @media (max-width: 900px) {
+      .moniteur-section { padding: 70px 24px; }
+      .moniteur-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .moniteur-photo-wrap img { aspect-ratio: 3/2; max-height: 380px; }
+      .moniteur-badge-photo { bottom: -14px; right: 12px; }
+      .moniteur-content h2 { font-size: 42px; }
+    }
+
+    /* Téléphone */
+    @media (max-width: 600px) {
+      .moniteur-section { padding: 52px 20px; }
+      .moniteur-inner { gap: 28px; }
+
+      /* Photo : carrée et plus petite, centrée */
+      .moniteur-photo-wrap { max-width: 280px; margin: 0 auto; }
+      .moniteur-photo-wrap img {
+        aspect-ratio: 1/1;
+        max-height: 280px;
+        width: 100%;
+      }
+
+      /* Badge photo : en dessous, centré */
+      .moniteur-badge-photo {
+        position: static;
+        display: block;
+        text-align: center;
+        margin: 12px auto 0;
+        width: fit-content;
+        border-radius: 12px;
+        font-size: 12px;
+        padding: 10px 16px;
+      }
+
+      .moniteur-content { gap: 18px; }
+      .moniteur-content h2 { font-size: 34px; }
+      .moniteur-content p  { font-size: 15px; }
+
+      /* Chips diplômes : plus petits */
+      .diplome-chip { font-size: 12px; padding: 6px 11px; }
+
+      /* CTA pleine largeur */
+      .moniteur-cta a {
+        display: block !important;
+        text-align: center;
+        width: 100%;
+      }
+    }
+
+    /* Très petit téléphone */
+    @media (max-width: 380px) {
+      .moniteur-content h2 { font-size: 28px; }
+      .moniteur-photo-wrap { max-width: 240px; }
+      .moniteur-photo-wrap img { max-height: 240px; }
+    }
+
+    /* ===== AVIS CLIENTS ===== */
+    .avis-section {
+      background: var(--sky);
+      padding: 90px 30px;
+      text-align: center;
+    }
+
+    .avis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 48px auto 0;
+    }
+
+    .avis-card {
+      background: white;
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: 0 8px 32px rgba(2,26,46,0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+    }
+
+    .avis-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(2,26,46,0.13);
+    }
+
+    .avis-card::before {
+      content: '"';
+      position: absolute;
+      top: 16px; right: 24px;
+      font-family: Georgia, serif;
+      font-size: 80px;
+      line-height: 1;
+      color: rgba(27,154,170,0.1);
+      pointer-events: none;
+    }
+
+    .avis-stars {
+      display: flex;
+      gap: 3px;
+      font-size: 18px;
+    }
+
+    .avis-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #4a6275;
+      flex: 1;
+    }
+
+    .avis-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 14px;
+      border-top: 1px solid #eef4f8;
+    }
+
+    .avis-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--wave), var(--ocean));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 15px; color: white;
+      flex-shrink: 0;
+    }
+
+    .avis-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ocean);
+    }
+
+    .avis-date {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .avis-google-badge {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    .avis-section-note {
+      margin-top: 36px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .avis-section-note a {
+      color: var(--wave);
+      font-weight: 600;
+      text-decoration: none;
+    }
+  </style>
+  <!-- Redirection Supabase Auth (reset mot de passe, magic link, etc.) -->
+  <script>
+    (function() {
+      const hash = window.location.hash;
+      if (hash && (hash.includes('access_token=') || hash.includes('error='))) {
+        window.location.replace('client.html' + hash);
+      }
+    })();
+  </script>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="menu">
+  <a href="index.html" class="logo">
+    <img src="Image/logo.png" alt="Pump & Kite" style="height:46px;width:auto;display:block;">
+  </a>
+  <button class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="menu-links" id="menuLinks">
+    <a href="index.html"class="active">Accueil</a>
+    <a href="univers-kite.html">Univers Kite</a>
+    <a href="univers-foil.html">Univers Foil</a>
+    <a href="materiel.html">Matériel</a>
+    <a href="meteo.html">Météo</a>
+    <a href="contact.html">Contact</a>
+    <a href="reservation.html">Réservation</a>
+    <a href="client.html">Mon Espace</a>
+    <a href="magasin.html">Shop</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  
+  <a href="index.html" class="logo">
+  <img src="Image/pk.png" alt="Pump & Kite" style="height: 400px; width: auto; display: block;">
+</a>
+<div class="hero-badge">📍 Montpellier - Sète </div>
+  <h2 class="fade-up-delay-1">Viens apprendre le kitesurf et le pumping foil<br>avec nous !</h2>
+  <div class="hero-cta fade-up-delay-2">
+    <a href="reservation.html" class="btn btn-accent">Réserver un cours</a>
+    <a href="univers-kite.html" class="btn btn-outline">Découvrir l'école</a>
+  </div>
+  <div class="hero-scroll">
+    <span>Découvrir</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+  <div class="hero-cta fade-up-delay-2" style="margin-top:1.2rem;">
+    <a href="kitesim3d.html" class="btn btn-outline">🎮 Mini Jeu Kite</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-number">2</div>
+    <div class="stat-label">Disciplines</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">Plusieurs</div>
+    <div class="stat-label">Spots exceptionnels</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">Infini</div>
+    <div class="stat-label">Sensations</div>
+  </div>
+</div>
+
+<!-- MONITEUR -->
+<section class="moniteur-section">
+  <div class="moniteur-inner">
+
+    <div class="moniteur-photo-wrap fade-up">
+      <img src="Image/Jb_profil.jpeg" alt="JB – Moniteur Pump & Kite">
+      <div class="moniteur-badge-photo">
+        🏆 Premier moniteur<br>Pumping Foil en Occitanie
+        <span>Depuis + de 3 ans</span>
+      </div>
+    </div>
+
+    <div class="moniteur-content fade-up-delay-1">
+
+      <div class="moniteur-tag">🏄 Ton moniteur</div>
+
+      <h2>Salut, moi c'est <em>JB !</em></h2>
+
+      <p>
+        Passionné de glisse depuis toujours, je pratique et enseigne le <strong>kitesurf depuis plus de 5 ans</strong> sur les eaux de l'étang d'Ingril, à Frontignan. Ce spot naturel exceptionnel, entre Montpellier et Sète, est l'endroit idéal pour apprendre dans de bonnes conditions.
+      </p>
+
+      <p>
+        Côté <strong>pumping foil</strong>, je suis l'un des rares moniteurs officiellement diplômés en Occitanie — une discipline que j'enseigne depuis plus de 3 ans et qui me passionne tout autant. Que tu sois totalement débutant ou que tu cherches à progresser, je m'adapte à ton niveau et à ton rythme.
+      </p>
+
+      <p>
+        Basé à <strong>Frontignan</strong>, je peux me déplacer sur les spots alentours selon les conditions et tes envies. L'objectif ? Que tu repartes avec le sourire et l'envie de remonter sur ta planche au plus vite. 🤙
+      </p>
+
+      <div class="moniteur-diplomes">
+        <div class="diplome-chip">🎓 BPJEPS Kitesurf</div>
+        <div class="diplome-chip">🏄 Moniteur Pumping Foil</div>
+        <div class="diplome-chip">📍 Frontignan – Hérault</div>
+      </div>
+
+      <div class="moniteur-zone">
+        <span>📍</span>
+        <span>Frontignan · Sète · Montpellier et alentours</span>
+      </div>
+
+      <div class="moniteur-cta">
+        <a href="reservation.html" class="btn" style="background:white; color:#0c6291; font-weight:700; padding:15px 32px; border-radius:12px; text-decoration:none; display:inline-block; box-shadow:0 8px 24px rgba(0,0,0,0.2); transition:opacity 0.2s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Réserver un cours avec JB</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ACTIVITÉS -->
+<main>
+  <div style="text-align:center; margin-bottom: 0;">
+    <h2 class="section-title">Nos Activités</h2>
+    <div class="accent-line" style="margin: 12px auto 10px;"></div>
+    <p class="section-subtitle">Deux disciplines, une passion : le vent et l'eau</p>
+  </div>
+
+  <div class="card-grid">
+
+    <div class="activite-card fade-up-delay-1">
+      <!-- Remplace l'URL par ta propre photo -->
+      <img src="Image/DSC04401.JPG" alt="Kitesurf sur l'étang d'Ingril">
+      <div class="activite-card-body">
+        <h3>🪁 Univers Kite</h3>
+        <p>Le kitesurf est un sport de glisse aérotracté qui combine la puissance du vent et l'adrénaline de la glisse. Idéal pour les débutants comme les confirmés.</p>
+        <a href="univers-kite.html" class="btn btn-primary">En savoir plus</a>
+      </div>
+    </div>
+
+    <div class="activite-card fade-up-delay-2">
+      <!-- Remplace l'URL par ta propre photo -->
+      <img src="Image/pumping.jpg" alt="Foil sur l'eau">
+      <div class="activite-card-body">
+        <h3>🏄 Univers Foil</h3>
+        <p>Décolle littéralement au-dessus de l'eau ! Le pumping foil est la discipline la plus technique et la plus grisante de la glisse moderne.</p>
+        <a href="univers-foil.html" class="btn btn-primary">En savoir plus</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- TARIFS -->
+<section style="background: var(--sky); padding: 80px 30px;">
+  <div style="max-width: 1100px; margin: 0 auto; text-align: center;">
+    <h2 class="section-title">Tarifs</h2>
+    <div class="accent-line" style="margin: 12px auto 10px;"></div>
+    <p class="section-subtitle">Des prestations adaptées à ton niveau et tes envies</p>
+
+    <div class="card-grid" style="max-width: 900px; margin: 0 auto;">
+      
+      <div class="tarif-card featured fade-up-delay-1">
+        <div class="tarif-name">Cours Particulier Kitesurf</div>
+        <div class="tarif-price">90<span>€/h</span></div>
+        <div class="tarif-desc">Tarif dégressif • Tous niveaux</div>
+        <ul class="tarif-list">
+          <li>Cours 100% personnalisé</li>
+          <li>Progression rapide</li>
+          <li>Tarif à l'heure (Max 4h/j)</li>
+        </ul>
+        <a href="reservation.html" class="btn btn-accent">Réserver</a>
+      </div>
+
+       <div class="tarif-card featured fade-up-delay-2">
+        <div class="tarif-name">Cours Particulier Pumping Foil</div>
+        <div class="tarif-price">50<span>€</span></div>
+        <div class="tarif-desc">1h • Tous niveaux</div>
+        <ul class="tarif-list">
+          <li>Cours 100% personnalisé</li>
+          <li>Progression rapide</li>
+          <li>40€/h si vous avez votre matériel</li>
+        </ul>
+        <a href="reservation.html" class="btn btn-accent">Réserver</a>
+      </div>
+
+      <div class="tarif-card fade-up-delay-3">
+        <div class="tarif-name">Découverte du Kitesurf</div>
+        <div class="tarif-price">100<span>€</span></div>
+        <div class="tarif-desc">2h • Découverte</div>
+        <ul class="tarif-list">
+          <li>Matériel fourni</li>
+          <li>Théorie + pratique</li>
+          <li>Sécurité & réglementation</li>
+          <li>Idéal Première fois</li>
+        </ul>
+        <a href="reservation.html" class="btn btn-outline">Réserver</a>
+      </div>
+
+      <div class="tarif-card fade-up-delay-4">
+        <div class="tarif-name">Pack 10 H Kitesurf</div>
+        <div class="tarif-price">700<span>€</span></div>
+        <div class="tarif-desc">10h • Progression garantie</div>
+        <ul class="tarif-list">          
+          <li>Suivi de progression</li>
+          <li>Flexibilité planning</li>
+          <li>Meilleur tarif/heure</li>
+        </ul>
+        <a href="reservation.html" class="btn btn-outline">Réserver</a>
+      </div>
+
+      <div class="tarif-card fade-up-delay-4">
+        <div class="tarif-name">Pack 10 H Pumping</div>
+        <div class="tarif-price">450<span>€</span></div>
+        <div class="tarif-desc">10h • Progression garantie</div>
+        <ul class="tarif-list">          
+          <li>Synchronisation Jambes / Bras</li>
+          <li>Correction de la posture</li>
+          <li>Meilleur tarif/heure</li>
+        </ul>
+        <a href="reservation.html" class="btn btn-outline">Réserver</a>
+      </div>
+
+      <div class="tarif-card fade-up-delay-4">
+        <div class="tarif-name">Navigation surveillé</div>
+        <div class="tarif-price">40<span>€/h</span></div>
+        <div class="tarif-desc">Être Autonome</div>
+        <ul class="tarif-list">          
+          <li>Aide à la préparation du matériel</li>
+          <li>Intervention si problème</li>
+          <li>Ce n'est pas un cours de kitesurf</li>
+        </ul>
+        <a href="reservation.html" class="btn btn-outline">Réserver</a>
+      </div>
+
+    </div>
+    <p style="margin-top: 20px; color: var(--text-light); font-size: 14px; font-style: italic;">💡 Tarifs indicatifs – contacte-moi pour un devis personnalisé</p>
+  </div>
+</section>
+
+<!-- AVIS CLIENTS -->
+<section class="avis-section">
+  <h2 class="section-title">Les clients en parlent le mieux</h2>
+  <div class="accent-line" style="margin: 12px auto 0;"></div>
+  <div class="avis-grid" id="avisGrid"></div>
+  <p class="avis-section-note">
+    Avis vérifiés sur <a href="https://www.google.com/maps/search/Pump+%26+Kite+Frontignan" target="_blank" rel="noopener">Google Maps ↗</a>
+  </p>
+</section>
+
+<script>
+/* ============================================================
+   AVIS GOOGLE — modifie simplement ce tableau pour mettre à jour
+   les avis quand tu en reçois de nouveaux.
+   Champs : nom, initiales, texte, etoiles (1-5), date
+============================================================ */
+const AVIS = [
+  {
+    nom:       "Test Avis.",
+    initiales: "TA",
+    texte:     "Test avis google .",
+    etoiles:   5,
+    date:      "05/04/2026"
+  },
+  {
+    nom:       "Prénom N.",
+    initiales: "PN",
+    texte:     "Deuxième avis à remplacer. Tu peux copier-coller le texte depuis ta fiche Google Maps directement ici.",
+    etoiles:   5,
+    date:      "Bientôt"
+  },
+  {
+    nom:       "Prénom N.",
+    initiales: "PN",
+    texte:     "Troisième avis à remplacer. Pense aussi à mettre la date visible sur Google (ex: \"mars 2025\").",
+    etoiles:   5,
+    date:      "Bientôt"
+  }
+];
+
+(function() {
+  const grid = document.getElementById('avisGrid');
+  if (!grid) return;
+  grid.innerHTML = AVIS.map(a => {
+    const stars = '⭐'.repeat(a.etoiles) + (a.etoiles < 5 ? '☆'.repeat(5 - a.etoiles) : '');
+    return `
+    <div class="avis-card">
+      <div class="avis-stars">${stars}</div>
+      <p class="avis-text">${a.texte}</p>
+      <div class="avis-footer">
+        <div class="avis-avatar">${a.initiales}</div>
+        <div>
+          <div class="avis-name">${a.nom}</div>
+          <div class="avis-date">${a.date}</div>
+        </div>
+        <div class="avis-google-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Google
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+})();
+</script>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-partners">
+    <span class="footer-partner-label">Partenaire officiel</span>
+    <img src="Image/north-logo.png" alt="North Kiteboarding" class="footer-partner-logo">
+  </div>
+  <p>© 2026 Pump & Kite – École de kitesurf à Frontignan | <a href="contact.html">Contact</a></p>
+</footer>
+
+
+<script>
+function toggleMenu() { document.getElementById('menuLinks').classList.toggle('open'); }
+document.addEventListener('click', e => {
+  if (!e.target.closest('.menu')) document.getElementById('menuLinks').classList.remove('open');
+});
+</script>
+
+<script src="chatbot.js"></script>
+</body>
+</html>                                                                                                                                          
