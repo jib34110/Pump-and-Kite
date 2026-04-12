@@ -26,8 +26,27 @@ html,body{width:100%;height:100%;overflow:hidden;background:url('Image/plage.png
 /* Alertes */
 #alerts{position:absolute;top:90px;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;min-width:260px}
 
-/* Mobile */
-@media(max-width:768px){:root{--nav-h:70px}}
+/* ── MOBILE ── */
+@media(max-width:768px){
+  :root{--nav-h:56px}
+
+  /* HUD cards plus compacts */
+  #hTop{padding:6px 8px;gap:4px}
+  .hCard{padding:4px 8px;border-radius:7px}
+  .hLbl{font-size:7px;letter-spacing:1px}
+  .hVal{font-size:14px}
+  .hSub{font-size:9px}
+  #hAlt{min-width:60px}
+
+  /* Barre de contrôle réduite à 55% */
+  #barCtrl{transform:translateX(-50%) scale(.55);transform-origin:bottom center;bottom:4px}
+
+  /* Instructions masquées sur mobile (trop encombrantes) */
+  #hudTips{display:none}
+
+  /* Alertes remontées */
+  #alerts{top:64px}
+}
 .amsg{display:inline-block;background:rgba(200,40,10,.88);border:1px solid #ff4422;border-radius:8px;padding:5px 14px;font-family:'Righteous',cursive;font-size:12px;color:#fff;margin:2px 0;animation:blink .5s ease-in-out infinite alternate}
 @keyframes blink{from{opacity:1}to{opacity:.15}}
 
@@ -350,11 +369,16 @@ var camera=new THREE.PerspectiveCamera(68,innerWidth/innerHeight,.05,400);
 camera.position.set(0,0,15);
 camera.lookAt(0,3,0);
 
-window.addEventListener('resize',function(){
-  camera.aspect=innerWidth/innerHeight;
+function adaptCamera(){
+  var mobile = innerWidth < 768;
+  camera.fov    = mobile ? 88 : 68;
+  camera.aspect = innerWidth/innerHeight;
+  camera.position.z = mobile ? 19 : 15;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth,innerHeight);
-});
+}
+adaptCamera();
+window.addEventListener('resize', adaptCamera);
 
 /* ── LUMIÈRES — ambiance journée ── */
 scene.add(new THREE.AmbientLight(0xc8e8ff,.85));
@@ -1127,7 +1151,7 @@ var QCM = [
     q: "Question 3 — Plusieurs bug on etait généré dans ce jeu. Lequel est impossible en réalité ?  ",
     answers: ["Le kite s'arrete  d'un coup à midi.", "le kite tombe trop vite avec la gravité", "Le kite peut faire plusieurs tours sur lui même", "J'ai vu aucune erreur 😉"],
     correct: 0,
-    explanation: "Explication de la bonne réponse à remplir."
+    explanation: "Le kite ne peut pas rester bloqué à midi.C'est une erreur de code que je n'ai pas su résoudre. La gravité fera toujours tombé votre kite."
   },
   {
     q: "Votre barre de kite à une particularité non présente en jeu, laquelle?",
@@ -1245,14 +1269,12 @@ function restartQcm(){
 }
 
 function openParamsInGame(){
-  gs.game.on=false; /* pause */
+  gs.game.on=false;
   openParams();
-  /* Après apply, on reprendra le jeu via applyParams */
 }
 
 function openParams(){
   document.getElementById('ovLevel2').classList.remove('show');
-  /* Synchronise les sliders avec les valeurs actuelles */
   var rs=document.getElementById('rngSpd'),
       rt=document.getElementById('rngTurn'),
       rg=document.getElementById('rngGrav');
@@ -1261,6 +1283,7 @@ function openParams(){
   rg.value=P.GRAV; document.getElementById('lblGrav').textContent=P.GRAV.toFixed(1);
   document.getElementById('ovParams').classList.add('show');
 }
+
 function applyParams(){
   P.SPD  = parseFloat(document.getElementById('rngSpd').value);
   P.TURN = parseFloat(document.getElementById('rngTurn').value);
@@ -1270,6 +1293,7 @@ function applyParams(){
   mode='level1';
   gs.game.on=true;
 }
+
 function closeParams(){
   document.getElementById('ovParams').classList.remove('show');
   document.getElementById('ovLevel2').classList.add('show');
@@ -1281,4 +1305,4 @@ document.addEventListener('click', function(e) {
 });
 </script>
 </body>
-</html>  
+</html>
