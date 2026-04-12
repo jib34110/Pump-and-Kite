@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>KiteSim 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:url('Image/plage.png') center/cover no-repeat fixed;font-family:'Nunito',sans-serif}
+#c3{display:block;position:fixed;inset:0;width:100%;height:100%;z-index:1}
+
+/* ── HUD top ── */
+:root{--nav-h:60px}
+#hud{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;pointer-events:none;z-index:30}
+#hTop{position:absolute;top:0;left:0;width:100%;display:flex;justify-content:space-between;align-items:flex-start;padding:14px 18px}
+.hCard{background:rgba(0,0,0,.28);border-radius:10px;padding:6px 14px;color:#fff}
+.hLbl{font-size:9px;opacity:.7;letter-spacing:1.5px;text-transform:uppercase}
+.hVal{font-family:'Righteous',cursive;font-size:20px}
+.hSub{font-size:11px;opacity:.75}
+#hScore{text-align:center}
+#hWind{text-align:right;color:#ff9944}
+#hAlt{min-width:90px}
+
+/* Alertes */
+#alerts{position:absolute;top:90px;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;min-width:260px}
+
+/* Mobile */
+@media(max-width:768px){:root{--nav-h:70px}}
+.amsg{display:inline-block;background:rgba(200,40,10,.88);border:1px solid #ff4422;border-radius:8px;padding:5px 14px;font-family:'Righteous',cursive;font-size:12px;color:#fff;margin:2px 0;animation:blink .5s ease-in-out infinite alternate}
+@keyframes blink{from{opacity:1}to{opacity:.15}}
+
+/* Barre de puissance verticale (gauche) */
+#vbar{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:160px;background:rgba(0,0,0,.25);border-radius:7px;overflow:hidden;border:1px solid rgba(255,255,255,.25)}
+#vfill{position:absolute;bottom:0;left:0;width:100%;background:linear-gradient(to top,#ff4400,#ffcc00);border-radius:7px;transition:height .08s}
+
+/* ── BARRE DE CONTRÔLE ── */
+#barCtrl{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:40;
+         touch-action:none;cursor:grab;filter:drop-shadow(0 4px 18px rgba(0,0,0,.55))}
+#barCtrl:active{cursor:grabbing}
+
+/* ── OVERLAYS ── */
+.ov{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:100}
+.ov.show{display:flex}
+
+/* ── ZONE HUD (niveau 2) ── */
+#zoneHUD{position:absolute;top:0;left:50%;transform:translateX(-50%);display:none;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding-top:14px}
+#zoneHUD.show{display:flex}
+#zoneCard{background:rgba(0,0,0,.38);border:1px solid rgba(126,232,250,.25);border-radius:12px;padding:10px 24px;text-align:center;min-width:210px}
+.zLbl{font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:2px}
+#zoneName{font-family:'Righteous',cursive;font-size:17px;color:#7ee8fa;margin-bottom:2px}
+#zoneTimer{font-family:'Righteous',cursive;font-size:40px;color:#fff;line-height:1;transition:color .2s}
+#zoneTimer.inzone{color:#44ee88;text-shadow:0 0 14px rgba(68,238,136,.6)}
+#zoneTimer.outzone{color:#ff7744}
+#zoneDots{display:flex;gap:10px}
+.zdot{width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.35);transition:all .3s}
+.zdot.done{background:#44ee88;border-color:#44ee88;box-shadow:0 0 8px rgba(68,238,136,.5)}
+.zdot.current{border-color:#7ee8fa;box-shadow:0 0 0 3px rgba(126,232,250,.3);animation:zpulse .9s ease-in-out infinite alternate}
+@keyframes zpulse{from{box-shadow:0 0 0 2px rgba(126,232,250,.5)}to{box-shadow:0 0 0 6px rgba(126,232,250,0)}}
+
+/* ── OVERLAY NIVEAU 2 RÉUSSI ── */
+#ovLevel2{background:rgba(0,20,10,.85);backdrop-filter:blur(6px)}
+
+/* ── OVERLAY MISSION ── */
+#ovMission{background:rgba(0,20,10,.82);backdrop-filter:blur(6px)}
+.missionBox{background:rgba(255,255,255,.08);border:1px solid rgba(68,204,136,.40);border-radius:18px;padding:40px 48px;max-width:500px;text-align:center}
+.missionTitle{font-family:'Righteous',cursive;font-size:42px;color:#44ee88;text-shadow:0 0 28px rgba(68,238,136,.7);margin-bottom:10px}
+.missionSub{font-size:15px;color:#c8ffdd;line-height:1.75;margin-bottom:30px}
+.missionBtns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btnMission{font-family:'Righteous',cursive;font-size:15px;border:none;border-radius:10px;padding:12px 28px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btnContinue{color:#001a0e;background:linear-gradient(135deg,#44ee88,#22ccaa);box-shadow:0 4px 18px rgba(68,238,136,.4)}
+.btnContinue:hover{transform:scale(1.06);box-shadow:0 6px 26px rgba(68,238,136,.65)}
+.btnNext{color:#001a2e;background:linear-gradient(135deg,#7ee8fa,#4499ff);box-shadow:0 4px 18px rgba(126,232,250,.4)}
+.btnNext:hover{transform:scale(1.06);box-shadow:0 6px 26px rgba(126,232,250,.65)}
+
+/* ── OVERLAY BIENVENUE ── */
+#ovWelcome{background:rgba(0,10,30,.80);backdrop-filter:blur(6px)}
+.welcomeBox{background:rgba(255,255,255,.08);border:1px solid rgba(126,232,250,.35);border-radius:18px;padding:40px 48px;max-width:480px;text-align:center}
+.welcomeTitle{font-family:'Righteous',cursive;font-size:38px;color:#7ee8fa;text-shadow:0 0 24px rgba(126,232,250,.7);margin-bottom:10px}
+.welcomeSub{font-size:15px;color:#c8f0ff;line-height:1.7;margin-bottom:28px}
+.btnStart{font-family:'Righteous',cursive;font-size:18px;color:#001a2e;background:linear-gradient(135deg,#7ee8fa,#44cc88);border:none;border-radius:10px;padding:14px 44px;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 20px rgba(126,232,250,.4)}
+.btnStart:hover{transform:scale(1.06);box-shadow:0 6px 28px rgba(126,232,250,.65)}
+
+/* ── INSTRUCTIONS HUD ── */
+#hudTips{position:absolute;top:90px;right:18px;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.tip{background:rgba(0,0,0,.30);border-left:3px solid #7ee8fa;border-radius:6px;padding:5px 12px;color:#e8f8ff;font-size:11px;line-height:1.5;max-width:180px}
+.tip span{display:block;font-family:'Righteous',cursive;font-size:10px;color:#7ee8fa;letter-spacing:1px;margin-bottom:2px}
+#ovCrash{background:rgba(0,5,20,.82)}
+#ovWater{background:rgba(0,30,60,.55);z-index:90;pointer-events:none}
+.oTitle{font-family:'Righteous',cursive;font-size:52px;color:#7ee8fa;text-shadow:0 0 30px rgba(126,232,250,.8);margin-bottom:12px;animation:pop .35s ease-out}
+.wTitle{font-family:'Righteous',cursive;font-size:26px;color:#fff;margin-bottom:8px}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.oInfo{font-size:18px;color:#e8f4ff;text-align:center;line-height:1.9}
+.oSub{margin-top:14px;font-family:'Righteous',cursive;font-size:13px;color:#7ee8fa;opacity:.7}
+#wpb{width:190px;height:10px;background:rgba(255,255,255,.15);border-radius:5px;overflow:hidden;margin-top:14px}
+#wpf{height:100%;width:0%;background:linear-gradient(90deg,#7ee8fa,#ffcc00);border-radius:5px}
+.wTip{margin-top:8px;font-size:12px;color:rgba(255,255,255,.45);animation:blink .7s ease-in-out infinite alternate}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="menu">
+  <a href="index.html" class="logo">
+    <img src="Image/logo.png" alt="Pump & Kite" style="height:46px;width:auto;display:block;">
+  </a>
+  <button class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="menu-links" id="menuLinks">
+    <a href="index.html">Accueil</a>
+    <a href="univers-kite.html">Univers Kite</a>
+    <a href="univers-foil.html">Univers Foil</a>
+    <a href="materiel.html">Matériel</a>
+    <a href="meteo.html">Météo</a>
+    <a href="contact.html">Contact</a>
+    <a href="reservation.html">Réservation</a>
+    <a href="client.html">Mon Espace</a>
+    <a href="magasin.html">Shop</a>
+  </div>
+</nav>
+
+<canvas id="c3"></canvas>
+
+<!-- HUD -->
+<div id="hud">
+  <div id="hTop">
+    <div class="hCard" id="hAlt">
+      <div class="hLbl">Élévation</div>
+      <div class="hVal" id="hEl">65°</div>
+      <div class="hSub" id="hZone">🟢 Neutre</div>
+    </div>
+    <div class="hCard" id="hScore">
+      <div class="hLbl">Temps restant</div>
+      <div class="hVal" id="hTime">60</div>
+    </div>
+    <div class="hCard" style="pointer-events:all">
+      <button onclick="window.location.href='index.html'"
+        style="background:none;border:none;color:#ff7744;font-family:'Righteous',cursive;font-size:13px;cursor:pointer;padding:2px 0;letter-spacing:1px">
+        ✕ Quitter
+      </button>
+    </div>
+  </div>
+  <!-- Barre de puissance verticale -->
+  <div id="vbar"><div id="vfill" style="height:0%"></div></div>
+  <div id="alerts"></div>
+
+  <!-- Zone HUD (niveau 2) -->
+  <div id="zoneHUD">
+    <div id="zoneCard">
+      <div class="zLbl">Zone cible</div>
+      <div id="zoneName">10H – 11H</div>
+      <div id="zoneTimer" class="outzone">5</div>
+      <div class="zLbl" style="margin-top:4px">secondes dans la zone</div>
+    </div>
+    <div id="zoneDots">
+      <div class="zdot current" id="dot0"></div>
+      <div class="zdot" id="dot1"></div>
+      <div class="zdot" id="dot2"></div>
+      <div class="zdot" id="dot3"></div>
+    </div>
+  </div>
+
+  <!-- Instructions -->
+  <div id="hudTips">
+    <div class="tip"><span>🎮 CONTRÔLE</span>Tire la barre vers toi pour faire accélérer ton kite.</div>
+    <div class="tip"><span>💧 ATTENTION</span>Lâche la barre et ton kite tombera à l'eau </div>
+    <div class="tip"><span>↔ VIRER</span>Glisse à gauche ou à droite pour diriger le kite</div>
+  </div>
+</div>
+
+<!-- Barre de contrôle — glisser HAUT/BAS = tirer/choquer · GAUCHE/DROITE = virer -->
+<div id="barCtrl">
+  <canvas id="barCvs" width="190" height="270"></canvas>
+</div>
+
+<!-- Niveau 2 réussi -->
+<div id="ovLevel2" class="ov">
+  <div class="missionBox">
+    <div class="missionTitle">🏆 Tutoriel terminé !</div>
+    <div class="missionSub">
+      Tu as stabilisé ton kite dans les <strong style="color:#44ee88">4 zones</strong> avec succès !<br><br>
+      Tu maîtrises le pilotage du kite dans toute la fenêtre de vent.<br><br>
+      <strong style="color:#7ee8fa">Prêt pour l'évaluation finale ?</strong>
+    </div>
+    <div class="missionBtns">
+      <button class="btnMission btnNext" onclick="startLevel3()">📋 Niveau 3 — QCM</button>
+      <button class="btnMission" style="background:rgba(255,255,255,.12);color:#fff" onclick="replayLevel2()">🔄 Rejouer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Niveau 3 — QCM -->
+<div id="ovLevel3" class="ov">
+  <div class="missionBox" style="max-width:560px;background:rgba(0,10,25,.92);border-color:rgba(126,232,250,.55)">
+    <!-- En-tête -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div style="font-family:'Righteous',cursive;font-size:13px;color:#7ee8fa;letter-spacing:1.5px">NIVEAU 3 — ÉVALUATION</div>
+      <div style="font-family:'Righteous',cursive;font-size:13px;color:rgba(255,255,255,.45)" id="qcmProgress">Question 1 / 5</div>
+    </div>
+    <!-- Barre de progression -->
+    <div style="height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin-bottom:20px">
+      <div id="qcmBar" style="height:100%;width:20%;background:linear-gradient(90deg,#7ee8fa,#44ee88);border-radius:2px;transition:width .4s"></div>
+    </div>
+    <!-- Question -->
+    <div id="qcmQuestion" style="font-size:17px;color:#fff;line-height:1.6;margin-bottom:22px;min-height:60px">
+      Question 1 à remplir
+    </div>
+    <!-- Réponses -->
+    <div id="qcmAnswers" style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px"></div>
+    <!-- Feedback -->
+    <div id="qcmFeedback" style="min-height:36px;font-size:14px;line-height:1.5;color:#44ee88;text-align:center;margin-bottom:10px"></div>
+    <!-- Bouton suivant -->
+    <div style="text-align:center">
+      <button id="qcmNext" class="btnMission btnNext" onclick="qcmNext()" style="display:none">Suivant →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Résultat QCM -->
+<div id="ovQcmResult" class="ov">
+  <div class="missionBox" style="max-width:480px;background:rgba(0,10,25,.92);border-color:rgba(126,232,250,.55)">
+    <div class="missionTitle" id="qcmResultTitle">🎓 Résultat</div>
+    <div class="missionSub" id="qcmResultSub"></div>
+    <!-- Bloc code promo (visible uniquement au 5/5) -->
+    <div id="qcmPromo" style="display:none;margin-bottom:24px;padding:16px 20px;background:rgba(68,238,136,.10);border:1px solid rgba(68,238,136,.45);border-radius:12px;text-align:center">
+      <div style="color:#44ee88;font-family:'Righteous',cursive;font-size:13px;letter-spacing:1.5px;margin-bottom:6px">🎁 CADEAU SPÉCIAL</div>
+      <div style="color:#fff;font-size:14px;margin-bottom:10px">-10% sur le cours de ton choix avec le code :</div>
+      <div style="font-family:'Righteous',cursine;font-size:28px;color:#44ee88;letter-spacing:4px;text-shadow:0 0 14px rgba(68,238,136,.5)">KITE10</div>
+    </div>
+    <div class="missionBtns">
+      <button class="btnMission btnNext" onclick="window.location.href='reservation.html'">📅 Réserver un cours</button>
+      <button class="btnMission btnContinue" onclick="restartQcm()">🔄 Refaire le QCM</button>
+    </div>
+  </div>
+</div>
+
+<!-- Paramètres kite -->
+<div id="ovParams" class="ov">
+  <div class="missionBox" style="max-width:420px;background:rgba(0,10,25,.92);border-color:rgba(126,232,250,.55)">
+    <div class="missionTitle" style="font-size:30px">⚙️ Réglages du kite</div>
+    <div class="missionSub" style="margin-bottom:20px">Modifie les caractéristiques et retourne voler pour sentir la différence.</div>
+    <div style="display:flex;flex-direction:column;gap:16px;text-align:left;margin-bottom:28px">
+      <div>
+        <label style="color:#7ee8fa;font-family:'Righteous',cursive;font-size:13px;letter-spacing:1px">VITESSE (SPD) — <span id="lblSpd">2.0</span></label>
+        <div style="color:rgba(255,255,255,.5);font-size:11px;margin-bottom:6px">Vitesse de déplacement du kite dans la fenêtre</div>
+        <input type="range" id="rngSpd" min="2.0" max="12.0" step="0.1" value="2.0"
+          style="width:100%;accent-color:#7ee8fa" oninput="document.getElementById('lblSpd').textContent=parseFloat(this.value).toFixed(1)">
+      </div>
+      <div>
+        <label style="color:#ffcc44;font-family:'Righteous',cursive;font-size:13px;letter-spacing:1px">VIRAGE (TURN) — <span id="lblTurn">3.8</span></label>
+        <div style="color:rgba(255,255,255,.5);font-size:11px;margin-bottom:6px">Réactivité du kite aux ordres de barre</div>
+        <input type="range" id="rngTurn" min="0.5" max="4.0" step="0.1" value="3.8"
+          style="width:100%;accent-color:#ffcc44" oninput="document.getElementById('lblTurn').textContent=parseFloat(this.value).toFixed(1)">
+      </div>
+      <div>
+        <label style="color:#ff7744;font-family:'Righteous',cursive;font-size:13px;letter-spacing:1px">GRAVITÉ (GRAV) — <span id="lblGrav">3.0</span></label>
+        <div style="color:rgba(255,255,255,.5);font-size:11px;margin-bottom:6px">Force qui tire le kite vers l'eau</div>
+        <input type="range" id="rngGrav" min="0.5" max="10.0" step="0.1" value="3.0"
+          style="width:100%;accent-color:#ff7744" oninput="document.getElementById('lblGrav').textContent=parseFloat(this.value).toFixed(1)">
+      </div>
+    </div>
+    <div class="missionBtns">
+      <button class="btnMission btnContinue" onclick="applyParams()">✅ Appliquer & Voler</button>
+      <button class="btnMission" style="background:rgba(255,255,255,.12);color:#fff" onclick="closeParams()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Mission réussie (niveau 1) -->
+<div id="ovMission" class="ov">
+  <div class="missionBox">
+    <div class="missionTitle">🏆 Niveau 1 réussi !</div>
+    <div class="missionSub">
+      Tu as maintenu ton kite en l'air pendant <strong style="color:#44ee88">30 secondes</strong> — bien joué !<br><br>
+      <strong style="color:#7ee8fa">Niveau 2 :</strong> tu vas devoir tenir ton kite <strong style="color:#44ee88">immobile dans une zone précise</strong> pendant 5 secondes.<br><br>
+      Chaque zone correspond à une position dans la fenêtre de vent. Stabilise la flèche dans la zone indiquée pour valider.
+    </div>
+    <div class="missionBtns">
+      <button class="btnMission btnNext" onclick="tryNextLevel()">🎯 Lancer le niveau 2</button>
+      <button class="btnMission btnContinue" onclick="continueFlying()">✈️ Continuer à piloter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bienvenue -->
+<div id="ovWelcome" class="ov show">
+  <div class="welcomeBox">
+    <div class="welcomeTitle">🪁 KiteSim</div>
+    <div class="welcomeSub">
+      <strong style="color:#7ee8fa;font-size:17px">Bienvenue sur le simulateur de kite.</strong><br><br>
+      🎯 <strong>Niveau 1 :</strong> maintiens ton kite en l'air pendant <strong style="color:#44ee88">30 secondes</strong> sans le faire tomber à l'eau.<br><br>
+      🎯 <strong>Niveau 2 :</strong> stabilise ton kite  pendant <strong style="color:#44ee88">5 secondes</strong> dans la bonne zone.<br><br>
+      📚 <strong>Question :</strong> Réponds à 5 questions correctement et reçoit un cadeau.<br><br>
+      💧 <strong>Si le kite tombe à l'eau :</strong> tire la barre à fond et maintiens fortement une direction (gauche ou droite) pour le faire redécoller.<br><br>
+    </div>
+      
+      
+    <button class="btnStart" onclick="startGame()">Démarrer ▶</button>
+  </div>
+</div>
+
+<!-- Crash dur -->
+<div id="ovCrash" class="ov">
+  <div class="oTitle">CHUTE ! 💦</div>
+  <div class="oInfo">Survie : <span id="cTime">0</span> s<br>Meilleur : <span id="cBest">0</span> s</div>
+  <div class="oSub" id="cCd">Relance dans 3s…</div>
+</div>
+
+<!-- Sable -->
+<div id="ovWater" class="ov">
+  <div class="wTitle">🏖️ Kite dans le sable !</div>
+  <div class="oInfo" style="font-size:15px">Maintenez ← ou → pour redécoller</div>
+  <div id="wpb"><div id="wpf"></div></div>
+  <div class="wTip">tenir gauche ou droite → barre de progression</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   KiteSim 3D — v4 Sunset  |  Three.js r128  |  Physique v3
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── PARAMS ── */
+var P = {
+  R:9,
+  SPD:5.0,    // vitesse constante du kite (rad/s sur la sphère) — toujours en mouvement
+  TURN:1.8,   // taux de virage par unité de tilt (rad/s)
+  GRAV:3.0,  // gravité : tord la trajectoire vers le bas (rad/s²)
+  LIFT:0.60,  // portance barre tirée (rad/s²) — doit dépasser GRAV pour monter
+  BRet:.12, PRet:.09,
+  CEL:.052,   // élévation minimale avant chute dans l'eau
+  RT:.60, RTT:.50,
+  RX:8,
+};
+
+/* ── RENDERER ── */
+var c3=document.getElementById('c3');
+var renderer=new THREE.WebGLRenderer({canvas:c3,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.setClearColor(0x000000,0);
+renderer.shadowMap.enabled=true;
+
+var scene=new THREE.Scene();
+
+/* Caméra reculée pour voir la fenêtre de vol complète */
+var camera=new THREE.PerspectiveCamera(68,innerWidth/innerHeight,.05,400);
+camera.position.set(0,0,15);
+camera.lookAt(0,3,0);
+
+window.addEventListener('resize',function(){
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+
+/* ── LUMIÈRES — ambiance journée ── */
+scene.add(new THREE.AmbientLight(0xc8e8ff,.85));
+var sun=new THREE.DirectionalLight(0xffffff,1.1);
+sun.position.set(8,12,-20); sun.castShadow=true; scene.add(sun);
+var fill=new THREE.DirectionalLight(0x88ccff,.4);
+fill.position.set(-8,6,5); scene.add(fill);
+
+/* Ciel remplacé par photo plage.png */
+
+/* ── Sol invisible (ombres uniquement) ── */
+var groundMesh=new THREE.Mesh(
+  new THREE.PlaneGeometry(120,90),
+  new THREE.ShadowMaterial({opacity:.18})
+);
+groundMesh.rotation.x=-Math.PI/2;
+groundMesh.position.set(0,-.28,-5);
+groundMesh.receiveShadow=true;
+scene.add(groundMesh);
+
+var seaT=0;
+function tickSea(t){} /* supprimé — fond photo */
+
+/* Décors supprimés — fond photo plage.png */
+
+
+
+/* ─────────────────────────────────────────
+   FENÊTRE DE VOL
+   ───────────────────────────────────────── */
+(function(){
+  var R=P.R;
+  /* Quart de sphère : front seulement (phi de π/2 à 3π/2 = côté -z = devant le rider)
+     el de 0° à 90° (theta de π/2 à 0 dans Three.js = thetaStart=0, length=π/2)         */
+  scene.add(new THREE.Mesh(
+    new THREE.SphereGeometry(R,18,9,Math.PI,Math.PI,0,Math.PI/2),
+    new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,transparent:true,opacity:.07})
+  ));
+  var sg=new THREE.SphereGeometry(R-.2,32,16,Math.PI,Math.PI,0,Math.PI/2);
+  var vp=sg.attributes.position,vc=new Float32Array(vp.count*3);
+  for(var i=0;i<vp.count;i++){
+    var py=vp.getY(i),px=vp.getX(i),pz=vp.getZ(i);
+    var el=Math.asin(Math.max(-1,Math.min(1,py/R)))*180/Math.PI;
+    var az=Math.abs(Math.atan2(px,-pz)*180/Math.PI);
+    var r,g,b;
+    var distPow=Math.sqrt(az*az + Math.max(0,55-el)*Math.max(0,55-el));
+    if(distPow<28){r=.90;g=.08;b=.05;}
+    else if(distPow<65){var ft=(distPow-28)/37;r=.88-ft*.10;g=.15+ft*.60;b=.03+ft*.05;}
+    else{r=.15;g=.78;b=.28;}
+    vc[i*3]=r;vc[i*3+1]=g;vc[i*3+2]=b;
+  }
+  sg.setAttribute('color',new THREE.Float32BufferAttribute(vc,3));
+  scene.add(new THREE.Mesh(sg,new THREE.MeshBasicMaterial({
+    vertexColors:true,transparent:true,opacity:.38,side:THREE.DoubleSide,depthWrite:false
+  })));
+})();
+
+/* ─────────────────────────────────────────
+   RIDER (silhouette sombre sur board)
+   ───────────────────────────────────────── */
+var riderGrp=new THREE.Group();
+riderGrp.scale.set(0.7,0.7,0.7);
+scene.add(riderGrp);
+
+function mkPart(geo,col,x,y,z,rz){
+  var m=new THREE.Mesh(geo,new THREE.MeshLambertMaterial({color:col}));
+  m.position.set(x||0,y||0,z||0);if(rz)m.rotation.z=rz;
+  riderGrp.add(m);return m;
+}
+/* Planche */
+var boardMat=new THREE.MeshLambertMaterial({color:0x222222});
+var boardMesh=new THREE.Mesh(new THREE.BoxGeometry(1.4,.08,.32),boardMat);
+boardMesh.position.set(0,.01,.02); riderGrp.add(boardMesh);
+/* Body */
+mkPart(new THREE.BoxGeometry(.42,.62,.22),0x1a1a2e,0,.72,0);
+/* Harnais */
+mkPart(new THREE.BoxGeometry(.44,.22,.24),0x333366,0,.68,0);
+/* Tête */
+mkPart(new THREE.SphereGeometry(.155,10,8),0x111122,0,1.22,0);
+/* Casque */
+var hh=new THREE.Mesh(new THREE.SphereGeometry(.167,10,6,0,Math.PI*2,0,Math.PI*.52),
+  new THREE.MeshLambertMaterial({color:0x222233}));
+hh.position.set(0,1.27,0);riderGrp.add(hh);
+/* Jambes */
+var lg=new THREE.CylinderGeometry(.055,.048,.38,6);
+mkPart(lg,0x1a1a2e,-.11,.22,0, .10);
+mkPart(lg,0x1a1a2e, .11,.22,0,-.10);
+/* Bras */
+var ag=new THREE.CylinderGeometry(.042,.038,.34,6);
+mkPart(ag,0x1a1a2e,-.32,.96,.04, .80);
+mkPart(ag,0x1a1a2e, .32,.96,.04,-.80);
+/* Sillage (traîne blanche derrière la board) */
+var wakeGeo=new THREE.PlaneGeometry(.8,3.5,1,6);
+wakeGeo.rotateX(-Math.PI/2);
+var wakeMesh=new THREE.Mesh(wakeGeo,new THREE.MeshBasicMaterial({
+  color:0xffffff,transparent:true,opacity:.45,depthWrite:false}));
+wakeMesh.position.set(0,-.26,2); riderGrp.add(wakeMesh);
+
+/* ─────────────────────────────────────────
+   KITE (C-kite vert réaliste)
+   ───────────────────────────────────────── */
+var kiteGrp=new THREE.Group();
+kiteGrp.scale.set(0.6,0.6,0.6);
+scene.add(kiteGrp);
+
+/* Voile principale (ShapeGeometry) */
+function bezier3(P0,C1,C2,P3,t){
+  var u=1-t;
+  return{x:u*u*u*P0.x+3*u*u*t*C1.x+3*u*t*t*C2.x+t*t*t*P3.x,
+         y:u*u*u*P0.y+3*u*u*t*C1.y+3*u*t*t*C2.y+t*t*t*P3.y};
+}
+var ks=new THREE.Shape();
+ks.moveTo(-2.2,-0.45);
+ks.bezierCurveTo(-3.0,.25,-2.1,1.22,0,1.30);
+ks.bezierCurveTo(2.1,1.22,3.0,.25,2.2,-0.45);
+ks.lineTo(1.5,-.70);
+ks.quadraticCurveTo(0,-.18,-1.5,-.70);
+ks.lineTo(-2.2,-0.45);
+var kiteBodyMat=new THREE.MeshLambertMaterial({color:0x44cc22,side:THREE.DoubleSide});
+var kiteBodyMesh=new THREE.Mesh(new THREE.ShapeGeometry(ks,16),kiteBodyMat);
+kiteGrp.add(kiteBodyMesh);
+
+/* Segments colorés (panneaux) */
+var panMats=[0x66dd44,0x33aa18,0x66dd44];
+[-1.15,-.05,1.05].forEach(function(cx,idx){
+  var ps=new THREE.Shape();
+  var w=1.05;
+  ps.moveTo(cx-w/2+.1,-0.35);
+  ps.lineTo(cx-w/2+.05,.80);
+  ps.lineTo(cx+w/2-.05,.80);
+  ps.lineTo(cx+w/2-.1,-0.35);
+  ps.lineTo(cx-w/2+.1,-0.35);
+  var pm=new THREE.Mesh(new THREE.ShapeGeometry(ps,6),
+    new THREE.MeshLambertMaterial({color:panMats[idx],side:THREE.DoubleSide}));
+  pm.position.z=.002;kiteGrp.add(pm);
+});
+
+/* Bord d'attaque (tube) */
+var lePts=[];
+for(var i=0;i<=10;i++){var b=bezier3({x:-2.2,y:-.45},{x:-3.0,y:.25},{x:-2.1,y:1.22},{x:0,y:1.30},i/10);lePts.push(new THREE.Vector3(b.x,b.y,.13));}
+for(var i=1;i<=10;i++){var b=bezier3({x:0,y:1.30},{x:2.1,y:1.22},{x:3.0,y:.25},{x:2.2,y:-.45},i/10);lePts.push(new THREE.Vector3(b.x,b.y,.13));}
+var leTube=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(lePts),21,.09,7,false);
+kiteGrp.add(new THREE.Mesh(leTube,new THREE.MeshLambertMaterial({color:0x88ff55})));
+
+/* Bords latéraux (tube) */
+[-2.2,2.2].forEach(function(ex){
+  var sidePts=[new THREE.Vector3(ex,-.45,.10),new THREE.Vector3(ex*.94,-.65,.04)];
+  var st=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(sidePts),4,.05,5,false);
+  kiteGrp.add(new THREE.Mesh(st,new THREE.MeshLambertMaterial({color:0x88ff55})));
+});
+
+/* Oreilles */
+var earMat=new THREE.MeshLambertMaterial({color:0xddffcc});
+var earL=new THREE.Mesh(new THREE.SphereGeometry(.13,8,6),earMat);earL.position.set(-2.1,-.42,0);kiteGrp.add(earL);
+var earR=new THREE.Mesh(new THREE.SphereGeometry(.13,8,6),earMat);earR.position.set( 2.1,-.42,0);kiteGrp.add(earR);
+
+/* Flèche de cap */
+var arrGrp=new THREE.Group();
+var arrM=new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,opacity:.7});
+var aS=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.5,6),arrM);aS.position.set(0,.55,.14);arrGrp.add(aS);
+var aH=new THREE.Mesh(new THREE.ConeGeometry(.09,.20,6),arrM);aH.position.set(0,.85,.14);arrGrp.add(aH);
+kiteGrp.add(arrGrp);
+
+/* ─────────────────────────────────────────
+   LIGNES (puissance + sécurité)
+   ───────────────────────────────────────── */
+var NC=9;
+var HL=new THREE.Vector3(-.14,1.0,0),HR=new THREE.Vector3(.14,1.0,0),HP=new THREE.Vector3(0,1.15,0);
+function mkLn(col,op){
+  var pts=[];for(var i=0;i<NC;i++)pts.push(new THREE.Vector3());
+  var g=new THREE.BufferGeometry().setFromPoints(pts);
+  var m=new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op});
+  var l=new THREE.Line(g,m);scene.add(l);return{l:l,m:m};
+}
+var lnL=mkLn(0xffffff,.80),lnR=mkLn(0xffffff,.80),lnS=mkLn(0xffffff,.30);
+function catPts(A,B,sag,n){
+  var a=[];for(var i=0;i<n;i++){var t=i/(n-1);
+    a.push(A.x+(B.x-A.x)*t,A.y+(B.y-A.y)*t-sag*Math.sin(t*Math.PI)*(1-t*.22),A.z+(B.z-A.z)*t);}
+  return a;
+}
+function setLn(o,arr){
+  o.l.geometry.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(arr),3));
+  o.l.geometry.attributes.position.needsUpdate=true;
+}
+function updateLines(kp){
+  kiteGrp.updateMatrixWorld(true);
+  var eL=new THREE.Vector3(),eR=new THREE.Vector3();
+  earL.getWorldPosition(eL);earR.getWorldPosition(eR);
+  var rp=riderGrp.position;
+  var hL=new THREE.Vector3(HL.x+rp.x,HL.y+rp.y,HL.z);
+  var hR=new THREE.Vector3(HR.x+rp.x,HR.y+rp.y,HR.z);
+  var hP=new THREE.Vector3(HP.x+rp.x,HP.y+rp.y,HP.z);
+  var sg=1.0-gs.bar.pull*.80;
+  setLn(lnL,catPts(hL,eL,sg,NC));
+  setLn(lnR,catPts(hR,eR,sg,NC));
+  setLn(lnS,catPts(hP,kp,.40,NC));
+}
+
+/* ─────────────────────────────────────────
+   MODE & ZONES (niveau 2)
+   ───────────────────────────────────────── */
+var mode = 'level1'; /* 'level1' | 'level2' */
+
+/* Zones niveau 2 — basées sur la DIRECTION de la flèche du kite (cap en degrés)
+   0° = 12H (flèche vers le haut), valeurs positives = sens horaire, négatives = anti-horaire
+   Formule : headingDeg = Math.atan2(vx, vy) * 180/PI
+   10H=-60°  11H=-30°  12H=0°  13H=+30°  13H30=+45°  14H30=+75°             */
+var ZONES = [
+  {hMin:-155,  hMax:-115,  label:'10H \u2013 11H'},
+  {hMin:-125,   hMax:-85,  label:'11H \u2013 12H'},
+  {hMin:-65, hMax:-25,   label:'13H \u2013 14H'},
+  {hMin:-180, hMax:-135, label:'9H30 \u2013 10H30'}
+];
+var lv2={zoneIdx:0, timer:0};
+
+/* ─────────────────────────────────────────
+   ÉTAT GLOBAL
+   ───────────────────────────────────────── */
+var gs={
+  /* vx/vy/vz = vecteur vitesse 3D normalisé (tangent à la sphère), ×P.SPD */
+  /* Départ : kite en haut (el=66°), cap vers la droite (ê_az à az=0 = (1,0,0)) */
+  kite:{az:0, el:1.45, vx:1.0, vy:0, vz:0},
+  bar:{pull:0,tilt:0},
+  wind:{speed:10,t:0},
+  game:{on:false,time:0,best:0,boardOn:false,rvx:0,lift:0,
+        parts:[],inWater:false,wtT:0,crashed:false,missionDone:false}
+};
+
+/* ─────────────────────────────────────────
+   PHYSIQUE (modèle vélocité rad/s × dt)
+   ───────────────────────────────────────── */
+function zoneName(el,az){
+  var e=el*180/Math.PI,a=Math.abs(az*180/Math.PI);
+  var distPow=Math.sqrt(a*a + Math.max(0,55-e)*Math.max(0,55-e));
+  if(distPow>65)return'N';
+  if(distPow>28)return'M';
+  return'P';
+}
+function zoneColor(z){return z==='N'?0x55ee77:z==='M'?0xffaa00:0xff2211;}
+function zoneLabel(z){
+  return z==='N'?'🟢 Neutre':z==='M'?'🟡 Modérée':'🔴 Pleine puissance';
+}
+
+function physics(dt){
+  var k=gs.kite,b=gs.bar,w=gs.wind,g=gs.game;
+  w.t+=dt;
+  var turb=Math.sin(w.t*.38)*.65+Math.sin(w.t*.72)*.42+Math.sin(w.t*1.15)*.22;
+  w.speed=Math.max(7,Math.min(15,10+turb));
+
+  /* ── État EAU ── */
+  if(g.inWater){
+    k.el=Math.max(0,k.el-.05*dt);
+    if(Math.abs(b.tilt)>=P.RT){
+      g.wtT+=dt;if(g.wtT>=P.RTT)relaunch(b.tilt>0?1:-1);
+    }else{g.wtT=0;}
+    barRet();return;
+  }
+
+  /* ══════════════════════════════════════════════════════
+     MODÈLE VÉLO SUR SPHÈRE
+     ─ Le kite se déplace TOUJOURS vers la direction qu'il
+       regarde (la flèche), à vitesse constante P.SPD.
+     ─ La barre tilt = guidon  → vire dans ce sens.
+     ─ La gravité courbe la trajectoire vers le bas.
+     ─ Tirer la barre (pull) courbe la trajectoire vers le haut.
+     ══════════════════════════════════════════════════════ */
+
+  /* Position actuelle sur la sphère */
+  var R=P.R;
+  var cEl=Math.cos(k.el),sEl=Math.sin(k.el);
+  var cAz=Math.cos(k.az),sAz=Math.sin(k.az);
+  var ox=cEl*sAz, oy=sEl, oz=-cEl*cAz;
+  var vx=k.vx, vy=k.vy, vz=k.vz;
+
+  /* 1+2. Gravité + portance avec blend anti-singularité zénith */
+  var spd0=Math.sqrt(vx*vx+vy*vy+vz*vz);
+  var bx=0,by=0,bz=0;
+  if(spd0>0.001){bx=vx/spd0;by=vy/spd0;bz=vz/spd0;}
+  var zenW=Math.max(0,0.15-cEl)/0.15;
+  var gx=sEl*sAz*(1-zenW)+bx*zenW*0.25;
+  var gy=-cEl;
+  var gz=-sEl*cAz*(1-zenW)+bz*zenW*0.25;
+  vx+=gx*P.GRAV*dt; vy+=gy*P.GRAV*dt; vz+=gz*P.GRAV*dt;
+  var liftF=b.pull*P.LIFT*(w.speed/10);
+  vx-=gx*liftF*dt; vy-=gy*liftF*dt; vz-=gz*liftF*dt;
+  g.lift=Math.round(liftF*80);
+
+  /* 3. Virage — Rodrigues */
+  if(Math.abs(b.tilt)>0.005){
+    var theta=P.TURN*b.tilt*dt;
+    var cosT=Math.cos(theta),sinT=Math.sin(theta);
+    var cx=oy*vz-oz*vy,cy=oz*vx-ox*vz,cz=ox*vy-oy*vx;
+    vx=vx*cosT+cx*sinT; vy=vy*cosT+cy*sinT; vz=vz*cosT+cz*sinT;
+  }
+
+  /* 4. Re-projection tangente */
+  var rdot=vx*ox+vy*oy+vz*oz;
+  vx-=rdot*ox; vy-=rdot*oy; vz-=rdot*oz;
+
+  /* 5. Inertie (MASS=8) + gradient vitesse sans frein zénith excessif */
+  var azNorm=Math.abs(k.az)/(Math.PI/2);
+  var elNorm=k.el/(Math.PI/2);
+  var edgeFactor=Math.min(1,Math.max(azNorm,elNorm*0.40));
+  var zoneSpd=Math.max(1.0,2.0-edgeFactor);
+  var targetSpd=P.SPD*(1+b.pull*0.6)*zoneSpd;
+  var spd=Math.sqrt(vx*vx+vy*vy+vz*vz);
+  if(spd>0.001){
+    var MASS=3.0;
+    var alpha=1.0-Math.exp(-dt*(P.SPD/MASS));
+    var newSpd=spd+(targetSpd-spd)*alpha;
+    newSpd=Math.max(newSpd,P.SPD*0.55);
+    var s=newSpd/spd; vx*=s; vy*=s; vz*=s;
+  } else {
+    vx=P.SPD*cAz; vy=0; vz=P.SPD*sAz;
+  }
+  k.vx=vx; k.vy=vy; k.vz=vz;
+
+  /* 6. Déplacement sur la sphère */
+  var nx=R*ox+vx*dt, ny=R*oy+vy*dt, nz=R*oz+vz*dt;
+  var nd=Math.sqrt(nx*nx+ny*ny+nz*nz);
+  nx/=nd; ny/=nd; nz/=nd;
+
+  /* asin sans clamp arbitraire → zénith franchissable */
+  k.el=Math.asin(Math.max(-1.0,Math.min(1.0,ny)));
+  k.az=Math.atan2(nx,-nz);
+
+  /* Garde-fou az uniquement */
+  if(k.az> Math.PI/2)k.az= Math.PI/2;
+  if(k.az<-Math.PI/2)k.az=-Math.PI/2;
+
+  /* Rider : incline selon le cap */
+  riderGrp.rotation.z = -b.tilt*.18 - Math.sin(k.az)*.10;
+  barRet();
+
+  /* Détection eau */
+  if(!g.crashed&&!g.inWater){
+    if(k.el < P.CEL) doSand();
+  }
+}
+
+function barRet(){
+  if(!inp.active){
+    gs.bar.tilt+=(0-gs.bar.tilt)*P.BRet;
+    gs.bar.pull+=(0-gs.bar.pull)*P.PRet;
+    if(Math.abs(gs.bar.tilt)<.001)gs.bar.tilt=0;
+    if(Math.abs(gs.bar.pull)<.001)gs.bar.pull=0;
+  }
+}
+
+/* ─────────────────────────────────────────
+   KITE VISUEL
+   ───────────────────────────────────────── */
+function kiteWP(){
+  var R=P.R,el=gs.kite.el,az=gs.kite.az;
+  return new THREE.Vector3(R*Math.cos(el)*Math.sin(az),R*Math.sin(el),-R*Math.cos(el)*Math.cos(az));
+}
+
+/* Vecteurs réutilisables pour l'orientation (évite les allocations) */
+var _up3=new THREE.Vector3(),_rt3=new THREE.Vector3(),
+    _zd3=new THREE.Vector3(),_mm4=new THREE.Matrix4();
+
+function updateKite(){
+  var R=P.R,el=gs.kite.el,az=gs.kite.az;
+  var wp=new THREE.Vector3(
+    R*Math.cos(el)*Math.sin(az),
+    R*Math.sin(el),
+    -R*Math.cos(el)*Math.cos(az)
+  );
+  kiteGrp.position.copy(wp);
+
+  /* ── Orientation 3D du kite ──────────────────────────────────
+     Z local  = direction vers le rider (face visible depuis le bas)
+     Y local  = direction de vol (la flèche pointe là où le kite va)
+     X local  = cross(Y,Z) = aile droite du kite
+     ─────────────────────────────────────────────────────────── */
+  // -outward = de la position du kite vers le rider (origine)
+  _zd3.copy(wp).normalize().negate();
+
+  /* Direction de vol = vecteur vitesse 3D (directement dispo, tangent à la sphère) */
+  _up3.set(gs.kite.vx, gs.kite.vy, gs.kite.vz);
+
+  if(_up3.length()<0.01){
+    // Fallback : prendre +Y mondial projeté sur la surface de la sphère
+    var dy=_zd3.y;
+    _up3.set(-_zd3.x*dy, 1-dy*dy, -_zd3.z*dy);
+    if(_up3.length()<0.001)_up3.set(1,0,0);
+  }
+  _up3.normalize();
+
+  // Droite du kite, puis ré-orthogonalisation de l'axe haut
+  _rt3.crossVectors(_up3,_zd3).normalize();
+  _up3.crossVectors(_zd3,_rt3).normalize();
+
+  // Appliquer la rotation via matrice de base (pas de lookAt biaisé)
+  _mm4.makeBasis(_rt3,_up3,_zd3);
+  kiteGrp.setRotationFromMatrix(_mm4);
+
+  kiteBodyMat.color.setHex(zoneColor(zoneName(gs.kite.el,gs.kite.az)));
+  var hi=gs.bar.pull>.50;
+  lnL.m.color.setHex(hi?0xffee88:0xffffff);
+  lnR.m.color.setHex(hi?0xffee88:0xffffff);
+  return wp;
+}
+
+/* ─────────────────────────────────────────
+   PARTICULES SPLASH
+   ───────────────────────────────────────── */
+function splash(){
+  var kp=kiteWP();
+  for(var i=0;i<20;i++){
+    var mat=new THREE.MeshBasicMaterial({color:i%3===0?0xffffff:0x88eee8,transparent:true,opacity:1});
+    var m=new THREE.Mesh(new THREE.SphereGeometry(.08+Math.random()*.18,5,4),mat);
+    m.position.copy(kp);
+    var v=new THREE.Vector3((Math.random()-.5)*5,Math.random()*5+1,(Math.random()-.5)*5);
+    scene.add(m);gs.game.parts.push({m:m,v:v,life:1});
+  }
+}
+function tickParts(dt){
+  var pp=gs.game.parts;
+  for(var i=pp.length-1;i>=0;i--){
+    var p=pp[i];p.life-=dt*1.1;p.v.y-=9.8*dt;
+    p.m.position.x+=p.v.x*dt;p.m.position.y+=p.v.y*dt;p.m.position.z+=p.v.z*dt;
+    p.m.material.opacity=Math.max(0,p.life);
+    if(p.life<=0){scene.remove(p.m);p.m.geometry.dispose();p.m.material.dispose();pp.splice(i,1);}
+  }
+}
+
+/* ─────────────────────────────────────────
+   CRASH / EAU / RESET
+   ───────────────────────────────────────── */
+function doSand(){
+  if(gs.game.inWater||gs.game.crashed)return;
+  gs.game.inWater=true;gs.game.on=false;gs.game.wtT=0;
+  splash();document.getElementById('ovWater').classList.add('show');
+}
+function relaunch(side){
+  /* Kite repart du côté opposé, cap vers le haut (ê_el à cette position) */
+  var az=-side*Math.PI/4, el=0.20;
+  gs.kite.az=az; gs.kite.el=el;
+  /* ê_el = vecteur "monter" en ce point = (-sin(el)*sin(az), cos(el), sin(el)*cos(az)) */
+  var cEl=Math.cos(el),sEl=Math.sin(el),cAz=Math.cos(az),sAz=Math.sin(az);
+  gs.kite.vx = -sEl*sAz*P.SPD;
+  gs.kite.vy =  cEl*P.SPD;
+  gs.kite.vz =  sEl*cAz*P.SPD;
+  gs.game.inWater=false;gs.game.on=true;gs.game.wtT=0;gs.game.time=0;gs.game.missionDone=false;
+  gs.bar.pull=0;gs.bar.tilt=0;
+  if(mode==='level2'){lv2.timer=0;}
+  document.getElementById('ovWater').classList.remove('show');
+}
+var cdInt=null;
+function doCrash(){
+  if(gs.game.crashed)return;
+  gs.game.crashed=true;gs.game.on=false;
+  splash();
+  document.getElementById('cTime').textContent=Math.min(60,Math.floor(gs.game.time));
+  document.getElementById('cBest').textContent='';
+  document.getElementById('ovCrash').classList.add('show');
+  document.getElementById('ovWater').classList.remove('show');
+  var cd=3,cdEl=document.getElementById('cCd');
+  if(cdInt)clearInterval(cdInt);
+  cdInt=setInterval(function(){cd--;if(cd>0)cdEl.textContent='Relance dans '+cd+'s\u2026';else{clearInterval(cdInt);doReset();}},1000);
+}
+function doReset(){
+  gs.kite.az=0; gs.kite.el=1.45;
+  /* Départ cap à droite : ê_az = (cos(az),0,sin(az)) = (1,0,0) à az=0 */
+  gs.kite.vx=P.SPD; gs.kite.vy=0; gs.kite.vz=0;
+  gs.bar.pull=0;gs.bar.tilt=0;gs.wind.t=0;
+  gs.game.on=true;gs.game.time=0;gs.game.crashed=false;
+  gs.game.inWater=false;gs.game.wtT=0;gs.game.rvx=0;gs.game.missionDone=false;
+  riderGrp.position.x=0;riderGrp.rotation.z=0;
+  document.getElementById('ovCrash').classList.remove('show');
+  document.getElementById('ovWater').classList.remove('show');
+  document.getElementById('ovMission').classList.remove('show');
+}
+
+/* ─────────────────────────────────────────
+   INPUT : touches, souris, clavier
+   ───────────────────────────────────────── */
+/* ── BARRE DE CONTRÔLE — drag haut/bas = pull, gauche/droite = tilt ── */
+var inp={active:false,sx:0,sy:0};
+function pt(e){return e.touches?e.touches[0]:e;}
+var barEl=document.getElementById('barCtrl');
+barEl.addEventListener('mousedown',function(e){
+  inp.active=true;var p=pt(e);inp.sx=p.clientX;inp.sy=p.clientY;e.preventDefault();
+});
+barEl.addEventListener('touchstart',function(e){
+  inp.active=true;var p=pt(e);inp.sx=p.clientX;inp.sy=p.clientY;e.preventDefault();
+},{passive:false});
+window.addEventListener('mousemove',function(e){
+  if(!inp.active)return;
+  gs.bar.tilt=Math.max(-1,Math.min(1,(e.clientX-inp.sx)/60));
+  gs.bar.pull=Math.max(0,Math.min(1,(e.clientY-inp.sy)/80));  /* drag BAS = tirer */
+});
+window.addEventListener('touchmove',function(e){
+  if(!inp.active)return;var p=pt(e);
+  gs.bar.tilt=Math.max(-1,Math.min(1,(p.clientX-inp.sx)/60));
+  gs.bar.pull=Math.max(0,Math.min(1,(p.clientY-inp.sy)/80));  /* drag BAS = tirer */
+},{passive:true});
+window.addEventListener('mouseup',function(){inp.active=false;});
+window.addEventListener('touchend',function(){inp.active=false;});
+
+/* Clavier */
+var keys={};
+window.addEventListener('keydown',function(e){keys[e.code]=true;});
+window.addEventListener('keyup',function(e){keys[e.code]=false;});
+
+/* Application des contrôles par frame */
+function applyControls(dt){
+  /* Clavier — si pas de drag sur la barre
+     ↓ / S = tirer (pull), ↑ / W = choquer (relâcher)
+     ← / A = virer gauche, → / D = virer droite             */
+  if(!inp.active){
+    if(keys['ArrowDown']||keys['KeyS']) gs.bar.pull=Math.min(1,gs.bar.pull+5*dt);
+    if(keys['ArrowUp']  ||keys['KeyW']) gs.bar.pull=Math.max(0,gs.bar.pull-5*dt);
+    if(keys['ArrowLeft']||keys['KeyA']) gs.bar.tilt=Math.max(-1,gs.bar.tilt-4*dt);
+    if(keys['ArrowRight']||keys['KeyD'])gs.bar.tilt=Math.min(1,gs.bar.tilt+4*dt);
+  }
+}
+
+/* ─────────────────────────────────────────
+   DESSIN BARRE DE CONTRÔLE (canvas)
+   ───────────────────────────────────────── */
+var bwCvs=document.getElementById('barCvs');
+var bwCtx=bwCvs.getContext('2d');
+function drawBarWidget(){
+  var ctx=bwCtx, W=190, H=270, cx=W/2;
+  var pull=gs.bar.pull, tilt=gs.bar.tilt;
+  ctx.clearRect(0,0,W,H);
+
+  /* Fond arrondi */
+  ctx.fillStyle='rgba(0,8,28,0.52)';
+  if(ctx.roundRect)ctx.roundRect(0,0,W,H,14);
+  else ctx.rect(0,0,W,H);
+  ctx.fill();
+
+  /* ── Stick vertical (barre centrale noire) ── */
+  var sx=cx, sy0=16, sy1=H-18;
+  ctx.lineCap='round';
+  ctx.strokeStyle='#111'; ctx.lineWidth=11;
+  ctx.beginPath(); ctx.moveTo(sx,sy0); ctx.lineTo(sx,sy1); ctx.stroke();
+  /* brillance sur le stick */
+  ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=4;
+  ctx.beginPath(); ctx.moveTo(sx-1,sy0+8); ctx.lineTo(sx-1,sy1-8); ctx.stroke();
+
+  /* ── Position de la barre sur le stick ── */
+  /* pull=0 → haut (relâchée) / pull=1 → bas (tirée à fond) */
+  var by0=sy0+(sy1-sy0)*0.10;  /* position haute */
+  var by1=sy0+(sy1-sy0)*0.75;  /* position basse */
+  var barY=by0+(by1-by0)*pull;
+
+  /* ── Inclinaison de la barre ── */
+  /* tilt < 0 (gauche) → côté GAUCHE monte, côté DROIT descend       */
+  /* tilt > 0 (droite) → côté DROIT monte, côté GAUCHE descend       */
+  var barHalf=74, tiltPx=tilt*36;
+  var lx=cx-barHalf, ly=barY-tiltPx;   /* côté gauche : tilt<0(gauche)→ly monte ✓ */
+  var rx=cx+barHalf, ry=barY+tiltPx;   /* côté droit  : tilt<0(gauche)→ry descend ✓ */
+
+  /* ── Lignes kite (des ancrages en haut vers les extrémités de la barre) ── */
+  var alx=cx-66, aly=22;   /* ancrage ligne gauche */
+  var arx=cx+66, ary=22;   /* ancrage ligne droite */
+  /* opacité selon la tension : plus la ligne est courte = plus tendue */
+  var maxDist=sy1-sy0;
+  var tensL=0.35+0.55*Math.max(0,1-(ly-aly)/maxDist);
+  var tensR=0.35+0.55*Math.max(0,1-(ry-ary)/maxDist);
+  ctx.lineWidth=2.8;
+  ctx.lineCap='round';
+  ctx.strokeStyle='rgba(200,200,200,'+tensL.toFixed(2)+')';
+  ctx.beginPath(); ctx.moveTo(alx,aly); ctx.lineTo(lx,ly); ctx.stroke();
+  ctx.strokeStyle='rgba(200,200,200,'+tensR.toFixed(2)+')';
+  ctx.beginPath(); ctx.moveTo(arx,ary); ctx.lineTo(rx,ry); ctx.stroke();
+
+  /* ── Barre rouge (ombre puis corps) ── */
+  /* couleur : rouge sombre relâché → rouge vif / orangé quand tiré */
+  var r=Math.round(160+95*pull), g=Math.round(15+25*pull), b=15;
+  ctx.lineCap='round';
+  ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.lineWidth=13;
+  ctx.beginPath(); ctx.moveTo(lx,ly+3); ctx.lineTo(rx,ry+3); ctx.stroke();
+  ctx.strokeStyle='rgb('+r+','+g+','+b+')'; ctx.lineWidth=10;
+  ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(rx,ry); ctx.stroke();
+  /* embouts */
+  ctx.fillStyle='rgb('+r+','+g+','+b+')';
+  ctx.beginPath(); ctx.arc(lx,ly,7,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(rx,ry,7,0,Math.PI*2); ctx.fill();
+
+  /* ── Label état ── */
+  var lbl, lcol;
+  if(pull<0.05){lbl='— RELÂCHÉE —';lcol='rgba(255,255,255,.3)';}
+  else if(Math.abs(tilt)>0.18){lbl=tilt<0?'◀ VIRAGE':'VIRAGE ▶';lcol='#7ee8fa';}
+  else{lbl='▲ TIRER';lcol='#ffcc44';}
+  ctx.fillStyle=lcol; ctx.font='bold 11px Nunito,sans-serif';
+  ctx.textAlign='center'; ctx.fillText(lbl,cx,H-5);
+  ctx.lineCap='butt';
+}
+
+/* ─────────────────────────────────────────
+   HUD
+   ───────────────────────────────────────── */
+var hEl=document.getElementById('hEl'),hZone=document.getElementById('hZone'),
+    hTime=document.getElementById('hTime'),
+    vfill=document.getElementById('vfill'),wpf=document.getElementById('wpf'),
+    alerts=document.getElementById('alerts');
+
+function updateHUD(){
+  var k=gs.kite,el=k.el*180/Math.PI,az=k.az*180/Math.PI;
+  var zn=zoneName(k.el,k.az);
+  hEl.textContent=Math.round(el)+'°';
+  hZone.textContent=gs.game.inWater?'🌊 Dans l\'eau':zoneLabel(zn);
+  var remaining=Math.max(0,30-Math.floor(gs.game.time));
+  hTime.textContent=remaining;
+  if(mode==='level1'&&gs.game.on&&gs.game.time>=30&&!gs.game.missionDone){doMissionComplete();}
+  vfill.style.height=(gs.bar.pull*100)+'%';
+  wpf.style.width=gs.game.inWater?Math.min(100,gs.game.wtT/P.RTT*100)+'%':'0%';
+  var msgs=[];
+  if(!gs.game.inWater){
+    if(el<15) msgs.push('\u26A0\uFE0F Trop bas !');
+    if(gs.bar.pull>.9&&zn==='P')msgs.push('\u26A0\uFE0F Rel\u00E2chez !');
+  }
+  alerts.innerHTML=msgs.map(function(a){return'<div class="amsg">'+a+'</div>';}).join('');
+}
+
+/* ─────────────────────────────────────────
+   BOUCLE PRINCIPALE
+   ───────────────────────────────────────── */
+/* Orienter le disque soleil vers la caméra — supprimé (fond photo) */
+
+var lastT=performance.now();
+function loop(now){
+  requestAnimationFrame(loop);
+  var dt=Math.min((now-lastT)/1000,.05);lastT=now;seaT+=dt;
+
+  if(gs.game.on||gs.game.inWater){
+    applyControls(dt);
+    physics(dt);
+    if(gs.game.on)gs.game.time+=dt;
+    updateHUD();
+    if(mode==='level2'&&gs.game.on)updateLevel2(dt);
+  }
+  tickParts(dt);
+  var wp=updateKite();
+  updateLines(wp);
+  tickSea(seaT);
+  drawBarWidget();
+  renderer.render(scene,camera);
+}
+requestAnimationFrame(loop);
+
+function startGame(){
+  document.getElementById('ovWelcome').classList.remove('show');
+  gs.game.on=true;
+}
+
+function doMissionComplete(){
+  gs.game.missionDone=true;
+  gs.game.on=false;
+  if(60>gs.game.best)gs.game.best=60;
+  document.getElementById('ovMission').classList.add('show');
+}
+
+function continueFlying(){
+  document.getElementById('ovMission').classList.remove('show');
+  gs.game.missionDone=true; /* garde le flag pour ne pas re-déclencher */
+  gs.game.on=true;
+}
+
+function tryNextLevel(){
+  document.getElementById('ovMission').classList.remove('show');
+  /* Remettre le kite en position de départ */
+  gs.kite.az=0; gs.kite.el=1.45;
+  gs.kite.vx=P.SPD; gs.kite.vy=0; gs.kite.vz=0;
+  gs.bar.pull=0; gs.bar.tilt=0;
+  riderGrp.position.x=0; riderGrp.rotation.z=0;
+  /* Init niveau 2 */
+  mode='level2';
+  lv2.zoneIdx=0; lv2.timer=0;
+  gs.game.on=true; gs.game.time=0;
+  gs.game.crashed=false; gs.game.inWater=false; gs.game.missionDone=false;
+  document.getElementById('ovWater').classList.remove('show');
+  document.getElementById('hScore').style.display='none';
+  document.getElementById('zoneHUD').classList.add('show');
+  updateZoneDots();
+}
+
+function updateLevel2(dt){
+  if(!gs.game.on) return;
+  var k = gs.kite;
+  var zone = ZONES[lv2.zoneIdx];
+
+  /* Cap de la flèche du kite en degrés (0=12H, +clockwise, -anti-clockwise) */
+  var spd = Math.sqrt(k.vx*k.vx + k.vy*k.vy + k.vz*k.vz);
+  var inZone = false;
+  if(spd > 0.01){
+    var headingDeg = Math.atan2(k.vx, k.vy) * 180 / Math.PI;
+    inZone = headingDeg >= zone.hMin && headingDeg <= zone.hMax;
+  }
+
+  if(inZone){
+    lv2.timer += dt;
+    if(lv2.timer >= 5){
+      /* Zone validée ! */
+      lv2.zoneIdx++;
+      lv2.timer = 0;
+      if(lv2.zoneIdx >= ZONES.length){ doLevel2Complete(); return; }
+      updateZoneDots();
+    }
+  } else {
+    lv2.timer = 0; /* sort de la zone → repart de 5s */
+  }
+
+  /* Affichage */
+  var curZone = ZONES[lv2.zoneIdx];
+  document.getElementById('zoneName').textContent = curZone.label;
+  var countdown = Math.ceil(Math.max(0, 5 - lv2.timer));
+  var timerEl = document.getElementById('zoneTimer');
+  timerEl.textContent = countdown === 0 ? '\u2713' : countdown;
+  timerEl.className = inZone ? 'inzone' : 'outzone';
+}
+
+function updateZoneDots(){
+  for(var i=0;i<ZONES.length;i++){
+    var d=document.getElementById('dot'+i);
+    if(i<lv2.zoneIdx)       d.className='zdot done';
+    else if(i===lv2.zoneIdx) d.className='zdot current';
+    else                     d.className='zdot';
+  }
+}
+
+function doLevel2Complete(){
+  gs.game.on=false;
+  document.getElementById('ovLevel2').classList.add('show');
+}
+
+function replayLevel2(){
+  document.getElementById('ovLevel2').classList.remove('show');
+  lv2.zoneIdx=0; lv2.timer=0;
+  gs.game.time=0; gs.game.on=true; gs.game.missionDone=false;
+  updateZoneDots();
+  doReset();
+  /* Ré-activer mode level2 après doReset (qui remet level1) */
+  mode='level2';
+  document.getElementById('hScore').style.display='none';
+  document.getElementById('zoneHUD').classList.add('show');
+}
+
+function goLevel1(){
+  mode='level1';
+  lv2.zoneIdx=0; lv2.timer=0;
+  document.getElementById('zoneHUD').classList.remove('show');
+  document.getElementById('hScore').style.display='';
+  document.getElementById('ovLevel2').classList.remove('show');
+  doReset();
+}
+
+/* ─────────────────────────────────────────
+   NIVEAU 3 — QCM
+   ───────────────────────────────────────── */
+var QCM = [
+  {
+    q: "Question 1 — Dans la fenêtre de vol , il y a plusieurs couleurs. A quoi correspondent-elles?",
+    answers: ["A rien , c'est pour faire joli.", "A la zone de puissance du kite", "Au danger, il ne faut pas aller dans le rouge", "Ces zones n'existent pas dans la vrai vie."],
+    correct: 1,
+    explanation: "Ca correspond à la zone de puissance du kite , tant que le kite est dans la zone verte, il ne vous tracte pas , par contre si vous le faite passer dans la zone rouge, soyez prêt à partir !"
+  },
+  {
+    q: "Question 2 — Dans l'exercice 2 , vous avez du stabiliser votre kite dans des zones. Que sont ces zones ? ",
+    answers: ["Des tranches horaires.", "Un indicateur pour le jeu.", "Des valeurs communes dans le langage du kitesurf", "L'heure à laquelle on peut allez faire du kite."],
+    correct: 2,
+    explanation: "C'est bien entendu un langage universel afin que tout le monde puisse comprendre comment piloter son kite."
+  },
+  {
+    q: "Question 3 — Plusieurs bug on etait généré dans ce jeu. Lequel est impossible en réalité ?  ",
+    answers: ["Le kite s'arrete  d'un coup à midi.", "le kite tombe trop vite avec la gravité", "Le kite peut faire plusieurs tours sur lui même", "J'ai vu aucune erreur 😉"],
+    correct: 0,
+    explanation: "Explication de la bonne réponse à remplir."
+  },
+  {
+    q: "Votre barre de kite à une particularité non présente en jeu, laquelle?",
+    answers: ["Elle permet de ralentir le kite", "La barre tirée doit faire tourner le kite plus vite", "Quand on lache la barre, le kite doit tombé dans l'eau", "Barre tiré/laché le kite se comporte pareil."],
+    correct: 1,
+    explanation: "La barre tirée fait tourner le kite plus vite, à l'inverse, si vous ne prenez pas de pression dans la barre, votre kite ne tournera pas."
+  },
+  {
+    q: "Question 5 — Dernière question. Est-il possible de s'envoler en kite ?",
+    answers: ["Non c'est impossible !", "Oui , j'ai vu plein de vidéos.", "On ma dit que oui , c'est dangereux .", "On peux pas s'envoler, mais on peut sauter très haut , et planer longtemps."],
+    correct: 3,
+    explanation: "Effectivement il est possible de faire de très gros saut et rester en l'air pendant plusieurs secondes. Toutefois la gravité nous ramene toujours très vite sur terre."
+  }
+];
+
+var qcmState = {idx:0, score:0, answered:false};
+
+function startLevel3(){
+  document.getElementById('ovLevel2').classList.remove('show');
+  gs.game.on = false;
+  qcmState = {idx:0, score:0, answered:false};
+  renderQcm();
+  document.getElementById('ovLevel3').classList.add('show');
+}
+
+function renderQcm(){
+  var s = qcmState;
+  var data = QCM[s.idx];
+  document.getElementById('qcmProgress').textContent = 'Question '+(s.idx+1)+' / '+QCM.length;
+  document.getElementById('qcmBar').style.width = ((s.idx+1)/QCM.length*100)+'%';
+  document.getElementById('qcmQuestion').textContent = data.q;
+  document.getElementById('qcmFeedback').textContent = '';
+  document.getElementById('qcmNext').style.display = 'none';
+  s.answered = false;
+
+  var container = document.getElementById('qcmAnswers');
+  container.innerHTML = '';
+  data.answers.forEach(function(txt, i){
+    var btn = document.createElement('button');
+    btn.textContent = txt;
+    btn.style.cssText = 'width:100%;text-align:left;padding:11px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.20);background:rgba(255,255,255,.07);color:#fff;font-size:14px;cursor:pointer;transition:background .15s';
+    btn.onmouseover = function(){ if(!s.answered) this.style.background='rgba(126,232,250,.15)'; };
+    btn.onmouseout  = function(){ if(!s.answered) this.style.background='rgba(255,255,255,.07)'; };
+    btn.onclick = function(){ answerQcm(i); };
+    btn.id = 'qcmA'+i;
+    container.appendChild(btn);
+  });
+}
+
+function answerQcm(chosen){
+  var s = qcmState;
+  if(s.answered) return;
+  s.answered = true;
+  var data = QCM[s.idx];
+  var correct = data.correct;
+
+  /* Colorer les boutons */
+  for(var i=0;i<data.answers.length;i++){
+    var btn = document.getElementById('qcmA'+i);
+    btn.style.cursor = 'default';
+    if(i === correct){
+      btn.style.background = 'rgba(68,238,136,.25)';
+      btn.style.borderColor = '#44ee88';
+      btn.style.color = '#44ee88';
+    } else if(i === chosen){
+      btn.style.background = 'rgba(255,60,60,.20)';
+      btn.style.borderColor = '#ff4444';
+      btn.style.color = '#ff8888';
+    }
+  }
+
+  if(chosen === correct){
+    s.score++;
+    document.getElementById('qcmFeedback').style.color = '#44ee88';
+    document.getElementById('qcmFeedback').textContent = '✅ Bonne réponse ! ' + data.explanation;
+  } else {
+    document.getElementById('qcmFeedback').style.color = '#ff8888';
+    document.getElementById('qcmFeedback').textContent = '❌ ' + data.explanation;
+  }
+  document.getElementById('qcmNext').style.display = 'inline-block';
+}
+
+function qcmNext(){
+  qcmState.idx++;
+  if(qcmState.idx >= QCM.length){
+    showQcmResult();
+  } else {
+    renderQcm();
+  }
+}
+
+function showQcmResult(){
+  document.getElementById('ovLevel3').classList.remove('show');
+  var score = qcmState.score;
+  var total = QCM.length;
+  var perfect = score === total;
+  var title = perfect ? '🏆 Score parfait !' : score >= total*.6 ? '👍 Bien joué !' : '📚 À retravailler';
+  document.getElementById('qcmResultTitle').textContent = title;
+  document.getElementById('qcmResultSub').innerHTML =
+    'Tu as obtenu <strong style="color:#44ee88;font-size:22px">'+score+' / '+total+'</strong> bonnes réponses.<br><br>' +
+    (perfect
+      ? 'Tu maîtrises parfaitement la théorie du kite. Félicitations !'
+      : score >= total*.6
+        ? 'Bonne base ! Quelques points à revoir avant de te lancer.'
+        : 'Reprends les notions de base, puis reviens relever le défi !');
+  document.getElementById('qcmPromo').style.display = perfect ? 'block' : 'none';
+  document.getElementById('ovQcmResult').classList.add('show');
+}
+
+function restartQcm(){
+  document.getElementById('ovQcmResult').classList.remove('show');
+  qcmState = {idx:0, score:0, answered:false};
+  renderQcm();
+  document.getElementById('ovLevel3').classList.add('show');
+}
+
+function openParamsInGame(){
+  gs.game.on=false; /* pause */
+  openParams();
+  /* Après apply, on reprendra le jeu via applyParams */
+}
+
+function openParams(){
+  document.getElementById('ovLevel2').classList.remove('show');
+  /* Synchronise les sliders avec les valeurs actuelles */
+  var rs=document.getElementById('rngSpd'),
+      rt=document.getElementById('rngTurn'),
+      rg=document.getElementById('rngGrav');
+  rs.value=P.SPD; document.getElementById('lblSpd').textContent=P.SPD.toFixed(1);
+  rt.value=P.TURN; document.getElementById('lblTurn').textContent=P.TURN.toFixed(1);
+  rg.value=P.GRAV; document.getElementById('lblGrav').textContent=P.GRAV.toFixed(1);
+  document.getElementById('ovParams').classList.add('show');
+}
+function applyParams(){
+  P.SPD  = parseFloat(document.getElementById('rngSpd').value);
+  P.TURN = parseFloat(document.getElementById('rngTurn').value);
+  P.GRAV = parseFloat(document.getElementById('rngGrav').value);
+  document.getElementById('ovParams').classList.remove('show');
+  doReset();
+  mode='level1';
+  gs.game.on=true;
+}
+function closeParams(){
+  document.getElementById('ovParams').classList.remove('show');
+  document.getElementById('ovLevel2').classList.add('show');
+}
+
+function toggleMenu() { document.getElementById('menuLinks').classList.toggle('open'); }
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.menu')) document.getElementById('menuLinks').classList.remove('open');
+});
+</script>
+</body>
+</html>  
