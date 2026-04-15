@@ -100,7 +100,7 @@
     .cal-day.today    { border:2px solid var(--wave); color:var(--wave); font-weight:700; }
     .cal-day.selected { background:linear-gradient(135deg,var(--wave),var(--mid)); color:white !important; font-weight:700; box-shadow:0 4px 12px rgba(27,154,170,.4); }
     .cal-day.disabled { background:#fde8e8; color:#c0392b; cursor:not-allowed; }
-    .cal-day.full     { background:#f0f0f0; color:#aaa; cursor:not-allowed; }
+    .cal-day.full     { background:#fde8e8; color:#c0392b; cursor:not-allowed; }
     .cal-day.partial  { background:#fff8e1; color:#b07000; cursor:pointer; }
     .cal-day .day-tag { font-size:7px; font-weight:700; text-transform:uppercase; opacity:.85; line-height:1; }
     .cal-day.past     { opacity:.25; cursor:not-allowed; }
@@ -467,8 +467,7 @@
         <div class="legend">
           <div class="legend-item"><div class="legend-dot" style="background:linear-gradient(135deg,var(--wave),var(--mid));"></div><span>Sélectionné</span></div>
           <div class="legend-item"><div class="legend-dot" style="background:#fff8e1;border:1px solid #e0a800;"></div><span>Partiellement dispo</span></div>
-          <div class="legend-item"><div class="legend-dot" style="background:#f0f0f0;border:1px solid #ccc;"></div><span>Complet</span></div>
-          <div class="legend-item"><div class="legend-dot" style="background:#fde8e8;border:1px solid #e07070;"></div><span>Absent</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#fde8e8;border:1px solid #c0392b;"></div><span>Complet</span></div>
         </div>
 
         <!-- CRÉNEAUX (apparaît après sélection d'une date) -->

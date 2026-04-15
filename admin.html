@@ -309,6 +309,89 @@
 
     .loading-state { text-align: center; padding: 40px; color: var(--text-light); }
 
+    /* ── AGENDA DISPONIBILITÉS ── */
+    .agenda-card {
+      background: white; border-radius: 16px; padding: 24px;
+      box-shadow: 0 4px 20px rgba(2,26,46,0.07);
+      margin-bottom: 24px;
+    }
+
+    .agenda-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 16px;
+    }
+
+    .agenda-nav {
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .agenda-nav button {
+      background: var(--sky); border: none; border-radius: 8px;
+      width: 32px; height: 32px; font-size: 18px; cursor: pointer;
+      color: var(--ocean); font-weight: 700; transition: background 0.15s;
+    }
+    .agenda-nav button:hover { background: #ddeef8; }
+
+    .agenda-nav span {
+      font-weight: 700; font-size: 15px; color: var(--text); min-width: 160px; text-align: center;
+    }
+
+    .agenda-legend {
+      display: flex; gap: 20px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .agenda-legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--text-light);
+    }
+    .legend-dot-dispo  { width: 12px; height: 12px; border-radius: 3px; background: #e8f8f2; border: 1.5px solid var(--ok); flex-shrink: 0; }
+    .legend-dot-bloque { width: 12px; height: 12px; border-radius: 3px; background: #fde8e8; border: 1.5px solid var(--danger); flex-shrink: 0; }
+
+    .agenda-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .agenda-day-name {
+      text-align: center; font-size: 10px; font-weight: 700;
+      color: var(--text-light); text-transform: uppercase;
+      padding: 4px 0 8px;
+    }
+
+    .agenda-day {
+      border-radius: 10px; padding: 6px 4px;
+      background: var(--sky); min-height: 72px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+
+    .agenda-day.past { opacity: 0.35; }
+    .agenda-day.empty { background: transparent; }
+
+    .agenda-day-num {
+      font-size: 12px; font-weight: 700; color: var(--text-light);
+      text-align: center; margin-bottom: 2px;
+    }
+
+    .agenda-day.today .agenda-day-num {
+      color: var(--wave); background: rgba(27,154,170,0.12);
+      border-radius: 4px;
+    }
+
+    .agenda-slot-btn {
+      width: 100%; border: none; border-radius: 6px;
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.3px; cursor: pointer; padding: 3px 2px;
+      transition: opacity 0.15s, transform 0.1s;
+      line-height: 1.3;
+    }
+    .agenda-slot-btn:hover:not(:disabled) { opacity: 0.8; transform: scale(0.97); }
+    .agenda-slot-btn:disabled { cursor: not-allowed; opacity: 0.4; }
+
+    .agenda-slot-btn.dispo  { background: #e8f8f2; color: #1a7a50; border: 1.5px solid var(--ok); }
+    .agenda-slot-btn.bloque { background: #fde8e8; color: #c0392b; border: 1.5px solid var(--danger); }
+
+    .agenda-loading { text-align: center; padding: 32px; color: var(--text-light); font-size: 13px; }
+
     /* Responsive */
     @media (max-width: 900px) {
       .two-col { grid-template-columns: 1fr; }
@@ -316,6 +399,8 @@
     }
     @media (max-width: 600px) {
       .kpi-grid { grid-template-columns: 1fr 1fr; }
+      .agenda-grid { gap: 3px; }
+      .agenda-slot-btn { font-size: 8px; padding: 2px 1px; }
     }
   </style>
 </head>
@@ -362,6 +447,25 @@
       <div class="chart-card">
         <div class="card-title">💳 État des paiements</div>
         <div class="bar-list" id="barPaiement"></div>
+      </div>
+    </div>
+
+    <!-- Agenda disponibilités -->
+    <div class="agenda-card">
+      <div class="agenda-topbar">
+        <div class="card-title" style="margin-bottom:0;">📅 Agenda & Disponibilités</div>
+        <div class="agenda-nav">
+          <button onclick="agendaPrevMonth()" title="Mois précédent">‹</button>
+          <span id="agendaTitle">Chargement...</span>
+          <button onclick="agendaNextMonth()" title="Mois suivant">›</button>
+        </div>
+      </div>
+      <div class="agenda-legend">
+        <div class="agenda-legend-item"><div class="legend-dot-dispo"></div><span>Disponible — clic pour bloquer</span></div>
+        <div class="agenda-legend-item"><div class="legend-dot-bloque"></div><span>Bloqué (Complet) — clic pour libérer</span></div>
+      </div>
+      <div id="agendaGrid" class="agenda-grid">
+        <div class="agenda-loading" style="grid-column:1/-1;">Chargement de l'agenda...</div>
       </div>
     </div>
 
@@ -490,6 +594,7 @@ async function init() {
   renderKPI(allReservations);
   renderCharts(allReservations);
   applyFilters();
+  agendaInit();
 }
 
 /* ── KPI ── */
@@ -767,6 +872,165 @@ async function updateResa(id, newStatut, newPaiement) {
   renderKPI(allReservations);
   renderCharts(allReservations);
   applyFilters();
+}
+
+/* ============================================================
+   AGENDA DES DISPONIBILITÉS
+============================================================ */
+
+const AGENDA_MONTHS   = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const AGENDA_DAYS     = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const AGENDA_SLOTS    = [
+  { id: 'Matin',      shortLabel: 'Matin' },
+  { id: 'Après-midi', shortLabel: 'P-midi' },
+];
+
+let agendaYear    = new Date().getFullYear();
+let agendaMonth   = new Date().getMonth();
+let agendaBlocked = {}; // { 'YYYY-MM-DD': { 'Matin': true, 'Après-midi': true } }
+
+function agendaFmtDate(d) {
+  return d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
+}
+
+async function agendaInit() {
+  await agendaLoadAbsences();
+  agendaRender();
+}
+
+async function agendaLoadAbsences() {
+  agendaBlocked = {};
+  try {
+    const rows = await supaFetch('/rest/v1/absences?select=date,creneau');
+    if (!Array.isArray(rows)) return;
+    rows.forEach(r => {
+      if (!r.date) return;
+      if (!r.creneau) {
+        // Journée entière → bloquer tous les créneaux
+        agendaBlocked[r.date] = { 'Matin': true, 'Après-midi': true };
+      } else {
+        if (!agendaBlocked[r.date]) agendaBlocked[r.date] = {};
+        agendaBlocked[r.date][r.creneau] = true;
+      }
+    });
+  } catch(e) { console.warn('Agenda load:', e); }
+}
+
+function agendaRender() {
+  document.getElementById('agendaTitle').textContent = AGENDA_MONTHS[agendaMonth] + ' ' + agendaYear;
+  const grid = document.getElementById('agendaGrid');
+  grid.innerHTML = '';
+
+  // En-têtes jours
+  AGENDA_DAYS.forEach(name => {
+    const el = document.createElement('div');
+    el.className   = 'agenda-day-name';
+    el.textContent = name;
+    grid.appendChild(el);
+  });
+
+  const firstDay    = new Date(agendaYear, agendaMonth, 1);
+  let   startDow    = firstDay.getDay();
+  startDow          = startDow === 0 ? 6 : startDow - 1;
+  const daysInMonth = new Date(agendaYear, agendaMonth + 1, 0).getDate();
+  const todayStr    = agendaFmtDate(new Date());
+  const today       = new Date(); today.setHours(0, 0, 0, 0);
+
+  // Cases vides en début de mois
+  for (let i = 0; i < startDow; i++) {
+    const el = document.createElement('div');
+    el.className = 'agenda-day empty';
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date    = new Date(agendaYear, agendaMonth, d);
+    const dateStr = agendaFmtDate(date);
+    const isPast  = date < today;
+    const isToday = dateStr === todayStr;
+
+    const dayEl = document.createElement('div');
+    dayEl.className = 'agenda-day' + (isPast ? ' past' : '') + (isToday ? ' today' : '');
+
+    // Numéro du jour
+    const numEl = document.createElement('div');
+    numEl.className   = 'agenda-day-num';
+    numEl.textContent = d;
+    dayEl.appendChild(numEl);
+
+    // Boutons créneaux
+    AGENDA_SLOTS.forEach(slot => {
+      const isBlocked = !!(agendaBlocked[dateStr]?.[slot.id]);
+      const btn = document.createElement('button');
+      btn.className   = 'agenda-slot-btn ' + (isBlocked ? 'bloque' : 'dispo');
+      btn.textContent = slot.shortLabel;
+      btn.title       = (isBlocked ? '🔴 Bloqué — cliquer pour libérer' : '🟢 Dispo — cliquer pour bloquer') + ' (' + dateStr + ' ' + slot.id + ')';
+      btn.disabled    = isPast;
+      btn.onclick     = (function(ds, sid) {
+        return function() { agendaToggleSlot(ds, sid); };
+      })(dateStr, slot.id);
+      dayEl.appendChild(btn);
+    });
+
+    grid.appendChild(dayEl);
+  }
+}
+
+async function agendaToggleSlot(dateStr, creneau) {
+  const isBlocked = !!(agendaBlocked[dateStr]?.[creneau]);
+
+  // Mise à jour optimiste de l'UI
+  if (!agendaBlocked[dateStr]) agendaBlocked[dateStr] = {};
+  if (isBlocked) {
+    delete agendaBlocked[dateStr][creneau];
+  } else {
+    agendaBlocked[dateStr][creneau] = true;
+  }
+  agendaRender();
+
+  try {
+    if (isBlocked) {
+      // Supprimer l'absence (libérer le créneau)
+      await supaFetch(
+        '/rest/v1/absences?date=eq.' + dateStr + '&creneau=eq.' + encodeURIComponent(creneau),
+        { method: 'DELETE', headers: { 'Prefer': '' } }
+      );
+      showToast('✅ Créneau libéré : ' + creneau + ' du ' + dateStr);
+    } else {
+      // Insérer l'absence (bloquer le créneau)
+      await supaFetch('/rest/v1/absences', {
+        method: 'POST',
+        body: JSON.stringify({ date: dateStr, creneau: creneau }),
+        headers: { 'Prefer': 'return=minimal' }
+      });
+      showToast('🔴 Créneau bloqué : ' + creneau + ' du ' + dateStr);
+    }
+  } catch(e) {
+    // Rollback en cas d'erreur
+    if (isBlocked) {
+      agendaBlocked[dateStr][creneau] = true;
+    } else {
+      delete agendaBlocked[dateStr][creneau];
+    }
+    agendaRender();
+    showToast('❌ Erreur : ' + e.message, 'error');
+  }
+}
+
+function agendaPrevMonth() {
+  const now = new Date();
+  if (agendaYear === now.getFullYear() && agendaMonth === now.getMonth()) return;
+  agendaMonth--;
+  if (agendaMonth < 0) { agendaMonth = 11; agendaYear--; }
+  agendaRender();
+}
+
+function agendaNextMonth() {
+  agendaMonth++;
+  if (agendaMonth > 11) { agendaMonth = 0; agendaYear++; }
+  agendaRender();
 }
 
 /* ── Init ── */
