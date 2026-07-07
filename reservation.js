@@ -64,13 +64,7 @@ const TARIFS = {
     label:  '10h – tarif/pers',
     hourly: false,
   },
-  'Navigation surveillée Foil': {
-    sans:   40,
-    avec:   30,
-    label:  '€/h – encadrement sur l\'eau',
-    hourly: true,
-    useDurationRates: false,
-  },
+ 
 };
 
 // ============================================================
@@ -116,13 +110,12 @@ const PRESTATIONS = {
   'Pumping foil': [
     'Cours particulier Pumping foil',
     'Pack 10H Pumping',
-    'Navigation surveillée Foil',
   ],
 };
 
 const SLOTS = [
-  { id: 'Matin',      icon: '🌅', label: 'Matin',      hours: '9h00 – 12h00',  max: 2 },
-  { id: 'Après-midi', icon: '☀️', label: 'Après-midi', hours: '14h00 – 17h00', max: 2 },
+  { id: 'Matin',      icon: '🌅', label: 'Matin',      hours: '9h00 – 12h00',  max: 2, startHour: 9  },
+  { id: 'Après-midi', icon: '☀️', label: 'Après-midi', hours: '14h00 – 17h00', max: 2, startHour: 14 },
 ];
 
 let currentYear, currentMonth;
@@ -224,6 +217,7 @@ function changeNbParticipants(delta) {
 
 function renderExtraParticipants() {
   const container = document.getElementById('extraParticipants');
+  if (!container) return;
   container.innerHTML = '';
   for (let i = 2; i <= nbParticipants; i++) {
     container.insertAdjacentHTML('beforeend', `
@@ -420,8 +414,20 @@ async function loadAvailability() {
   daySlotCounts = {};
   absenceDates  = {};
   try {
-    const rows = await supaGet('absences', 'select=date');
-    rows.forEach(r => { if (r.date) absenceDates[r.date] = true; });
+    const rows = await supaGet('absences', 'select=date,creneau');
+    rows.forEach(r => {
+      if (!r.date) return;
+      if (!r.creneau) {
+        // Journée entière bloquée
+        absenceDates[r.date] = 'full';
+      } else {
+        // Créneau spécifique bloqué
+        if (absenceDates[r.date] !== 'full') {
+          if (typeof absenceDates[r.date] !== 'object') absenceDates[r.date] = {};
+          absenceDates[r.date][r.creneau] = true;
+        }
+      }
+    });
   } catch(e) { console.warn('Absences:', e.message); }
   try {
     const rows = await supaGet('reservations', 'select=date,creneau&statut=neq.Annulé&date=not.is.null');
@@ -460,12 +466,33 @@ async function loadCalendar() {
 }
 
 function getDayStatus(dateStr) {
-  if (absenceDates[dateStr]) return 'absence';
-  const counts     = daySlotCounts[dateStr] || { 'Matin': 0, 'Après-midi': 0 };
-  const totalDispo = SLOTS.reduce((acc, s) => acc + Math.max(0, s.max - (counts[s.id] || 0)), 0);
-  const totalMax   = SLOTS.reduce((acc, s) => acc + s.max, 0);
-  if (totalDispo === 0)      return 'full';
-  if (totalDispo < totalMax) return 'partial';
+  const absence = absenceDates[dateStr];
+
+  // Journée entière bloquée
+  if (absence === 'full') return 'absence';
+
+  const counts        = daySlotCounts[dateStr] || {};
+  let totalDispo      = 0;
+  let totalMax        = 0;
+  let hasAbsenceSlot  = false;
+
+  SLOTS.forEach(s => {
+    const isSlotBlocked = absence && typeof absence === 'object' && absence[s.id];
+    if (isSlotBlocked) {
+      hasAbsenceSlot = true;
+    } else {
+      totalMax   += s.max;
+      totalDispo += Math.max(0, s.max - (counts[s.id] || 0));
+    }
+  });
+
+  // Tous les créneaux bloqués individuellement
+  if (totalMax === 0) return 'absence';
+  if (totalDispo === 0) return 'full';
+
+  // Au moins un créneau bloqué par absence → partiellement dispo
+  if (hasAbsenceSlot || totalDispo < totalMax) return 'partial';
+
   return 'available';
 }
 
@@ -505,8 +532,8 @@ function renderCalendar() {
       el.className   = 'cal-day past';
       el.textContent = d;
     } else if (status === 'absence') {
-      el.className = 'cal-day disabled';
-      el.innerHTML = '<span>' + d + '</span><span class="day-tag">Absent</span>';
+      el.className = 'cal-day full';
+      el.innerHTML = '<span>' + d + '</span><span class="day-tag">Complet</span>';
     } else if (status === 'full') {
       el.className = 'cal-day full';
       el.innerHTML = '<span>' + d + '</span><span class="day-tag">Complet</span>';
@@ -540,25 +567,39 @@ function selectDate(dateStr, day) {
 }
 
 function renderSlots(dateStr) {
-  const grid   = document.getElementById('slotsGrid');
-  const counts = daySlotCounts[dateStr] || { 'Matin': 0, 'Après-midi': 0 };
+  const grid     = document.getElementById('slotsGrid');
+  const counts   = daySlotCounts[dateStr] || { 'Matin': 0, 'Après-midi': 0 };
+  const todayStr = fmtDate(new Date());
+  const nowHour  = new Date().getHours();
   grid.innerHTML = '';
 
+  const absence = absenceDates[dateStr];
+
   SLOTS.forEach(function(slot) {
-    const used   = counts[slot.id] || 0;
-    const dispo  = slot.max - used;
-    const isFull = dispo <= 0;
-    const isSel  = slot.id === selectedSlot;
+    const used           = counts[slot.id] || 0;
+    const dispo          = slot.max - used;
+    const isFull         = dispo <= 0;
+    const isPastSlot     = dateStr === todayStr && nowHour >= slot.startHour;
+    const isAbsenceSlot  = absence === 'full' || (absence && typeof absence === 'object' && absence[slot.id]);
+    const isSel          = slot.id === selectedSlot;
+    const isBlocked      = isFull || isPastSlot || isAbsenceSlot;
 
     const card = document.createElement('div');
-    card.className = 'slot-card ' + (isFull ? 'full-slot' : isSel ? 'selected-slot' : 'available');
+    card.className = 'slot-card ' + (isBlocked ? 'full-slot' : isSel ? 'selected-slot' : 'available');
+
+    let placesLabel;
+    if (isPastSlot)      placesLabel = 'Créneau passé';
+    else if (isAbsenceSlot) placesLabel = 'Complet';
+    else if (isFull)     placesLabel = 'Complet';
+    else                 placesLabel = dispo + ' place' + (dispo > 1 ? 's' : '') + ' dispo';
+
     card.innerHTML =
       '<div class="slot-icon">'  + slot.icon  + '</div>' +
       '<div class="slot-name">'  + slot.label + '</div>' +
       '<div class="slot-hours">' + slot.hours + '</div>' +
-      '<span class="slot-places">' + (isFull ? 'Complet' : dispo + ' place' + (dispo > 1 ? 's' : '') + ' dispo') + '</span>';
+      '<span class="slot-places">' + placesLabel + '</span>';
 
-    if (!isFull) {
+    if (!isBlocked) {
       card.onclick = (function(sid, ds) {
         return function() {
           selectedSlot = sid;
