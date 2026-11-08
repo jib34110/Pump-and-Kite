@@ -266,6 +266,7 @@ label.case input { width: 22px; height: 22px; }
  * @property {boolean} tutoriel
  * @property {string[]} tutoVus
  * @property {boolean} muet
+ * @property {boolean} aideMonnaie  Affiche le montant à rendre (pas de bonus)
  * @property {Historique[]} historique
  * @property {EvenementId|null} evenement
  * @property {number} prochainId
@@ -287,6 +288,8 @@ label.case input { width: 22px; height: 22px; }
  * @property {boolean|null} caisseJuste
  * @property {number} proprete
  * @property {number} amende
+ * @property {number} bonusCalcul
+ * @property {number} heureOuverture
  * @property {number} niveauAvant
  * @property {string[]} notes
  */
@@ -362,6 +365,7 @@ label.case input { width: 22px; height: 22px; }
  * @property {number} finT
  * @property {Client|null} vendeurClient
  * @property {number} vendeurT
+ * @property {number} ouverture  Heure d'ouverture (en heures, ex. 8,5)
  */
 /** @typedef {{valeur: number, n: number}} Coupure */
 /** @typedef {{attendu: number, saisie: string, contenu: Coupure[], resultat: boolean|null, t: number}} EtatCaisse */
@@ -377,6 +381,7 @@ label.case input { width: 22px; height: 22px; }
  * @property {number} reparation
  * @property {number} amende
  * @property {number} boutique2
+ * @property {number} bonusCalcul
  * @property {number} benefice
  * @property {number} repAvant
  * @property {number} repApres
@@ -434,7 +439,10 @@ const CONFIG = Object.freeze({
   fondDeCaisse: 5000,
   dureeMatin: 170,             // secondes réelles
   dureeMatinTuto: 260,
-  dureeMidi: 130,
+  dureeMidi: 130,             // durée réelle de 11 h à 19 h ; ouvrir plus tôt l'allonge
+  heureOuvertureNormale: 11,
+  heureFermeture: 19,
+  bonusSansAide: 0.10,         // +10 % sur les ventes avec monnaie rendue sans aide
   dureeMenage: 25,
   xpBase: 100,
   xpExposant: 1.5,
@@ -689,7 +697,7 @@ function nouvelEtat(tutoriel) {
     competences: parProduit(() => ({ niv: 1, xp: 0 })),
     employes: [], candidats: [],
     ameliorations: { chambrePousse: false, petrin: false, secondFour: false, vitrine: false, boutique2: false },
-    tutoriel, tutoVus: [], muet: false, historique: [], evenement: null, prochainId: 1,
+    tutoriel, tutoVus: [], muet: false, aideMonnaie: true, historique: [], evenement: null, prochainId: 1,
   };
 }
 /** @param {unknown} x @returns {x is EtatDeJeu} */
@@ -709,6 +717,7 @@ function reparer(e) {
   for (const a of AMELIORATIONS) if (typeof e.ameliorations[a.id] !== 'boolean') e.ameliorations[a.id] = false;
   if (typeof e.proprete !== 'number') e.proprete = 1;
   if (typeof e.muet !== 'boolean') e.muet = false;
+  if (typeof e.aideMonnaie !== 'boolean') e.aideMonnaie = true;
   if (typeof e.prochainId !== 'number') e.prochainId = 1;
   return e;
 }
@@ -732,7 +741,7 @@ function effacerSauvegarde() {
 function nouveauJournal() {
   return { ca: 0, braderie: 0, coutMatieres: 0, ventes: parProduit(() => 0), clientsServis: 0, clientsPerdus: 0,
     satisfactions: [], xp: 0, invendusPerdus: 0, invendusBrades: 0, fourneesFaites: 0, fourneesRatees: 0,
-    caisseJuste: null, proprete: 1, amende: 0, niveauAvant: E.niveau, notes: [] };
+    caisseJuste: null, proprete: 1, amende: 0, bonusCalcul: 0, heureOuverture: CONFIG.heureOuvertureNormale, niveauAvant: E.niveau, notes: [] };
 }
 /** @param {Phase} phase @returns {Session} */
 function nouvelleSession(phase) {
@@ -1037,14 +1046,31 @@ function ouvrirBoutique() {
   S.confirmer = false;
   S.reserveExpress = false;
   S.phase = 'midi';
+  // Ouvrir avant 11 h ajoute des heures de vente, donc des clients.
+  const ouverture = heureMatin();
+  const enPlus = Math.max(0, CONFIG.heureOuvertureNormale - ouverture);
+  const parHeure = CONFIG.dureeMidi / (CONFIG.heureFermeture - CONFIG.heureOuvertureNormale);
+  const decalage = enPlus * parHeure;
+  const aVenir = S.planClients.map((c) => { c.arrivee += decalage; return c; });
+  const nbExtra = Math.round(S.planClients.filter((c) => !c.special).length * enPlus / (CONFIG.heureFermeture - CONFIG.heureOuvertureNormale));
+  for (let i = 0; i < nbExtra; i++) aVenir.push(creerClient(2000 + i, 1.5 + (decalage - 2) * (i + Math.random() * 0.7) / Math.max(1, nbExtra)));
+  aVenir.sort((a, b) => a.arrivee - b.arrivee);
+  S.journal.heureOuverture = ouverture;
   S.comptoir = {
-    clients: [], aVenir: S.planClients.slice(), sortants: [], temps: 0, duree: CONFIG.dureeMidi,
+    clients: [], aVenir, sortants: [], temps: 0, duree: CONFIG.dureeMidi + decalage,
     plateau: parProduit(() => 0), paiement: null, message: '', messageT: 0, fermeture: false, finT: 0,
-    vendeurClient: null, vendeurT: 0,
+    vendeurClient: null, vendeurT: 0, ouverture,
   };
+  if (enPlus >= 0.25) toast('Ouverture à ' + libelleHeure(ouverture) + ' : ' + nombre(enPlus, 1) + ' h de vente en plus, environ ' + nbExtra + ' client' + (nbExtra > 1 ? 's' : '') + ' de plus.');
   son('clochette');
   rafraichirUI();
 }
+/** Heure du fournil, de 6 h à 11 h. @returns {number} */
+function heureMatin() { return 6 + (CONFIG.heureOuvertureNormale - 6) * borner(S.horloge / S.dureeMatin, 0, 1); }
+/** @param {number} h @returns {string} */
+function libelleHeure(h) { const m = Math.round(h * 60); return Math.floor(m / 60) + 'h' + String(m % 60).padStart(2, '0'); }
+/** L'aide affiche le montant à rendre ; elle est imposée pendant les 2 premiers jours du tutoriel. */
+function aideMonnaieActive() { return E.aideMonnaie || (E.tutoriel && E.jour <= 2); }
 function fermerBoutique() {
   const C = S.comptoir;
   if (!C) return;
@@ -1185,9 +1211,9 @@ function finJournee() {
       J.notes.push(emp.nom + ' (' + ROLES[emp.role] + ') a démissionné : moral trop bas.');
     }
   }
-  const benefice = J.ca + J.braderie + boutique2 - J.coutMatieres - CONFIG.chargesJour - salaires - reparation - J.amende;
+  const benefice = J.ca + J.braderie + J.bonusCalcul + boutique2 - J.coutMatieres - CONFIG.chargesJour - salaires - reparation - J.amende;
   S.bilan = { ca: J.ca, braderie: J.braderie, matieres: J.coutMatieres, charges: CONFIG.chargesJour, salaires, reparation,
-    amende: J.amende, boutique2, benefice, repAvant, repApres: E.reputation, notes: J.notes.slice() };
+    amende: J.amende, boutique2, bonusCalcul: J.bonusCalcul, benefice, repAvant, repApres: E.reputation, notes: J.notes.slice() };
   E.historique.push({ jour: E.jour, ca: J.ca + J.braderie, benefice });
   if (E.historique.length > 60) E.historique.shift();
   S.menage = null;
@@ -1529,6 +1555,11 @@ function encaisser(pay, monnaieOk) {
   S.journal.clientsServis++;
   gagnerXP(CONFIG.xpClient + (monnaieOk && pay.donne !== pay.total ? CONFIG.xpMonnaie : 0));
   C.paiement = null;
+  if (monnaieOk && pay.donne !== pay.total && !aideMonnaieActive()) {
+    const bonus = Math.round(pay.total * CONFIG.bonusSansAide / 10) * 10;
+    E.argent += bonus;
+    S.journal.bonusCalcul += bonus;
+  }
   if (monnaieOk) dire(sat > 0.75 ? 'Merci, bonne journée !' : sat > 0.45 ? 'Merci.' : 'Enfin…');
   partir(cl, sat, 'servi');
   const R = rectsComptoir.boutique;
@@ -1692,7 +1723,7 @@ const TUTO = [
   { id: 'm6', jour: 1, phase: 'matin', pause: false, cible: 'four-premier', fini: () => S.journal.fourneesFaites > 0, quand: () => !S.mj && uneFournee((f) => f.lieu === 'four'),
     texte: 'Au four ! Touchez la fournée quand la jauge est dans la zone dorée. Aujourd’hui, je surveille pour que rien ne brûle.' },
   { id: 'm7', jour: 1, phase: 'matin', pause: false, cible: null, fini: () => S.phase !== 'matin', quand: () => !S.mj && S.journal.fourneesFaites > 0,
-    texte: 'Bravo, vos premières baguettes sont en vitrine ! Faites-en trois ou quatre fournées, puis touchez « Ouvrir la boutique ».' },
+    texte: 'Bravo, vos premières baguettes sont en vitrine ! Faites-en trois ou quatre fournées, puis ouvrez la boutique. Plus vous ouvrez tôt, plus vous aurez de clients jusqu’à 19 h.' },
   { id: 'c1', jour: 1, phase: 'midi', pause: false, cible: 'vitrine-baguette', fini: () => S.journal.clientsServis > 0 || !!(S.comptoir && S.comptoir.paiement),
     quand: () => !!S.comptoir && S.comptoir.clients.length > 0,
     texte: 'Un client ! Sa commande est dans la bulle. Touchez les produits en vitrine pour remplir le plateau, puis « Servir ».' },
@@ -1715,7 +1746,7 @@ const TUTO = [
   { id: 'r1', jour: 0, phase: 'matin', pause: false, cible: 'rapide-premier', fini: null, quand: () => !S.mj && uneFournee((f) => estGeste(etapeCourante(f)) && rapideDispo(f.recette)),
     texte: 'Votre compétence atteint 3 : le bouton ⚡ fait les gestes en un seul toucher. À la main, vous visez toujours les 3 étoiles.' },
   { id: 'p4', jour: 3, phase: 'preparation', pause: false, cible: null, fini: null, quand: () => true,
-    texte: 'Dernier jour avec moi. Au niveau 5, vous pourrez embaucher une équipe ; ensuite viendront les travaux. Bonne chance !' },
+    texte: 'Dernier jour avec moi. Au niveau 5, vous pourrez embaucher une équipe ; ensuite viendront les travaux. Dans le menu ☰, vous pouvez couper l’aide au rendu de monnaie : +10 % sur ces ventes. Bonne chance !' },
 ];
 function majTuto() {
   if (!E.tutoriel || S.menu || !panneauVisibleCompatibleTuto()) { if (S.tuto) cacherBulle(); S.tuto = null; return; }
@@ -2761,8 +2792,8 @@ function dessinerMonnaie(C, pay, L) {
   panneauSection(R, 'Rendre la monnaie');
   const fs = Math.min(17, R.w * 0.05);
   ecrire('Total ' + euros(pay.total) + ' · le client donne ' + euros(pay.donne), R.x + R.w / 2, R.y + 36, fs, '#3a2414', 'center', 700, R.w - 16);
-  const aide = E.tutoriel || E.jour <= 2;
-  ecrire((aide ? 'À rendre : ' + euros(pay.donne - pay.total) + ' · ' : '') + 'Vous rendez : ' + euros(pay.rendu), R.x + R.w / 2, R.y + 36 + fs * 1.5, fs, '#a8691a', 'center', 800, R.w - 16);
+  const aide = aideMonnaieActive();
+  ecrire((aide ? 'À rendre : ' + euros(pay.donne - pay.total) + ' · ' : 'Calcul mental +' + Math.round(CONFIG.bonusSansAide * 100) + ' % · ') + 'Vous rendez : ' + euros(pay.rendu), R.x + R.w / 2, R.y + 36 + fs * 1.5, fs, '#a8691a', 'center', 800, R.w - 16);
   const valeurs = [500, 200, 100, 50, 20, 10];
   const zy = R.y + 36 + fs * 2.6;
   const zh = R.y + R.h - zy - 8;
@@ -3048,8 +3079,13 @@ function majHUD() {
   majTexte(hJour, 'Jour ' + E.jour);
   majTexte(hDate, libelleDate(E.jour));
   let horloge = '';
-  if (S.phase === 'matin') { const m = 6 * 60 + (S.horloge / S.dureeMatin) * 300; horloge = '⏰ ' + Math.floor(m / 60) + 'h' + String(Math.floor(m % 60)).padStart(2, '0'); }
-  else if (S.phase === 'midi' && S.comptoir) { const m = 11 * 60 + borner(S.comptoir.temps / S.comptoir.duree, 0, 1) * 480; horloge = '⏰ ' + Math.floor(m / 60) + 'h' + String(Math.floor(m % 60)).padStart(2, '0'); }
+  if (S.phase === 'matin') horloge = '⏰ ' + libelleHeure(Math.floor(heureMatin() * 12) / 12);
+  else if (S.phase === 'midi' && S.comptoir) {
+    const C = S.comptoir;
+    horloge = '⏰ ' + libelleHeure(Math.floor((C.ouverture + borner(C.temps / C.duree, 0, 1) * (CONFIG.heureFermeture - C.ouverture)) * 12) / 12);
+  }
+  const bOuvrir = barre.querySelector('[data-a="ouvrir"]');
+  if (bOuvrir instanceof HTMLButtonElement && S.phase === 'matin' && !S.confirmer) majTexte(bOuvrir, texteOuvrir());
   majTexte(hHorloge, horloge);
   majTexte(hArgent, euros(E.argent));
   majTexte(hNivT, 'Niv. ' + E.niveau);
@@ -3085,6 +3121,11 @@ function cacherBulle() { bulle.hidden = true; }
 function btn(a, v, label, classe, inactif) {
   return '<button type="button" class="btn ' + (classe || '') + '" data-a="' + a + '" data-v="' + esc(v) + '"' + (inactif ? ' disabled' : '') + '>' + label + '</button>';
 }
+function texteOuvrir() {
+  const h = heureMatin();
+  const enPlus = CONFIG.heureOuvertureNormale - h;
+  return 'Ouvrir à ' + libelleHeure(Math.floor(h * 12) / 12) + (enPlus >= 0.25 ? ' · +' + nombre(enPlus, 1) + ' h de vente' : '') + ' ▶';
+}
 function rafraichirBarre() {
   let h = '';
   switch (S.phase) {
@@ -3093,7 +3134,7 @@ function rafraichirBarre() {
       break;
     case 'preparation': h = btn('commencer', '', 'Commencer la journée ▶'); break;
     case 'matin':
-      h = btn('express', '', '📦 Réserve', 'sec') + btn('ouvrir', '', S.confirmer ? 'Confirmer l’ouverture' : 'Ouvrir la boutique ▶', S.confirmer ? 'danger' : '');
+      h = btn('express', '', '📦 Réserve', 'sec') + btn('ouvrir', '', S.confirmer ? 'Confirmer l’ouverture' : texteOuvrir(), S.confirmer ? 'danger' : '');
       break;
     case 'midi': h = btn('fermer', '', S.confirmer ? 'Confirmer la fermeture' : 'Fermer la boutique', S.confirmer ? 'danger' : 'sec'); break;
     case 'menage': h = btn('finMenage', '', 'Terminer le ménage'); break;
@@ -3136,8 +3177,10 @@ function htmlAccueil() {
 function htmlMenu() {
   return '<div class="carte"><h2>Menu</h2><div class="actions">' + btn('fermerMenu', '', 'Reprendre') +
     btn('muet', '', E.muet ? '🔇 Activer le son' : '🔊 Couper le son', 'sec') +
+    btn('aide', '', E.aideMonnaie ? '🧮 Aide monnaie : activée' : '🧮 Aide monnaie : désactivée', 'sec') +
     btn(S.confirmer ? 'nouvelle' : 'confirmerNouvelle', 'tuto', S.confirmer ? 'Effacer et recommencer' : 'Nouvelle partie', S.confirmer ? 'danger' : 'sec') + '</div>' +
     (S.confirmer ? '<p class="alerte">La partie en cours sera effacée définitivement.</p>' : '') +
+    '<p class="discret">Aide au rendu de monnaie : le montant à rendre est affiché. Sans aide, vous calculez vous-même et gagnez +' + Math.round(CONFIG.bonusSansAide * 100) + ' % sur chaque vente où la monnaie est rendue juste.</p>' +
     '<h3>Aide</h3><p>Matin : lancez des fournées et réussissez les gestes. Les temps de pousse et de cuisson sont réels : planifiez. Midi : servez la commande affichée et rendez la monnaie. Soir : comptez la caisse et faites le ménage.</p>' +
     '<p class="discret">Sauvegarde automatique au début de chaque journée.</p></div>';
 }
@@ -3196,6 +3239,9 @@ function htmlOngletJour() {
   }
   h += '</div>';
   if (E.employes.length) h += '<p class="discret">Équipe : ' + E.employes.map((e) => esc(e.nom) + ' (' + ROLES[e.role] + (e.enFormation ? ', en formation' : '') + ')').join(', ') + '. Salaires : ' + euros(E.employes.reduce((s, e) => s + e.salaire, 0)) + ' par jour.</p>';
+  h += '<div class="ligne"><div>🧮</div><div><b>Aide au rendu de monnaie</b><span class="dosage">' + (E.aideMonnaie ? 'Activée : le montant à rendre est affiché.' : 'Désactivée : +' + Math.round(CONFIG.bonusSansAide * 100) + ' % sur les ventes rendues juste.') + '</span></div><div class="act">' +
+    btn('aide', '', E.aideMonnaie ? 'Désactiver (+' + Math.round(CONFIG.bonusSansAide * 100) + ' %)' : 'Activer', 'petit sec') + '</div></div>';
+  h += '<p class="discret">Plus vous ouvrez tôt, plus vous avez de clients : la boutique ferme à ' + CONFIG.heureFermeture + ' h.</p>';
   h += '<p class="discret">Loyer et charges : ' + euros(CONFIG.chargesJour) + ' par jour. Les invendus sont bradés à moitié, le reste est perdu.</p>';
   return h;
 }
@@ -3255,13 +3301,14 @@ function htmlBilan() {
   for (const p of LISTE_PRODUITS) if (J.ventes[p] > 0) ventes += J.ventes[p] + ' ' + (J.ventes[p] > 1 ? RECETTES[p].pluriel : RECETTES[p].nom.toLowerCase()) + ', ';
   const sat = J.satisfactions.length ? Math.round(100 * moyenne(J.satisfactions)) : 0;
   let h = '<div class="carte"><h2>Bilan du jour ' + E.jour + '</h2>';
-  h += '<table class="bilan">' + ligne('Ventes', B.ca) + ligne('Invendus bradés (' + J.invendusBrades + ')', B.braderie) + ligne('Seconde boutique', B.boutique2) +
+  h += '<table class="bilan">' + ligne('Ventes', B.ca) + ligne('Invendus bradés (' + J.invendusBrades + ')', B.braderie) + ligne('Bonus calcul mental (+' + Math.round(CONFIG.bonusSansAide * 100) + ' %)', B.bonusCalcul) + ligne('Seconde boutique', B.boutique2) +
     ligne('Matières premières utilisées', B.matieres, true) + ligne('Loyer et charges', B.charges, true) + ligne('Salaires', B.salaires, true) +
     ligne('Réparation du four', B.reparation, true) + ligne('Amende d’hygiène', B.amende, true) +
     '<tr class="total"><td>Bénéfice du jour</td><td class="' + (B.benefice >= 0 ? 'pos' : 'neg') + '">' + euros(B.benefice) + '</td></tr></table>';
   h += '<p class="discret">' + (ventes ? 'Vendu : ' + ventes.slice(0, -2) + '. ' : '') + 'Pertes : ' + J.invendusPerdus + ' invendu' + (J.invendusPerdus > 1 ? 's' : '') + ' jeté' + (J.invendusPerdus > 1 ? 's' : '') + ', ' + J.fourneesRatees + ' fournée' + (J.fourneesRatees > 1 ? 's' : '') + ' ratée' + (J.fourneesRatees > 1 ? 's' : '') + '.</p>';
   h += '<div class="grille2"><div class="stat">Clients servis<b>' + J.clientsServis + ' / ' + (J.clientsServis + J.clientsPerdus) + '</b></div>' +
     '<div class="stat">Satisfaction<b>' + sat + ' %</b></div>' +
+    '<div class="stat">Ouverture<b>' + libelleHeure(J.heureOuverture) + ' → ' + CONFIG.heureFermeture + 'h00</b></div>' +
     '<div class="stat">Réputation<b>' + nombre(B.repAvant, 1) + ' → ' + nombre(B.repApres, 1) + ' ★</b></div>' +
     '<div class="stat">Propreté<b>' + Math.round(J.proprete * 100) + ' %</b></div>' +
     '<div class="stat">Caisse<b>' + (J.caisseJuste ? 'Juste ✅' : 'Erreur ❌') + '</b></div>' +
@@ -3306,6 +3353,7 @@ function actionUI(a, v) {
     case 'suivante': journeeSuivante(); return;
     case 'fermerMenu': S.menu = false; S.confirmer = false; break;
     case 'muet': E.muet = !E.muet; sauver(); break;
+    case 'aide': E.aideMonnaie = !E.aideMonnaie; sauver(); toast(E.aideMonnaie ? 'Aide au rendu de monnaie activée.' : 'Aide désactivée : +' + Math.round(CONFIG.bonusSansAide * 100) + ' % sur les ventes rendues juste.'); break;
     case 'embaucher': embaucher(Number(v)); return;
     case 'former': former(Number(v)); return;
     case 'augmenter': augmenter(Number(v)); return;

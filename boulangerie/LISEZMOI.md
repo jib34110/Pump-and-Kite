@@ -6,7 +6,7 @@ Jeu autonome en un seul fichier : `index.html`. Il contient le HTML, le CSS et l
 
 1. **Préparation** : prévision de la demande, réserve en grammes et kilogrammes, commandes au fournisseur, recettes, équipe, travaux.
 2. **Matin, au fournil** : lancer des fournées, puis réussir les gestes (pétrissage, façonnage, scarification) et défourner dans la zone dorée. Les temps de pousse et de cuisson sont réels : il faut planifier.
-3. **Midi, au comptoir** : servir la commande affichée dans la bulle et rendre la monnaie exacte.
+3. **Ouverture, au comptoir** : la boutique ouvre quand vous le décidez, et au plus tard à 11 h ; elle ferme à 19 h. Ouvrir plus tôt donne des heures de vente et des clients en plus. Il faut servir la commande affichée dans la bulle et rendre la monnaie exacte.
 4. **Soir** : compter la caisse, puis faire le ménage. La propreté influence la réputation.
 5. **Bilan** : chiffre d'affaires, coûts, pertes, XP, réputation et déblocages.
 
@@ -27,6 +27,8 @@ Gaston, le maître boulanger, guide les jours 1 à 3. Le tutoriel peut être ign
 | Ménage | Frotter les taches | Espace |
 | Menu | ☰ | Échap |
 
+Réglage « Aide au rendu de monnaie » (menu ☰ ou onglet Journée) : quand elle est activée, le montant à rendre est affiché. Quand elle est désactivée, le joueur calcule lui-même et gagne +10 % (`CONFIG.bonusSansAide`) sur chaque vente où la monnaie est rendue juste. L'aide est toujours affichée pendant les deux premiers jours du tutoriel.
+
 Le bouton 🔊 coupe le son. La partie est sauvegardée automatiquement au début de chaque journée, dans le `localStorage` du navigateur. Le menu ☰ permet de lancer une nouvelle partie.
 
 ## Équilibrage modifiable
@@ -45,6 +47,7 @@ Formules principales :
 - Compétence par produit (1 à 10) : délais `× (1 − 0,055 × (compétence − 1))`, soit environ −50 % au niveau 10, et prix `× (1 + 0,02 × (compétence − 1))`.
 - Prix de vente : `prix de base × (0,8 + 0,1 × étoiles)`, arrondi aux 10 centimes.
 - Clients par jour : `(8 + 4 × réputation)`, avec un bonus pour la vitrine et certains événements.
+- Ouverture anticipée : chaque heure d'ouverture avant 11 h ajoute `1/8` des clients de la journée et allonge le service d'autant.
 - Réputation : moyenne glissante de la satisfaction, pondérée par la propreté.
 - Mode rapide : disponible dès la compétence 3. La qualité dépend de la compétence, et il existe un petit risque d'erreur au début.
 
