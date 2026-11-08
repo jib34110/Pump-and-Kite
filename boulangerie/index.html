@@ -154,7 +154,7 @@ label.case input { width: 22px; height: 22px; }
     <div id="bulle" hidden>
       <div class="avatar" aria-hidden="true">👨‍🍳</div>
       <div class="corps">
-        <div class="nom">Gaston, maître boulanger</div>
+        <div class="nom">Jean-Baptiste · boulangerie Chez les Voisins, Frontignan</div>
         <p id="bulleTexte"></p>
         <div class="act">
           <button class="btn petit" id="bulleOk" type="button">Compris</button>
@@ -1700,53 +1700,53 @@ function acheterAmelioration(id) {
 }
 
 // =====================================================================
-// 12. TUTORIEL (Gaston)
+// 12. TUTORIEL (Jean-Baptiste, boulangerie Chez les Voisins à Frontignan)
 // =====================================================================
 /** @param {(f: Fournee) => boolean} test */
 function uneFournee(test) { return S.fournees.some(test); }
 /** @type {ReadonlyArray<EtapeTuto>} */
 const TUTO = [
   { id: 'p1', jour: 1, phase: 'preparation', pause: false, cible: null, fini: null, quand: () => true,
-    texte: 'Bonjour ! Je suis Gaston, boulanger depuis quarante ans. Je vous accompagne pendant vos trois premiers jours.' },
+    texte: 'Salut ! Moi c’est Jean-Baptiste, le patron de la boulangerie Chez les Voisins, à Frontignan. Je suis là pour t’aider et t’expliquer comment gérer ta future boulangerie. Je reste avec toi pendant trois jours.' },
   { id: 'p2', jour: 1, phase: 'preparation', pause: false, cible: null, fini: () => S.phase !== 'preparation', quand: () => true,
-    texte: 'Voici la prévision du jour et votre réserve. Aujourd’hui, on ne fait que des baguettes. Touchez « Commencer la journée ».' },
+    texte: 'Ici, tu as la prévision du jour et ta réserve. Aujourd’hui, on ne fait que des baguettes. Touche « Commencer la journée ».' },
   { id: 'm1', jour: 1, phase: 'matin', pause: false, cible: 'recette-baguette', fini: () => S.fournees.length > 0 || S.journal.fourneesFaites > 0, quand: () => true,
-    texte: 'Voici le fournil. Touchez la carte Baguette pour lancer une fournée : 1 000 g de farine, 650 g d’eau, 20 g de sel, 4 g de levure.' },
+    texte: 'Bienvenue au fournil ! Touche la carte Baguette pour lancer une fournée : 1 000 g de farine, 650 g d’eau, 20 g de sel, 4 g de levure.' },
   { id: 'm2', jour: 1, phase: 'matin', pause: false, cible: 'geste-premier', fini: () => S.mj !== null, quand: () => uneFournee((f) => f.etape === 0),
-    texte: 'Touchez « Pétrir », puis faites des cercles réguliers autour du pétrin. Le rythme compte plus que la vitesse.' },
+    texte: 'Touche « Pétrir », puis fais des cercles réguliers autour du pétrin. Le rythme compte plus que la vitesse.' },
   { id: 'm3', jour: 1, phase: 'matin', pause: false, cible: 'geste-premier', fini: () => S.mj !== null, quand: () => !S.mj && uneFournee((f) => etapeCourante(f) === 'faconner'),
-    texte: 'Façonnez maintenant : suivez le tracé en pointillés d’un seul geste, depuis le point vert.' },
+    texte: 'Maintenant, on façonne : suis le tracé en pointillés d’un seul geste, en partant du point vert.' },
   { id: 'm4', jour: 1, phase: 'matin', pause: false, cible: 'recette-baguette', fini: () => S.fournees.length >= 2, quand: () => !S.mj && uneFournee((f) => f.lieu === 'pousse'),
-    texte: 'La pâte pousse. Le temps est réel : lancez une deuxième fournée pendant ce temps !' },
+    texte: 'La pâte pousse. Le temps est réel : profites-en pour lancer une deuxième fournée !' },
   { id: 'm5', jour: 1, phase: 'matin', pause: false, cible: 'geste-scarifier', fini: () => S.mj !== null, quand: () => !S.mj && uneFournee((f) => etapeCourante(f) === 'scarifier'),
-    texte: 'Pousse terminée. Touchez « Scarifier » et donnez un coup de lame net, en diagonale, d’un seul trait.' },
+    texte: 'La pousse est finie. Touche « Scarifier » et donne un coup de lame net, en diagonale, d’un seul trait.' },
   { id: 'm6', jour: 1, phase: 'matin', pause: false, cible: 'four-premier', fini: () => S.journal.fourneesFaites > 0, quand: () => !S.mj && uneFournee((f) => f.lieu === 'four'),
-    texte: 'Au four ! Touchez la fournée quand la jauge est dans la zone dorée. Aujourd’hui, je surveille pour que rien ne brûle.' },
+    texte: 'Au four ! Touche la fournée quand la jauge est dans la zone dorée. Aujourd’hui, je surveille pour que rien ne brûle.' },
   { id: 'm7', jour: 1, phase: 'matin', pause: false, cible: null, fini: () => S.phase !== 'matin', quand: () => !S.mj && S.journal.fourneesFaites > 0,
-    texte: 'Bravo, vos premières baguettes sont en vitrine ! Faites-en trois ou quatre fournées, puis ouvrez la boutique. Plus vous ouvrez tôt, plus vous aurez de clients jusqu’à 19 h.' },
+    texte: 'Bravo, tes premières baguettes sont en vitrine ! Fais-en trois ou quatre fournées, puis ouvre la boutique. Plus tu ouvres tôt, plus tu auras de clients jusqu’à 19 h.' },
   { id: 'c1', jour: 1, phase: 'midi', pause: false, cible: 'vitrine-baguette', fini: () => S.journal.clientsServis > 0 || !!(S.comptoir && S.comptoir.paiement),
     quand: () => !!S.comptoir && S.comptoir.clients.length > 0,
-    texte: 'Un client ! Sa commande est dans la bulle. Touchez les produits en vitrine pour remplir le plateau, puis « Servir ».' },
+    texte: 'Un client ! Sa commande est dans la bulle. Touche les produits en vitrine pour remplir le plateau, puis « Servir ».' },
   { id: 'c2', jour: 1, phase: 'midi', pause: false, cible: 'monnaie', fini: () => !(S.comptoir && S.comptoir.paiement), quand: () => !!(S.comptoir && S.comptoir.paiement),
-    texte: 'Le client paie avec un billet. Touchez les pièces pour rendre la monnaie exacte, puis « Rendre ».' },
+    texte: 'Le client paie avec un billet. Touche les pièces pour rendre la monnaie exacte, puis « Rendre ».' },
   { id: 'c3', jour: 1, phase: 'midi', pause: false, cible: 'rupture', fini: null, quand: () => S.journal.clientsServis >= 2 && !(S.comptoir && S.comptoir.paiement),
-    texte: 'S’il manque un produit, servez ce que vous avez. Si vous n’avez rien de sa commande, touchez « Rupture ».' },
+    texte: 'S’il manque un produit, sers ce que tu as. Si tu n’as rien de sa commande, touche « Rupture ».' },
   { id: 'k1', jour: 1, phase: 'caisse', pause: false, cible: 'pave', fini: () => !!(S.caisse && (S.caisse.saisie !== '' || S.caisse.resultat !== null)), quand: () => true,
-    texte: 'Fin du service. Comptez l’argent du tiroir, fond de caisse compris, et tapez le total. Une caisse juste rapporte de l’XP.' },
+    texte: 'Fin du service. Compte l’argent du tiroir, fond de caisse compris, et tape le total. Une caisse juste rapporte de l’XP.' },
   { id: 'n1', jour: 1, phase: 'menage', pause: false, cible: null, fini: () => S.phase !== 'menage', quand: () => true,
-    texte: 'Frottez les taches avec le doigt. Une boutique propre améliore la réputation et attire plus de clients.' },
+    texte: 'Frotte les taches avec le doigt. Une boutique propre, ça améliore la réputation et ça attire plus de clients.' },
   { id: 'b1', jour: 1, phase: 'bilan', pause: false, cible: null, fini: null, quand: () => true,
-    texte: 'Voici le bilan. Chaque geste, client, caisse juste et ménage rapporte de l’XP. En montant de niveau, vous travaillez plus vite.' },
+    texte: 'Voici ton bilan. Chaque geste, chaque client, une caisse juste et le ménage te rapportent de l’XP. En montant de niveau, tu travailles plus vite.' },
   { id: 'p3', jour: 2, phase: 'preparation', pause: false, cible: null, fini: null, quand: () => true,
     texte: 'Nouvelle recette : le croissant ! Pâte pour 10 pièces : 500 g de farine, 150 g de lait, 60 g de sucre, 10 g de sel, 20 g de levure et 250 g de beurre.' },
   { id: 'm8', jour: 2, phase: 'matin', pause: false, cible: 'recette-croissant', fini: () => uneFournee((f) => f.recette === 'croissant'), quand: () => true,
-    texte: 'Les croissants poussent plus longtemps que les baguettes. Lancez-les en premier, puis les baguettes.' },
+    texte: 'Les croissants poussent plus longtemps que les baguettes. Lance-les en premier, puis les baguettes.' },
   { id: 'm9', jour: 2, phase: 'matin', pause: false, cible: null, fini: null, quand: () => !S.mj && uneFournee((f) => f.lieu === 'four'),
-    texte: 'À partir d’aujourd’hui, je ne surveille plus le four : au-delà de la zone dorée, la fournée finit par brûler.' },
+    texte: 'À partir d’aujourd’hui, je ne surveille plus le four : si tu dépasses la zone dorée, la fournée finit par brûler.' },
   { id: 'r1', jour: 0, phase: 'matin', pause: false, cible: 'rapide-premier', fini: null, quand: () => !S.mj && uneFournee((f) => estGeste(etapeCourante(f)) && rapideDispo(f.recette)),
-    texte: 'Votre compétence atteint 3 : le bouton ⚡ fait les gestes en un seul toucher. À la main, vous visez toujours les 3 étoiles.' },
+    texte: 'Ta compétence atteint 3 : le bouton ⚡ fait les gestes en un seul toucher. À la main, tu peux toujours viser les 3 étoiles.' },
   { id: 'p4', jour: 3, phase: 'preparation', pause: false, cible: null, fini: null, quand: () => true,
-    texte: 'Dernier jour avec moi. Au niveau 5, vous pourrez embaucher une équipe ; ensuite viendront les travaux. Dans le menu ☰, vous pouvez couper l’aide au rendu de monnaie : +10 % sur ces ventes. Bonne chance !' },
+    texte: 'Dernier jour avec moi. Au niveau 5, tu pourras embaucher une équipe, puis viendront les travaux. Dans le menu ☰, tu peux couper l’aide au rendu de monnaie : +10 % sur ces ventes. Et si tu passes à Frontignan, viens dire bonjour Chez les Voisins !' },
 ];
 function majTuto() {
   if (!E.tutoriel || S.menu || !panneauVisibleCompatibleTuto()) { if (S.tuto) cacherBulle(); S.tuto = null; return; }
@@ -3315,7 +3315,7 @@ function htmlBilan() {
     '<div class="stat">XP gagnée<b>+' + J.xp + ' · niv. ' + E.niveau + '</b><div class="mini"><i style="width:' + Math.round(100 * E.xp / xpRequise(E.niveau)) + '%"></i></div></div></div>';
   if (B.notes.length) h += '<h3>Progrès et événements</h3><ul>' + B.notes.map((n) => '<li>' + esc(n) + '</li>').join('') + '</ul>';
   h += '<p><b>Trésorerie : ' + euros(E.argent) + '</b>' + (E.argent < 0 ? ' · <span class="neg">Attention : sous ' + euros(CONFIG.faillite) + ', c’est la faillite.</span>' : '') + '</p>';
-  if (E.jour === 3 && E.tutoriel) h += '<p class="alerte">Fin du tutoriel : Gaston vous laisse les clés. Bonne continuation !</p>';
+  if (E.jour === 3 && E.tutoriel) h += '<p class="alerte">Fin du tutoriel : Jean-Baptiste te laisse les clés. Pense à passer le voir Chez les Voisins, à Frontignan !</p>';
   return h + '</div>';
 }
 function htmlFaillite() {

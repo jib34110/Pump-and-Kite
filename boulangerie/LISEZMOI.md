@@ -10,7 +10,7 @@ Jeu autonome en un seul fichier : `index.html`. Il contient le HTML, le CSS et l
 4. **Soir** : compter la caisse, puis faire le ménage. La propreté influence la réputation.
 5. **Bilan** : chiffre d'affaires, coûts, pertes, XP, réputation et déblocages.
 
-Gaston, le maître boulanger, guide les jours 1 à 3. Le tutoriel peut être ignoré à tout moment (« Passer le tutoriel ») ou désactivé dès le départ (« Nouvelle partie sans tutoriel »).
+Jean-Baptiste, patron de la boulangerie Chez les Voisins à Frontignan, guide les jours 1 à 3. Le tutoriel peut être ignoré à tout moment (« Passer le tutoriel ») ou désactivé dès le départ (« Nouvelle partie sans tutoriel »).
 
 ## Commandes
 
