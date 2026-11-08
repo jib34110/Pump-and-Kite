@@ -154,7 +154,7 @@ label.case input { width: 22px; height: 22px; }
     <div id="bulle" hidden>
       <div class="avatar" aria-hidden="true">👨‍🍳</div>
       <div class="corps">
-        <div class="nom">Jean-Baptiste · boulangerie Chez les Voisins, Frontignan</div>
+        <div class="nom">Jean-Baptiste · boulangerie Chez les voisins, Frontignan</div>
         <p id="bulleTexte"></p>
         <div class="act">
           <button class="btn petit" id="bulleOk" type="button">Compris</button>
@@ -179,6 +179,7 @@ label.case input { width: 22px; height: 22px; }
 /** @typedef {'petrir'|'faconner'|'pousse'|'scarifier'|'cuire'} EtapeId */
 /** @typedef {'boudin'|'triangle'|'carre'|'spirale'|'ligne'|'cercle'} FormeId */
 /** @typedef {'fournier'|'vendeur'|'plongeur'} RoleId */
+/** @typedef {'pate'|'four'|'vente'|'menage'} TacheId */
 /** @typedef {'chambrePousse'|'petrin'|'secondFour'|'vitrine'|'boutique2'} AmeliorationId */
 /** @typedef {'panneFour'|'inspection'|'grosClient'|'fete'|'marcheNoel'} EvenementId */
 /** @typedef {'accueil'|'preparation'|'matin'|'midi'|'caisse'|'menage'|'bilan'|'faillite'} Phase */
@@ -219,6 +220,7 @@ label.case input { width: 22px; height: 22px; }
  * @property {number} duree
  * @property {number[]} notes
  * @property {number} manuel
+ * @property {number} cibleOuvrier  Moment où l'ouvrier du four défourne (0 = pas encore tiré)
  */
 /** @typedef {{produit: ProduitId, qte: number}} LigneCommande */
 /**
@@ -247,7 +249,11 @@ label.case input { width: 22px; height: 22px; }
  * @property {number} moral
  * @property {boolean} enFormation
  * @property {number} jours
+ * @property {Record<TacheId, Competence>} taches  Niveau 1 à 10 par tâche
+ * @property {TacheId|null} affectation  Tâche du jour (à redonner chaque matin pour un fournier)
  */
+/** @typedef {{id: number, nom: string, tache: TacheId, actions: number, notes: number[], ventesAdd: number, caAdd: number, manquees: number}} StatOuvrier */
+/** @typedef {{emp: number, fournee: number, t: number, duree: number}} TravailOuvrier */
 /** @typedef {{jour: number, ca: number, benefice: number}} Historique */
 /**
  * @typedef {Object} EtatDeJeu
@@ -290,6 +296,7 @@ label.case input { width: 22px; height: 22px; }
  * @property {number} amende
  * @property {number} bonusCalcul
  * @property {number} heureOuverture
+ * @property {StatOuvrier[]} ouvriers
  * @property {number} niveauAvant
  * @property {string[]} notes
  */
@@ -420,6 +427,7 @@ label.case input { width: 22px; height: 22px; }
  * @property {boolean} confirmer
  * @property {EtapeTuto|null} tuto
  * @property {number} repAvant
+ * @property {TravailOuvrier[]} travaux
  */
 /** @typedef {{id: string, r: Rect, action: () => void, glisser: ProduitId|null}} Zone */
 /** @typedef {'farine'|'fumee'|'vapeur'|'piece'|'bulle'|'etincelle'} TypeParticule */
@@ -551,10 +559,20 @@ const EVENEMENTS = {
 const ROLES = { fournier: 'Fournier', vendeur: 'Vendeur', plongeur: 'Plongeur' };
 /** @type {Readonly<Record<RoleId, string>>} */
 const ROLES_EFFET = {
-  fournier: 'Prépare seul des fournées chaque matin.',
-  vendeur: 'Sert une partie des clients au comptoir.',
+  fournier: 'Fabrication : chaque jour, tu lui confies la pâte (pétrir, façonner, scarifier) ou le four (défourner).',
+  vendeur: 'Sert une partie des clients ; avec l’expérience, il propose des ventes additionnelles.',
   plongeur: 'Fait une partie du ménage du soir.',
 };
+/** @type {Readonly<Record<TacheId, string>>} */
+const NOM_TACHE = { pate: 'Pâte', four: 'Four', vente: 'Vente', menage: 'Ménage' };
+/** @type {Readonly<Record<TacheId, string>>} */
+const ICONE_TACHE = { pate: '🥖', four: '🔥', vente: '🛒', menage: '🧽' };
+/** Ce que valent les étoiles, affiché dans le jeu. */
+const LEGENDE_ETOILES = [
+  ['★☆☆', 'prix −10 %, clients moins contents', '+5 XP'],
+  ['★★☆', 'prix normal', '+10 XP'],
+  ['★★★', 'prix +10 %, clients ravis (réputation ↑)', '+15 XP'],
+];
 const PRENOMS = ['Lucas', 'Inès', 'Malik', 'Chloé', 'Théo', 'Zoé', 'Hugo', 'Léna', 'Nathan', 'Jade', 'Samir', 'Manon', 'Yanis', 'Lou', 'Rémi', 'Anaïs', 'Karim', 'Elsa'];
 /** @type {Readonly<Record<EtapeId, string>>} */
 const NOM_ETAPE = { petrir: 'Pétrir', faconner: 'Façonner', pousse: 'Pousse', scarifier: 'Scarifier', cuire: 'Cuire' };
@@ -719,6 +737,10 @@ function reparer(e) {
   if (typeof e.muet !== 'boolean') e.muet = false;
   if (typeof e.aideMonnaie !== 'boolean') e.aideMonnaie = true;
   if (typeof e.prochainId !== 'number') e.prochainId = 1;
+  for (const emp of e.employes.concat(e.candidats)) {
+    if (!emp.taches) emp.taches = tachesInitiales(emp.role, emp.competence);
+    if (emp.affectation === undefined) emp.affectation = emp.role === 'fournier' ? null : tachePrincipale(emp.role);
+  }
   return e;
 }
 function sauver() {
@@ -741,14 +763,14 @@ function effacerSauvegarde() {
 function nouveauJournal() {
   return { ca: 0, braderie: 0, coutMatieres: 0, ventes: parProduit(() => 0), clientsServis: 0, clientsPerdus: 0,
     satisfactions: [], xp: 0, invendusPerdus: 0, invendusBrades: 0, fourneesFaites: 0, fourneesRatees: 0,
-    caisseJuste: null, proprete: 1, amende: 0, bonusCalcul: 0, heureOuverture: CONFIG.heureOuvertureNormale, niveauAvant: E.niveau, notes: [] };
+    caisseJuste: null, proprete: 1, amende: 0, bonusCalcul: 0, ouvriers: [], heureOuverture: CONFIG.heureOuvertureNormale, niveauAvant: E.niveau, notes: [] };
 }
 /** @param {Phase} phase @returns {Session} */
 function nouvelleSession(phase) {
   return { phase, fournees: [], prochaineFournee: 1, vitrine: parProduit(() => []), horloge: 0, dureeMatin: CONFIG.dureeMatin,
     mj: null, comptoir: null, caisse: null, menage: null, journal: nouveauJournal(), bilan: null, planClients: [],
     demande: parProduit(() => 0), onglet: 'jour', menu: false, reserveExpress: false, confirmer: false, tuto: null,
-    repAvant: E.reputation };
+    repAvant: E.reputation, travaux: [] };
 }
 
 /** @type {EtatDeJeu} */
@@ -806,7 +828,7 @@ function ingredientManquant(p, m) {
   return '';
 }
 /** @param {number} c */
-function salaireMarche(c) { return 3000 + c * 800; }
+function salaireMarche(c) { return 1200 + c * 400; }
 /** @param {RoleId} role @returns {Employe[]} */
 function presents(role) { return E.employes.filter((e) => e.role === role && !e.enFormation); }
 /** @param {Fournee} f @returns {EtapeId} */
@@ -927,6 +949,56 @@ function tirerEvenement() {
   if (estDecembre(E.jour)) possibles.push('marcheNoel', 'marcheNoel');
   return choisir(possibles);
 }
+/** @param {RoleId} role @returns {TacheId} */
+function tachePrincipale(role) { return role === 'vendeur' ? 'vente' : role === 'plongeur' ? 'menage' : 'pate'; }
+/** @param {RoleId} role @param {number} comp @returns {Record<TacheId, Competence>} */
+function tachesInitiales(role, comp) {
+  const n = (/** @type {TacheId} */ t) => ({ niv: role === 'fournier' ? (t === 'pate' || t === 'four' ? comp : 1) : t === tachePrincipale(role) ? comp : 1, xp: 0 });
+  return { pate: n('pate'), four: n('four'), vente: n('vente'), menage: n('menage') };
+}
+/** Tâches possibles selon le poste. @param {RoleId} role @returns {TacheId[]} */
+function tachesDuRole(role) { return role === 'fournier' ? ['pate', 'four'] : [tachePrincipale(role)]; }
+/** @param {Employe} e */
+function majCompetenceGlobale(e) {
+  const t = tachesDuRole(e.role);
+  e.competence = Math.round(t.reduce((s, x) => s + e.taches[x].niv, 0) / t.length);
+}
+/** @param {Employe} e @returns {StatOuvrier} */
+function statOuvrier(e) {
+  const tache = e.affectation || tachePrincipale(e.role);
+  let st = S.journal.ouvriers.find((x) => x.id === e.id);
+  if (!st) { st = { id: e.id, nom: e.nom, tache, actions: 0, notes: [], ventesAdd: 0, caAdd: 0, manquees: 0 }; S.journal.ouvriers.push(st); }
+  return st;
+}
+/** @param {Employe} e @param {TacheId} t @param {number} n */
+function gagnerTache(e, t, n) {
+  const c = e.taches[t];
+  if (c.niv >= CONFIG.competenceMax) return;
+  c.xp += n;
+  while (c.niv < CONFIG.competenceMax && c.niv < e.potentiel && c.xp >= 8 * c.niv) {
+    c.xp -= 8 * c.niv;
+    c.niv++;
+    S.journal.notes.push(e.nom + ' progresse en ' + NOM_TACHE[t].toLowerCase() + ' : niveau ' + c.niv + '.');
+    toast(e.nom + ' : ' + NOM_TACHE[t] + ' niveau ' + c.niv + ' !');
+  }
+  majCompetenceGlobale(e);
+}
+/** Étoiles moyennes attendues pour un niveau de tâche. @param {number} niv */
+function etoilesAttendues(niv) { return borner(1 + (niv - 1) / 4.5, 1, 3); }
+/** @param {number} niv */
+function noteOuvrier(niv) { return borner(Math.round(etoilesAttendues(niv) + entre(-0.5, 0.5)), 1, 3); }
+/** @param {TacheId} t @returns {Employe[]} */
+function ouvriersSur(t) { return E.employes.filter((e) => !e.enFormation && e.affectation === t && tachesDuRole(e.role).includes(t)); }
+/** @param {number} id @param {string} v */
+function affecter(id, v) {
+  const e = E.employes.find((x) => x.id === id);
+  const t = ['pate', 'four', 'vente', 'menage'].find((x) => x === v);
+  if (!e || !t) return;
+  const tache = /** @type {TacheId} */ (t);
+  if (!tachesDuRole(e.role).includes(tache)) return;
+  e.affectation = e.affectation === tache && e.role === 'fournier' ? null : tache;
+  toast(e.affectation ? e.nom + ' : ' + NOM_TACHE[e.affectation].toLowerCase() + ' aujourd’hui.' : e.nom + ' attend tes consignes.');
+}
 function genererCandidats() {
   E.candidats = [];
   if (E.niveau < CONFIG.niveauEquipe) return;
@@ -936,7 +1008,8 @@ function genererCandidats() {
     const comp = entier(1, Math.min(6, 1 + Math.floor(E.niveau / 2)));
     E.candidats.push({ id: E.prochainId++, nom: choisir(PRENOMS), role: roles[i], competence: comp,
       potentiel: entier(Math.min(10, comp + 1), 10), salaire: salaireMarche(comp) + entier(-4, 6) * 100,
-      moral: 70, enFormation: false, jours: 0 });
+      moral: 70, enFormation: false, jours: 0, taches: tachesInitiales(roles[i], comp),
+      affectation: roles[i] === 'fournier' ? null : tachePrincipale(roles[i]) });
   }
 }
 /** @param {IngredientId} i @param {number} grammes @param {number} majoration */
@@ -1003,21 +1076,10 @@ function demarrerMatin() {
   S.repAvant = E.reputation;
   S.dureeMatin = E.tutoriel && E.jour === 1 ? CONFIG.dureeMatinTuto : CONFIG.dureeMatin;
   S.horloge = 0;
-  // Le fournier prépare des fournées automatiquement.
-  for (const emp of presents('fournier')) {
-    const nb = 1 + Math.floor(emp.competence / 4);
-    for (let k = 0; k < nb; k++) {
-      const choix = produitsDebloques().slice().sort((a, b) => (S.demande[b] - S.vitrine[b].length) - (S.demande[a] - S.vitrine[a].length));
-      const p = choix[0];
-      const m = tailleFournee();
-      if (ingredientManquant(p, m)) { S.journal.notes.push(emp.nom + ' n’a pas pu préparer de ' + RECETTES[p].nom + ' : réserve insuffisante.'); continue; }
-      consommer(p, m);
-      const n = borner(Math.round(1 + emp.competence / 4 + entre(-0.5, 0.5)), 1, 3);
-      ajouterVitrine(p, RECETTES[p].pieces * m, n);
-      S.journal.fourneesFaites++;
-      toast(emp.nom + ' a préparé ' + RECETTES[p].pieces * m + ' ' + RECETTES[p].pluriel + '.');
-    }
-  }
+  for (const e of presents('vendeur')) statOuvrier(e);
+  const sansConsigne = E.employes.filter((e) => e.role === 'fournier' && !e.enFormation && !e.affectation);
+  if (sansConsigne.length) toast(sansConsigne.map((e) => e.nom).join(', ') + ' attend tes consignes : donne-lui une tâche dans l’onglet Journée.');
+  for (const e of ouvriersSur('pate').concat(ouvriersSur('four'))) statOuvrier(e);
   rafraichirUI();
 }
 /** @param {ProduitId} p @param {number} m */
@@ -1156,7 +1218,8 @@ function demarrerMenage() {
   for (let i = 0; i < nb; i++) taches.push({ zone: i % 3, nx: entre(0.14, 0.86), ny: entre(0.3, 0.86), nr: entre(0.1, 0.17), sale: 1 });
   const plongeurs = presents('plongeur');
   if (plongeurs.length) {
-    const part = borner(plongeurs.reduce((s, e) => s + 0.35 + 0.06 * e.competence, 0), 0, 0.95);
+    const part = borner(plongeurs.reduce((s, e) => s + 0.35 + 0.06 * e.taches.menage.niv, 0), 0, 0.95);
+    for (const e of plongeurs) { const st = statOuvrier(e); st.actions++; gagnerTache(e, 'menage', 3); }
     let aNettoyer = Math.floor(nb * part);
     for (const t of taches) { if (aNettoyer <= 0) break; t.sale = 0; aNettoyer--; }
     toast(plongeurs.map((e) => e.nom).join(' et ') + ' a déjà nettoyé ' + Math.round(part * 100) + ' %.');
@@ -1223,6 +1286,7 @@ function finJournee() {
 }
 function journeeSuivante() {
   E.jour++;
+  for (const e of E.employes) if (e.role === 'fournier') e.affectation = null;
   if (E.jour > 3) E.tutoriel = false;
   E.evenement = tirerEvenement();
   genererCandidats();
@@ -1248,7 +1312,7 @@ function lancerFournee(p) {
   if (raison) { toast(raison); son('echec'); return; }
   const m = tailleFournee();
   consommer(p, m);
-  S.fournees.push({ id: S.prochaineFournee++, recette: p, mult: m, etape: 0, lieu: 'plan', minuteur: 0, duree: 0, notes: [], manuel: 0 });
+  S.fournees.push({ id: S.prochaineFournee++, recette: p, mult: m, etape: 0, lieu: 'plan', minuteur: 0, duree: 0, notes: [], manuel: 0, cibleOuvrier: 0 });
   son('pate');
 }
 /** @param {number} id @returns {Fournee|null} */
@@ -1258,6 +1322,12 @@ function faireGeste(f, rapide) {
   if (S.mj) return;
   const et = etapeCourante(f);
   if (!estGeste(et)) return;
+  const tr = travailSur(f);
+  if (tr) {
+    const o = E.employes.find((x) => x.id === tr.emp);
+    toast((o ? o.nom : 'Ton ouvrier') + ' s’en occupe déjà.');
+    return;
+  }
   if (rapide) {
     const c = E.competences[f.recette].niv;
     while (estGeste(etapeCourante(f)) && f.etape < RECETTES[f.recette].etapes.length) {
@@ -1311,6 +1381,7 @@ function appliquerMiniJeu() {
   const f = trouverFournee(mj.fournee);
   S.mj = null;
   if (!f) return;
+  S.travaux = S.travaux.filter((t) => t.fournee !== f.id);
   f.notes.push(mj.etoiles);
   f.etape++;
   f.manuel++;
@@ -1381,8 +1452,57 @@ function terminerFournee(f) {
   S.journal.fourneesFaites++;
   gagnerXP(CONFIG.xpFournee * n);
   gagnerCompetence(f.recette, 3 * n);
-  toast(nb + ' ' + r.pluriel + ' ' + etoiles(n) + ' en vitrine');
+  toast(nb + ' ' + r.pluriel + ' ' + etoiles(n) + ' en vitrine · ' + euros(prixVente(f.recette, n)) + ' pièce · +' + CONFIG.xpFournee * n + ' XP');
   son('ding');
+}
+/** @param {Fournee} f @returns {TravailOuvrier|null} */
+function travailSur(f) { return S.travaux.find((t) => t.fournee === f.id) || null; }
+/** Les ouvriers de fabrication travaillent seuls. @param {number} dt */
+function majOuvriers(dt) {
+  // Pâte : pétrir, façonner, scarifier
+  for (const e of ouvriersSur('pate')) {
+    let tr = S.travaux.find((t) => t.emp === e.id) || null;
+    if (tr) {
+      const f = trouverFournee(tr.fournee);
+      if (!f || !estGeste(etapeCourante(f))) { S.travaux = S.travaux.filter((t) => t !== tr); continue; }
+      tr.t += dt;
+      if (tr.t >= tr.duree) {
+        const n = noteOuvrier(e.taches.pate.niv);
+        f.notes.push(n);
+        f.etape++;
+        const st = statOuvrier(e);
+        st.actions++;
+        st.notes.push(n);
+        gagnerTache(e, 'pate', 1 + n);
+        S.travaux = S.travaux.filter((t) => t !== tr);
+        son('pate');
+      }
+    } else {
+      const libre = S.fournees.find((f) => estGeste(etapeCourante(f)) && !travailSur(f) && !(S.mj && S.mj.fournee === f.id));
+      if (libre) S.travaux.push({ emp: e.id, fournee: libre.id, t: 0, duree: Math.max(2, 7.5 - 0.5 * e.taches.pate.niv) });
+    }
+  }
+  // Four : défourner au bon moment, avec une précision qui dépend du niveau
+  const fourniers = ouvriersSur('four');
+  if (fourniers.length) {
+    const e = fourniers.reduce((a, b) => (b.taches.four.niv > a.taches.four.niv ? b : a));
+    for (const f of S.fournees.slice()) {
+      if (f.lieu !== 'four') continue;
+      if (f.cibleOuvrier === 0) {
+        const ecart = Math.max(0.03, 0.17 - 0.014 * e.taches.four.niv);
+        f.cibleOuvrier = borner(0.95 + entre(-ecart, ecart), 0.6, 1.25);
+      }
+      if (f.minuteur / f.duree >= f.cibleOuvrier) {
+        f.notes.push(noteCuisson(f.minuteur / f.duree, E.competences[f.recette].niv));
+        const st = statOuvrier(e);
+        st.actions++;
+        st.notes.push(f.notes[f.notes.length - 1]);
+        gagnerTache(e, 'four', 1 + f.notes[f.notes.length - 1]);
+        toast(e.nom + ' défourne : ' + RECETTES[f.recette].pluriel + ' ' + etoiles(f.notes[f.notes.length - 1]) + '.');
+        terminerFournee(f);
+      }
+    }
+  }
 }
 /** @param {number} dt */
 function majFournees(dt) {
@@ -1593,7 +1713,7 @@ function majComptoir(dt) {
       const joueur = clientJoueur(C);
       const candidat = C.clients.find((c) => c !== joueur);
       if (candidat && C.vendeurT <= 0) {
-        if (Math.random() < 0.55 + 0.05 * v.competence) { C.vendeurClient = candidat; C.vendeurT = 4.6 - 0.25 * v.competence; }
+        if (Math.random() < 0.55 + 0.05 * v.taches.vente.niv) { C.vendeurClient = candidat; C.vendeurT = 4.6 - 0.25 * v.taches.vente.niv; }
         else C.vendeurT = 2;
       }
     }
@@ -1619,13 +1739,37 @@ function servirParVendeur(C, cl, v) {
   }
   C.vendeurClient = null;
   C.vendeurT = 1.5;
-  if (total === 0) { partir(cl, 0.4, 'rupture'); return; }
+  const st = statOuvrier(v);
+  const niv = v.taches.vente.niv;
+  if (total === 0) { partir(cl, 0.4, 'rupture'); gagnerTache(v, 'vente', 1); return; }
+  // Vente additionnelle : plus le vendeur est expérimenté, plus il en propose.
+  if (Math.random() < 0.08 + 0.05 * niv) {
+    const p = choisirPondere(produitsDebloques(), (q) => RECETTES[q].popularite);
+    const libres = S.vitrine[p].length - C.plateau[p];
+    if (libres > 0) {
+      const prod = S.vitrine[p].pop();
+      if (prod) {
+        total += prod.prix;
+        S.journal.ventes[p]++;
+        st.ventesAdd++;
+        st.caAdd += prod.prix;
+        gagnerTache(v, 'vente', 2);
+        dire('Vente additionnelle de ' + v.nom + ' : 1 ' + RECETTES[p].nom.toLowerCase().replace(' (part)', '') + ' en plus !');
+        son('piece');
+      }
+    } else {
+      st.manquees++;
+      dire(v.nom + ' aurait vendu 1 ' + RECETTES[p].nom.toLowerCase().replace(' (part)', '') + ' de plus : rupture !');
+    }
+  }
+  st.actions++;
+  gagnerTache(v, 'vente', 1);
   if (cl.special) total = Math.round(total * 1.2 / 10) * 10;
   E.argent += total;
   S.journal.ca += total;
   S.journal.clientsServis++;
   gagnerXP(Math.round(CONFIG.xpClient / 2));
-  partir(cl, borner(0.55 + 0.04 * v.competence, 0, 1), 'servi');
+  partir(cl, borner(0.55 + 0.04 * niv, 0, 1), 'servi');
 }
 
 // =====================================================================
@@ -1645,21 +1789,26 @@ function embaucher(id) {
   sauver();
   rafraichirUI();
 }
-/** @param {Employe} e */
-function coutFormation(e) { return 6000 + e.competence * 1500; }
-/** @param {number} id */
-function former(id) {
+/** @param {Employe} e @param {TacheId} t */
+function coutFormation(e, t) { return 6000 + e.taches[t].niv * 1500; }
+/** @param {number} id @param {string} v */
+function former(id, v) {
   const e = E.employes.find((x) => x.id === id);
-  if (!e) return;
-  if (e.competence >= e.potentiel) { toast(e.nom + ' a atteint son potentiel.'); return; }
+  const t0 = ['pate', 'four', 'vente', 'menage'].find((x) => x === v);
+  if (!e || !t0) return;
+  const t = /** @type {TacheId} */ (t0);
+  const c = e.taches[t];
+  if (c.niv >= e.potentiel) { toast(e.nom + ' a atteint son potentiel en ' + NOM_TACHE[t].toLowerCase() + '.'); return; }
   if (e.enFormation) { toast(e.nom + ' est déjà en formation aujourd’hui.'); return; }
-  const cout = coutFormation(e);
+  const cout = coutFormation(e, t);
   if (E.argent < cout) { toast('Pas assez d’argent pour la formation.'); return; }
   E.argent -= cout;
-  e.competence++;
+  c.niv++;
+  c.xp = 0;
+  majCompetenceGlobale(e);
   e.enFormation = true;
   e.moral = borner(e.moral + 8, 0, 100);
-  toast(e.nom + ' part en formation aujourd’hui (compétence ' + e.competence + ').');
+  toast(e.nom + ' part en formation aujourd’hui (' + NOM_TACHE[t].toLowerCase() + ' niveau ' + c.niv + ').');
   sauver();
   rafraichirUI();
 }
@@ -1700,20 +1849,22 @@ function acheterAmelioration(id) {
 }
 
 // =====================================================================
-// 12. TUTORIEL (Jean-Baptiste, boulangerie Chez les Voisins à Frontignan)
+// 12. TUTORIEL (Jean-Baptiste, boulangerie Chez les voisins à Frontignan)
 // =====================================================================
 /** @param {(f: Fournee) => boolean} test */
 function uneFournee(test) { return S.fournees.some(test); }
 /** @type {ReadonlyArray<EtapeTuto>} */
 const TUTO = [
   { id: 'p1', jour: 1, phase: 'preparation', pause: false, cible: null, fini: null, quand: () => true,
-    texte: 'Salut ! Moi c’est Jean-Baptiste, le patron de la boulangerie Chez les Voisins, à Frontignan. Je suis là pour t’aider et t’expliquer comment gérer ta future boulangerie. Je reste avec toi pendant trois jours.' },
+    texte: 'Salut ! Moi c’est Jean-Baptiste, le gérant de la boulangerie Chez les voisins, à Frontignan. Je suis là pour t’aider et t’expliquer comment gérer ta future boulangerie. Je reste avec toi pendant trois jours.' },
   { id: 'p2', jour: 1, phase: 'preparation', pause: false, cible: null, fini: () => S.phase !== 'preparation', quand: () => true,
     texte: 'Ici, tu as la prévision du jour et ta réserve. Aujourd’hui, on ne fait que des baguettes. Touche « Commencer la journée ».' },
   { id: 'm1', jour: 1, phase: 'matin', pause: false, cible: 'recette-baguette', fini: () => S.fournees.length > 0 || S.journal.fourneesFaites > 0, quand: () => true,
     texte: 'Bienvenue au fournil ! Touche la carte Baguette pour lancer une fournée : 1 000 g de farine, 650 g d’eau, 20 g de sel, 4 g de levure.' },
   { id: 'm2', jour: 1, phase: 'matin', pause: false, cible: 'geste-premier', fini: () => S.mj !== null, quand: () => uneFournee((f) => f.etape === 0),
     texte: 'Touche « Pétrir », puis fais des cercles réguliers autour du pétrin. Le rythme compte plus que la vitesse.' },
+  { id: 'e1', jour: 1, phase: 'matin', pause: false, cible: null, fini: () => S.mj !== null, quand: () => !S.mj && uneFournee((f) => f.notes.length > 0),
+    texte: 'Chaque geste donne 1 à 3 étoiles, et la fournée prend la moyenne. ★ : prix −10 %. ★★ : prix normal. ★★★ : prix +10 % et clients ravis. Plus d’étoiles, c’est aussi plus d’XP.' },
   { id: 'm3', jour: 1, phase: 'matin', pause: false, cible: 'geste-premier', fini: () => S.mj !== null, quand: () => !S.mj && uneFournee((f) => etapeCourante(f) === 'faconner'),
     texte: 'Maintenant, on façonne : suis le tracé en pointillés d’un seul geste, en partant du point vert.' },
   { id: 'm4', jour: 1, phase: 'matin', pause: false, cible: 'recette-baguette', fini: () => S.fournees.length >= 2, quand: () => !S.mj && uneFournee((f) => f.lieu === 'pousse'),
@@ -1746,7 +1897,7 @@ const TUTO = [
   { id: 'r1', jour: 0, phase: 'matin', pause: false, cible: 'rapide-premier', fini: null, quand: () => !S.mj && uneFournee((f) => estGeste(etapeCourante(f)) && rapideDispo(f.recette)),
     texte: 'Ta compétence atteint 3 : le bouton ⚡ fait les gestes en un seul toucher. À la main, tu peux toujours viser les 3 étoiles.' },
   { id: 'p4', jour: 3, phase: 'preparation', pause: false, cible: null, fini: null, quand: () => true,
-    texte: 'Dernier jour avec moi. Au niveau 5, tu pourras embaucher une équipe, puis viendront les travaux. Dans le menu ☰, tu peux couper l’aide au rendu de monnaie : +10 % sur ces ventes. Et si tu passes à Frontignan, viens dire bonjour Chez les Voisins !' },
+    texte: 'Dernier jour avec moi. Au niveau 5, tu pourras embaucher une équipe, puis viendront les travaux. Dans le menu ☰, tu peux couper l’aide au rendu de monnaie : +10 % sur ces ventes. Et si tu passes à Frontignan, viens nous dire bonjour à la boulangerie Chez les voisins !' },
 ];
 function majTuto() {
   if (!E.tutoriel || S.menu || !panneauVisibleCompatibleTuto()) { if (S.tuto) cacherBulle(); S.tuto = null; return; }
@@ -2268,6 +2419,22 @@ function emplacementVide(r) {
 /** @param {Fournee} f @param {Rect} r */
 function boutonsGeste(f, r) {
   const et = etapeCourante(f);
+  const tr = travailSur(f);
+  if (tr) {
+    const o = E.employes.find((x) => x.id === tr.emp);
+    const h = Math.min(40, r.h * 0.36);
+    const y = r.y + r.h - h - 6;
+    dessinerPersonne(r.x + 16, y + h, h * 1.1, '#e8b993', '#fffaf0', 0.8, 'toque');
+    const bx = r.x + 32, bw = r.w - 40;
+    ecrire((o ? o.nom : '') + ' : ' + NOM_ETAPE[et].toLowerCase() + '…', bx + bw / 2, y + h * 0.3, Math.min(12, h * 0.34), '#3a2414', 'center', 700, bw);
+    rr(ctx, bx, y + h * 0.6, bw, 7, 3.5);
+    ctx.fillStyle = 'rgba(0,0,0,0.12)';
+    ctx.fill();
+    rr(ctx, bx, y + h * 0.6, bw * borner(tr.t / tr.duree, 0, 1), 7, 3.5);
+    ctx.fillStyle = '#4f8a45';
+    ctx.fill();
+    return;
+  }
   const rapide = rapideDispo(f.recette);
   const h = Math.min(40, r.h * 0.36);
   const y = r.y + r.h - h - 6;
@@ -2294,7 +2461,8 @@ function enteteFournee(f, r, sous) {
 function sectionPlan(R) {
   const n = placesPlan();
   const liste = S.fournees.filter((f) => f.lieu === 'plan');
-  panneauSection(R, 'Plan de travail (' + liste.length + '/' + n + ')');
+  const po = ouvriersSur('pate');
+  panneauSection(R, 'Plan de travail (' + liste.length + '/' + n + ')' + (po.length ? ' · 👷 ' + po.map((e) => e.nom + ' (pâte niv. ' + e.taches.pate.niv + ')').join(', ') : ''));
   const pl = emplacements(R, n);
   pl.forEach((r, i) => {
     const f = liste[i];
@@ -2350,7 +2518,9 @@ function sectionPousse(R) {
 function sectionFour(R) {
   const n = placesFour();
   const liste = S.fournees.filter((f) => f.lieu === 'four');
-  panneauSection(R, 'Four (' + liste.length + '/' + n + ')' + (E.evenement === 'panneFour' ? ' · un four en panne' : ''));
+  const fo = ouvriersSur('four');
+  const chef = fo.length ? fo.reduce((a, b) => (b.taches.four.niv > a.taches.four.niv ? b : a)) : null;
+  panneauSection(R, 'Four (' + liste.length + '/' + n + ')' + (E.evenement === 'panneFour' ? ' · un four en panne' : '') + (chef ? ' · 👷 ' + chef.nom + ' surveille (four niv. ' + chef.taches.four.niv + ')' : ''));
   const pl = emplacements(R, n);
   rectsFour.clear();
   pl.forEach((r, i) => {
@@ -2449,6 +2619,20 @@ function dessinerMiniJeu(mj) {
   else dessinerScarifier(mj, R, f ? f.recette : 'baguette');
   if (mj.fini) {
     ecrire(etoiles(mj.etoiles), R.x + R.w / 2, R.y + R.h * 0.12, Math.min(44, R.w * 0.11), '#ffd35c', 'center', 800);
+    if (f) {
+      // Ce que vaut ce geste : la fournée prend la moyenne de tous ses gestes et de la cuisson.
+      const notes = f.notes.concat([mj.etoiles]);
+      const q = borner(Math.round(moyenne(notes)), 1, 3);
+      const base = RECETTES[f.recette].prix;
+      const prix = prixVente(f.recette, q);
+      const ecartPct = Math.round((prix / base - 1) * 100);
+      const bx = R.x + 14, bw = R.w - 28, by = R.y + R.h - 74;
+      rr(ctx, bx, by, bw, 62, 12);
+      ctx.fillStyle = 'rgba(47,29,16,0.86)';
+      ctx.fill();
+      ecrire('Fournée pour l’instant : ' + etoiles(q) + ' → ' + euros(prix) + ' pièce (' + (ecartPct >= 0 ? '+' : '') + ecartPct + ' %)', bx + bw / 2, by + 18, Math.min(14, bw * 0.04), '#ffd35c', 'center', 700, bw - 12);
+      ecrire('Ce geste : +' + CONFIG.xpGesteManuel + ' XP · compétence ' + RECETTES[f.recette].nom.toLowerCase().replace(' (part)', '') + ' +' + (1 + mj.etoiles), bx + bw / 2, by + 42, Math.min(12, bw * 0.035), '#f1e0bf', 'center', 600, bw - 12);
+    }
   }
 }
 /** @param {MJPetrir} mj @param {Rect} R */
@@ -3181,6 +3365,7 @@ function htmlMenu() {
     btn(S.confirmer ? 'nouvelle' : 'confirmerNouvelle', 'tuto', S.confirmer ? 'Effacer et recommencer' : 'Nouvelle partie', S.confirmer ? 'danger' : 'sec') + '</div>' +
     (S.confirmer ? '<p class="alerte">La partie en cours sera effacée définitivement.</p>' : '') +
     '<p class="discret">Aide au rendu de monnaie : le montant à rendre est affiché. Sans aide, vous calculez vous-même et gagnez +' + Math.round(CONFIG.bonusSansAide * 100) + ' % sur chaque vente où la monnaie est rendue juste.</p>' +
+    htmlLegendeEtoiles() +
     '<h3>Aide</h3><p>Matin : lancez des fournées et réussissez les gestes. Les temps de pousse et de cuisson sont réels : planifiez. Midi : servez la commande affichée et rendez la monnaie. Soir : comptez la caisse et faites le ménage.</p>' +
     '<p class="discret">Sauvegarde automatique au début de chaque journée.</p></div>';
 }
@@ -3238,12 +3423,21 @@ function htmlOngletJour() {
       ' de ' + r.pieces * m + ' · ' + euros(prixVente(p, 2)) + ' pièce</span></div><div>' + (manque ? '<span class="neg">⚠️ ' + esc(manque) + '</span>' : '<span class="pos">✅</span>') + '</div></div>';
   }
   h += '</div>';
-  if (E.employes.length) h += '<p class="discret">Équipe : ' + E.employes.map((e) => esc(e.nom) + ' (' + ROLES[e.role] + (e.enFormation ? ', en formation' : '') + ')').join(', ') + '. Salaires : ' + euros(E.employes.reduce((s, e) => s + e.salaire, 0)) + ' par jour.</p>';
+  if (E.employes.length) {
+    h += '<h3>Consignes du jour</h3><p class="discret">Dis à chaque ouvrier de fabrication ce qu’il fait aujourd’hui : la pâte ou le four. Salaires : ' + euros(E.employes.reduce((s, e) => s + e.salaire, 0)) + ' par jour.</p><div class="liste">';
+    for (const e of E.employes) h += htmlEmploye(e, false);
+    h += '</div>';
+  }
   h += '<div class="ligne"><div>🧮</div><div><b>Aide au rendu de monnaie</b><span class="dosage">' + (E.aideMonnaie ? 'Activée : le montant à rendre est affiché.' : 'Désactivée : +' + Math.round(CONFIG.bonusSansAide * 100) + ' % sur les ventes rendues juste.') + '</span></div><div class="act">' +
     btn('aide', '', E.aideMonnaie ? 'Désactiver (+' + Math.round(CONFIG.bonusSansAide * 100) + ' %)' : 'Activer', 'petit sec') + '</div></div>';
   h += '<p class="discret">Plus vous ouvrez tôt, plus vous avez de clients : la boutique ferme à ' + CONFIG.heureFermeture + ' h.</p>';
   h += '<p class="discret">Loyer et charges : ' + euros(CONFIG.chargesJour) + ' par jour. Les invendus sont bradés à moitié, le reste est perdu.</p>';
   return h;
+}
+function htmlLegendeEtoiles() {
+  return '<h3>Ce que valent les étoiles</h3><p class="discret">Chaque geste (pétrir, façonner, scarifier) et la cuisson reçoivent 1 à 3 étoiles. La fournée prend la moyenne, arrondie.</p>' +
+    '<table class="bilan">' + LEGENDE_ETOILES.map((l) => '<tr><td style="color:#c8891f;font-weight:700">' + l[0] + '</td><td>' + l[1] + '</td><td>' + l[2] + ' par fournée</td></tr>').join('') + '</table>' +
+    '<p class="discret">Chaque niveau de compétence d’un produit ajoute aussi +2 % au prix et accélère pousse et cuisson. Une fournée brûlée est perdue.</p>';
 }
 function htmlOngletRecettes() {
   let h = '<h2>Recettes</h2><p class="discret">Quantités pour une fournée ×' + tailleFournee() + '. Chaque niveau de compétence réduit les délais (≈ −50 % au niveau 10) et augmente le prix de vente.</p><div class="liste">';
@@ -3259,26 +3453,44 @@ function htmlOngletRecettes() {
       (ok ? '<div class="mini"><i style="width:' + Math.round(100 * c.xp / (CONFIG.xpCompetenceParNiveau * c.niv)) + '%"></i></div>' : '') + '</div>' +
       '<div class="chiffres">' + (ok ? 'Comp. ' + c.niv + '/10' + (rapideDispo(p) ? ' ⚡' : '') : '🔒 ' + cond) + '</div></div>';
   }
-  return h + '</div>';
+  return h + '</div>' + htmlLegendeEtoiles();
+}
+/** @param {Employe} e */
+function iconeRole(e) { return e.role === 'fournier' ? '🧑‍🍳' : e.role === 'vendeur' ? '🧑‍💼' : '🧽'; }
+/** Fiche visuelle d'un employé. @param {Employe} e @param {boolean} gestion */
+function htmlEmploye(e, gestion) {
+  const marche = salaireMarche(e.competence);
+  let h = '<div class="ligne" style="grid-template-columns:auto 1fr"><div style="font-size:30px">' + iconeRole(e) + '</div><div><b>' + esc(e.nom) + ' · ' + ROLES[e.role] +
+    (e.enFormation ? ' (en formation aujourd’hui)' : '') + '</b>';
+  for (const t of tachesDuRole(e.role)) {
+    const c = e.taches[t];
+    const actif = e.affectation === t;
+    h += '<div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap">' +
+      (e.role === 'fournier' && !e.enFormation ? btn('affecter', e.id + ':' + t, ICONE_TACHE[t] + ' ' + NOM_TACHE[t] + (actif ? ' ✓' : ''), 'petit' + (actif ? '' : ' sec')) : '<span>' + ICONE_TACHE[t] + ' ' + NOM_TACHE[t] + '</span>') +
+      '<span class="dosage chiffres">niv. ' + c.niv + '/' + e.potentiel + ' · travail ≈ ' + etoiles(etoilesAttendues(c.niv)) + '</span>' +
+      (gestion ? btn('former', e.id + ':' + t, 'Former · ' + euros(coutFormation(e, t)), 'petit sec', c.niv >= e.potentiel || e.enFormation) : '') + '</div>' +
+      '<div class="mini"><i style="width:' + Math.round(100 * c.xp / (8 * c.niv)) + '%"></i></div>';
+  }
+  if (e.role === 'fournier' && !e.enFormation && !e.affectation) h += '<p class="neg" style="margin:6px 0 0">⚠️ Sans consigne, ' + esc(e.nom) + ' ne fera rien aujourd’hui.</p>';
+  if (e.role === 'vendeur') h += '<span class="dosage">Ventes additionnelles : ≈ ' + Math.round(100 * (0.08 + 0.05 * e.taches.vente.niv)) + ' % des clients servis.</span>';
+  if (gestion) {
+    h += '<span class="dosage chiffres" style="display:block;margin-top:6px">Moral ' + Math.round(e.moral) + ' · ' + euros(e.salaire) + '/jour' + (e.salaire < marche ? ' (sous le marché : ' + euros(marche) + ')' : '') + '</span>' +
+      '<div class="mini"><i style="width:' + Math.round(e.moral) + '%;background:' + (e.moral < 35 ? '#b94a35' : '#4f8a45') + '"></i></div>' +
+      '<div class="act" style="justify-content:flex-start;margin-top:6px">' + btn('augmenter', String(e.id), '+5 €/j', 'petit sec') + btn('licencier', String(e.id), 'Laisser partir', 'petit sec') + '</div>';
+  }
+  return h + '</div></div>';
 }
 function htmlOngletEquipe() {
-  if (E.niveau < CONFIG.niveauEquipe) return '<h2>Équipe</h2><p>Le recrutement s’ouvre au niveau ' + CONFIG.niveauEquipe + ', avec au moins ' + euros(CONFIG.capitalEmbauche) + ' en caisse.</p><p class="discret">Fournier, vendeur et plongeur : chacun a une compétence, un salaire, un moral et un potentiel. Un employé sous-payé ou mal traité peut démissionner.</p>';
-  let h = '<h2>Votre équipe</h2><div class="liste">';
+  if (E.niveau < CONFIG.niveauEquipe) return '<h2>Équipe</h2><p>Le recrutement s’ouvre au niveau ' + CONFIG.niveauEquipe + ', avec au moins ' + euros(CONFIG.capitalEmbauche) + ' en caisse.</p><p class="discret">' + ROLES_EFFET.fournier + ' ' + ROLES_EFFET.vendeur + ' ' + ROLES_EFFET.plongeur + ' Un employé sous-payé ou mal traité peut démissionner.</p>';
+  let h = '<h2>Ton équipe</h2><p class="discret">Un employé progresse dans la tâche qu’il pratique : plus il est haut, plus il va vite et plus son travail vaut d’étoiles.</p><div class="liste">';
   if (!E.employes.length) h += '<p class="discret">Personne pour l’instant.</p>';
-  for (const e of E.employes) {
-    const marche = salaireMarche(e.competence);
-    h += '<div class="ligne"><div>' + (e.role === 'fournier' ? '🧑‍🍳' : e.role === 'vendeur' ? '🧑‍💼' : '🧽') + '</div><div><b>' + esc(e.nom) + ' · ' + ROLES[e.role] + (e.enFormation ? ' (en formation aujourd’hui)' : '') + '</b>' +
-      '<span class="dosage chiffres">Compétence ' + e.competence + '/' + e.potentiel + ' · moral ' + Math.round(e.moral) + ' · ' + euros(e.salaire) + '/jour' + (e.salaire < marche ? ' (sous le marché : ' + euros(marche) + ')' : '') + '</span>' +
-      '<div class="mini"><i style="width:' + Math.round(e.moral) + '%;background:' + (e.moral < 35 ? '#b94a35' : '#4f8a45') + '"></i></div></div>' +
-      '<div class="act">' + btn('former', String(e.id), 'Former · ' + euros(coutFormation(e)), 'petit', e.competence >= e.potentiel || e.enFormation) +
-      btn('augmenter', String(e.id), '+5 €/j', 'petit sec') + btn('licencier', String(e.id), 'Laisser partir', 'petit sec') + '</div></div>';
-  }
+  for (const e of E.employes) h += htmlEmploye(e, true);
   h += '</div><h3>Candidatures du jour</h3><p class="discret">Frais d’embauche ' + euros(CONFIG.fraisEmbauche) + '. ' + ROLES_EFFET.fournier + ' ' + ROLES_EFFET.vendeur + ' ' + ROLES_EFFET.plongeur + '</p><div class="liste">';
   for (const c of E.candidats) {
-    h += '<div class="ligne"><div>📄</div><div><b>' + esc(c.nom) + ' · ' + ROLES[c.role] + '</b><span class="dosage chiffres">Compétence ' + c.competence + ' · potentiel ' + c.potentiel + ' · demande ' + euros(c.salaire) + '/jour</span></div>' +
+    h += '<div class="ligne"><div>📄</div><div><b>' + esc(c.nom) + ' · ' + ROLES[c.role] + '</b><span class="dosage chiffres">' + tachesDuRole(c.role).map((t) => NOM_TACHE[t] + ' niv. ' + c.taches[t].niv).join(' · ') + ' · potentiel ' + c.potentiel + ' · demande ' + euros(c.salaire) + '/jour</span></div>' +
       '<div class="act">' + btn('embaucher', String(c.id), 'Embaucher', 'petit', E.argent < CONFIG.capitalEmbauche) + '</div></div>';
   }
-  if (!E.candidats.length) h += '<p class="discret">Revenez demain pour de nouvelles candidatures.</p>';
+  if (!E.candidats.length) h += '<p class="discret">Reviens demain pour de nouvelles candidatures.</p>';
   return h + '</div>';
 }
 function htmlOngletTravaux() {
@@ -3313,9 +3525,21 @@ function htmlBilan() {
     '<div class="stat">Propreté<b>' + Math.round(J.proprete * 100) + ' %</b></div>' +
     '<div class="stat">Caisse<b>' + (J.caisseJuste ? 'Juste ✅' : 'Erreur ❌') + '</b></div>' +
     '<div class="stat">XP gagnée<b>+' + J.xp + ' · niv. ' + E.niveau + '</b><div class="mini"><i style="width:' + Math.round(100 * E.xp / xpRequise(E.niveau)) + '%"></i></div></div></div>';
+  if (J.ouvriers.length) {
+    h += '<h3>Ton équipe aujourd’hui</h3><ul>';
+    for (const o of J.ouvriers) {
+      const e = E.employes.find((x) => x.id === o.id);
+      const niv = e ? ' · niveau ' + e.taches[o.tache].niv : '';
+      if (o.tache === 'vente') h += '<li>' + esc(o.nom) + ' (vente) : ' + o.actions + ' client' + (o.actions > 1 ? 's' : '') + ' servi' + (o.actions > 1 ? 's' : '') + ', ' + o.ventesAdd + ' vente' + (o.ventesAdd > 1 ? 's' : '') + ' additionnelle' + (o.ventesAdd > 1 ? 's' : '') + ' (+' + euros(o.caAdd) + ')' +
+        (o.manquees ? ', <span class="neg">' + o.manquees + ' manquée' + (o.manquees > 1 ? 's' : '') + ' faute de stock : produis plus !</span>' : '') + niv + '</li>';
+      else if (o.tache === 'menage') h += '<li>' + esc(o.nom) + ' (ménage) : a nettoyé avant toi' + niv + '</li>';
+      else h += '<li>' + esc(o.nom) + ' (' + NOM_TACHE[o.tache].toLowerCase() + ') : ' + o.actions + ' tâche' + (o.actions > 1 ? 's' : '') + (o.notes.length ? ', moyenne ' + etoiles(moyenne(o.notes)) : '') + niv + '</li>';
+    }
+    h += '</ul>';
+  }
   if (B.notes.length) h += '<h3>Progrès et événements</h3><ul>' + B.notes.map((n) => '<li>' + esc(n) + '</li>').join('') + '</ul>';
   h += '<p><b>Trésorerie : ' + euros(E.argent) + '</b>' + (E.argent < 0 ? ' · <span class="neg">Attention : sous ' + euros(CONFIG.faillite) + ', c’est la faillite.</span>' : '') + '</p>';
-  if (E.jour === 3 && E.tutoriel) h += '<p class="alerte">Fin du tutoriel : Jean-Baptiste te laisse les clés. Pense à passer le voir Chez les Voisins, à Frontignan !</p>';
+  if (E.jour === 3 && E.tutoriel) h += '<p class="alerte">Fin du tutoriel : Jean-Baptiste te laisse les clés. Pense à passer nous voir à la boulangerie Chez les voisins, à Frontignan !</p>';
   return h + '</div>';
 }
 function htmlFaillite() {
@@ -3355,7 +3579,8 @@ function actionUI(a, v) {
     case 'muet': E.muet = !E.muet; sauver(); break;
     case 'aide': E.aideMonnaie = !E.aideMonnaie; sauver(); toast(E.aideMonnaie ? 'Aide au rendu de monnaie activée.' : 'Aide désactivée : +' + Math.round(CONFIG.bonusSansAide * 100) + ' % sur les ventes rendues juste.'); break;
     case 'embaucher': embaucher(Number(v)); return;
-    case 'former': former(Number(v)); return;
+    case 'former': { const [id, t] = v.split(':'); former(Number(id), t); return; }
+    case 'affecter': { const [id, t] = v.split(':'); affecter(Number(id), t); break; }
     case 'augmenter': augmenter(Number(v)); return;
     case 'licencier': licencier(Number(v)); return;
     case 'travaux': {
@@ -3575,6 +3800,7 @@ function maj(dt) {
     }
     S.horloge += dt;
     majFournees(dt);
+    majOuvriers(dt);
     if (S.horloge >= S.dureeMatin) { toast('11 h : la boutique ouvre !'); ouvrirBoutique(); }
   } else if (S.phase === 'midi') majComptoir(dt);
   else if (S.phase === 'caisse' && S.caisse && S.caisse.resultat !== null) {

@@ -10,7 +10,7 @@ Jeu autonome en un seul fichier : `index.html`. Il contient le HTML, le CSS et l
 4. **Soir** : compter la caisse, puis faire le ménage. La propreté influence la réputation.
 5. **Bilan** : chiffre d'affaires, coûts, pertes, XP, réputation et déblocages.
 
-Jean-Baptiste, patron de la boulangerie Chez les Voisins à Frontignan, guide les jours 1 à 3. Le tutoriel peut être ignoré à tout moment (« Passer le tutoriel ») ou désactivé dès le départ (« Nouvelle partie sans tutoriel »).
+Jean-Baptiste, patron de la boulangerie Chez les voisins à Frontignan, guide les jours 1 à 3. Le tutoriel peut être ignoré à tout moment (« Passer le tutoriel ») ou désactivé dès le départ (« Nouvelle partie sans tutoriel »).
 
 ## Commandes
 
@@ -30,6 +30,25 @@ Jean-Baptiste, patron de la boulangerie Chez les Voisins à Frontignan, guide le
 Réglage « Aide au rendu de monnaie » (menu ☰ ou onglet Journée) : quand elle est activée, le montant à rendre est affiché. Quand elle est désactivée, le joueur calcule lui-même et gagne +10 % (`CONFIG.bonusSansAide`) sur chaque vente où la monnaie est rendue juste. L'aide est toujours affichée pendant les deux premiers jours du tutoriel.
 
 Le bouton 🔊 coupe le son. La partie est sauvegardée automatiquement au début de chaque journée, dans le `localStorage` du navigateur. Le menu ☰ permet de lancer une nouvelle partie.
+
+## Étoiles
+
+Chaque geste (pétrir, façonner, scarifier) et la cuisson reçoivent 1 à 3 étoiles. La fournée prend la moyenne, arrondie :
+
+| Note | Prix de vente | Clients | XP de la fournée |
+|---|---|---|---|
+| ★☆☆ | −10 % | moins satisfaits | +5 |
+| ★★☆ | prix normal | normal | +10 |
+| ★★★ | +10 % | ravis, réputation en hausse | +15 |
+
+Après chaque geste, l'écran montre la note actuelle de la fournée et le prix qu'elle vaudrait. Le tableau se retrouve aussi dans l'onglet Recettes et dans le menu ☰.
+
+## Équipe (à partir du niveau 5)
+
+- **Fournier** : chaque matin, dans l'onglet Journée, tu lui confies la **pâte** (il pétrit, façonne et scarifie seul les fournées en attente) ou le **four** (il défourne). Sans consigne, il ne fait rien. Il progresse dans la tâche qu'il pratique (niveau 1 à 10) : il va plus vite et son travail vaut plus d'étoiles. Au four, il défourne de plus en plus près du moment idéal.
+- **Vendeur** : il sert une partie des clients. Avec l'expérience, il propose des ventes additionnelles (≈ 8 % + 5 % par niveau). S'il n'y a plus de stock, la vente est manquée et le bilan le signale : il faut alors produire plus.
+- **Plongeur** : il fait une partie du ménage avant toi.
+- La formation (payante) fait gagner un niveau dans une tâche. Le salaire du marché suit le niveau : un employé sous-payé perd le moral et peut démissionner.
 
 ## Équilibrage modifiable
 
