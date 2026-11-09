@@ -2,6 +2,13 @@
 
 Jeu autonome en un seul fichier : `index.html`. Il contient le HTML, le CSS et le JavaScript. Il n'utilise aucune bibliothèque, ne fait aucun appel réseau et ne collecte aucune donnée personnelle. Il fonctionne hors ligne : ouvrez simplement le fichier dans un navigateur, sur téléphone ou sur ordinateur.
 
+## Début de partie
+
+1. **Journée découverte Chez les voisins** : Jean-Baptiste, gérant de la boulangerie Chez les voisins à Frontignan, t'invite à passer une journée dans sa boutique, où tout est au maximum. Il y a deux fourniers de niveau 10 (Mathis à la pâte, Sofiane au four), deux vendeuses de niveau 10 qui font des ventes additionnelles (Laura et Emma), six fours, la chambre de pousse, le pétrin mécanique, toutes les recettes au niveau 10 et plus de 100 clients. Cette journée n'est jamais sauvegardée.
+2. **Ta boulangerie** : à la fin de la journée découverte, tu donnes un nom à ta boulangerie, puis tu repars de zéro, seul, avec 1 500 €. Jean-Baptiste t'accompagne pendant tes trois premiers jours.
+
+« Nouvelle partie sans tutoriel » saute la journée découverte et passe directement au choix du nom.
+
 ## Déroulement d'une journée (environ 5 minutes)
 
 1. **Préparation** : prévision de la demande, réserve en grammes et kilogrammes, commandes au fournisseur, recettes, équipe, travaux.
