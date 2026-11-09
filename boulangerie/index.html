@@ -486,7 +486,7 @@ const CONFIG = Object.freeze({
   competenceMax: 10,
   seuilRapide: 3,
   clientsBase: 8,
-  clientsParEtoile: 4,
+  clientsParEtoile: 6,          // plus de réputation = plus de clients, donc plus dur de tout servir seul
   patienceBase: 38,
   reputationInitiale: 2.5,
   tauxBradage: 0.3,
@@ -933,6 +933,14 @@ function ingredientManquant(p, m) {
     if (!ing.illimite && E.stock[x.ingredient] < x.grammes * m) return ing.nom;
   }
   return '';
+}
+/** @param {number} c */
+/** Variation de réputation selon la satisfaction du jour (en %). @param {number} pct @returns {number} */
+function variationReputation(pct) {
+  if (pct <= 50) return -0.5;
+  if (pct <= 70) return 0;
+  if (pct <= 90) return 0.2;
+  return 0.5;
 }
 /** @param {number} c */
 function salaireMarche(c) { return 1200 + c * 400; }
@@ -1410,10 +1418,11 @@ function finJournee() {
   const boutique2 = E.ameliorations.boutique2 ? CONFIG.revenuBoutique2 : 0;
   E.argent += boutique2 - CONFIG.chargesJour - salaires - reparation;
   const repAvant = S.repAvant;
+  // Réputation par paliers de satisfaction (voir variationReputation).
   if (J.satisfactions.length) {
-    const cible = 5 * moyenne(J.satisfactions) * (0.7 + 0.3 * E.proprete);
-    E.reputation = borner(E.reputation * 0.7 + cible * 0.3, 0, 5);
+    E.reputation = borner(E.reputation + variationReputation(Math.round(100 * moyenne(J.satisfactions))), 0, 5);
   }
+  if (E.proprete < 0.6) { E.reputation = Math.max(0, E.reputation - 0.1); J.notes.push('Boutique peu propre : réputation −0,1.'); }
   // Moral des employés.
   for (const emp of E.employes.slice()) {
     emp.jours++;
@@ -3723,7 +3732,7 @@ function htmlBilan() {
   h += '<div class="grille2"><div class="stat">Clients servis<b>' + J.clientsServis + ' / ' + (J.clientsServis + J.clientsPerdus) + '</b></div>' +
     '<div class="stat">Satisfaction<b>' + sat + ' %</b></div>' +
     '<div class="stat">Ouverture<b>' + libelleHeure(J.heureOuverture) + ' → ' + CONFIG.heureFermeture + 'h00</b></div>' +
-    '<div class="stat">Réputation<b>' + nombre(B.repAvant, 1) + ' → ' + nombre(B.repApres, 1) + ' ★</b></div>' +
+    '<div class="stat">Réputation<b>' + nombre(B.repAvant, 1) + ' → ' + nombre(B.repApres, 1) + ' ★</b><span class="dosage">' + (J.satisfactions.length ? 'Satisfaction ' + sat + ' % : ' + (variationReputation(sat) > 0 ? '+' : variationReputation(sat) < 0 ? '−' : '±') + nombre(Math.abs(variationReputation(sat)), 1) : '') + '</span></div>' +
     '<div class="stat">Propreté<b>' + Math.round(J.proprete * 100) + ' %</b></div>' +
     '<div class="stat">Caisse<b>' + (J.caisseJuste ? 'Juste ✅' : 'Erreur ❌') + '</b></div>' +
     '<div class="stat">XP gagnée<b>+' + J.xp + ' · niv. ' + E.niveau + '</b><div class="mini"><i style="width:' + Math.round(100 * E.xp / xpRequise(E.niveau)) + '%"></i></div></div></div>';
