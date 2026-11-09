@@ -1322,9 +1322,9 @@ function decomposer(montant) {
   let reste = montant;
   for (const v of COUPURES) {
     const max = Math.floor(reste / v);
+    // Grosses coupures d'abord, pour un comptage facile ; un peu de variété sur les coupures moyennes.
     let n = max;
-    if (v >= 500 && max > 0 && Math.random() < 0.5) n = max - 1;
-    if (v === 5000 && n > 2) n = 2;
+    if (v < 5000 && v >= 200 && max > 0 && Math.random() < 0.3) n = max - 1;
     if (n > 0) res.push({ valeur: v, n });
     reste -= n * v;
   }
@@ -3268,7 +3268,12 @@ function dessinerCasiers(liste, R, billets) {
     const c = liste.find((x) => x.valeur === v);
     const nb = c ? c.n : 0;
     if (nb === 0) return;
-    const zy = r.y + 18, zh = r.h - 22;
+    // Nombre de billets ou de pièces, pour compter facilement
+    rr(ctx, r.x + 3, r.y + r.h - 20, r.w - 6, 17, 6);
+    ctx.fillStyle = '#f1e0bf';
+    ctx.fill();
+    ecrire(nb + ' × ' + (v >= 100 ? (v / 100) + ' €' : v + ' c'), r.x + r.w / 2, r.y + r.h - 11.5, 11, '#2f1d10', 'center', 800, r.w - 8);
+    const zy = r.y + 18, zh = r.h - 42;
     if (billets) {
       const bw = r.w * 0.86, bh = Math.min(zh * 0.45, bw * 0.55);
       const pas = nb > 1 ? Math.min(bh * 0.55, (zh - bh) / (nb - 1)) : 0;
