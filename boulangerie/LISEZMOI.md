@@ -87,7 +87,7 @@ Formules principales :
 - Vitesse du patron : `max(0,6 ; 1 − 0,03 × (niveau − 1))`, appliquée aux minuteries.
 - Compétence par produit (1 à 10) : délais `× (1 − 0,055 × (compétence − 1))`, soit environ −50 % au niveau 10, et prix `× (1 + 0,02 × (compétence − 1))`.
 - Prix de vente : `prix de base × (0,8 + 0,1 × étoiles)`, arrondi aux 10 centimes.
-- Clients par jour : `(8 + 6 × réputation)`, avec un bonus pour la vitrine et certains événements. Plus la réputation monte, plus il y a de clients : il devient vite nécessaire d'embaucher.
+- Clients par jour : `10 + 10 × réputation` (35 à 2,5 ★, 60 à 5 ★), avec un bonus pour la vitrine, certains événements et l'ouverture anticipée. Au-delà d'environ 35 clients, il faut au moins un vendeur.
 - Ouverture anticipée : chaque heure d'ouverture avant 11 h ajoute `1/8` des clients de la journée et allonge le service d'autant.
 - Réputation (départ 2,5 ★, de 0 à 5) : selon la satisfaction moyenne du jour, ≤ 50 % → −0,5 ; 51 à 70 % → inchangée ; 71 à 90 % → +0,2 ; 91 à 100 % → +0,5. Une propreté sous 60 % retire 0,1 de plus. Les paliers se règlent dans `variationReputation`.
 - Mode rapide : disponible dès la compétence 3. La qualité dépend de la compétence, et il existe un petit risque d'erreur au début.
