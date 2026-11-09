@@ -19,6 +19,20 @@ Jeu autonome en un seul fichier : `index.html`. Il contient le HTML, le CSS et l
 
 Jean-Baptiste, patron de la boulangerie Chez les voisins à Frontignan, guide les jours 1 à 3. Le tutoriel peut être ignoré à tout moment (« Passer le tutoriel ») ou désactivé dès le départ (« Nouvelle partie sans tutoriel »).
 
+## Cadeaux réels (boulangerie Chez les voisins, Frontignan)
+
+Paliers réglables dans `CADEAUX`, au début du script :
+
+| Fin du jour | Cadeau | Validité |
+|---|---|---|
+| 5 | 1 croissant ou 1 pain au chocolat offert | 30 jours |
+| 10 | Bon de 10 % sur tout le magasin | 30 jours |
+
+- Une fenêtre s'ouvre au bilan avec un code (format `CDV-XXXX-XXXX`) à montrer en boutique. Tous les codes restent dans le menu ☰ → « 🎁 Mes cadeaux ».
+- Le bouton « Marquer comme utilisé en boutique » se touche devant le vendeur, avec une confirmation en deux temps.
+- Les cadeaux sont gardés à part de la partie : une nouvelle partie ne les efface pas et ne les redonne pas sur le même appareil.
+- **Limite importante** : le jeu fonctionne sans serveur. Le code n'est donc pas vérifiable par le magasin. Quelqu'un d'habile peut modifier son navigateur, changer d'appareil ou partager une capture. Pour une vérification fiable (un code à usage unique contrôlé en ligne), il faudrait une petite base de données, par exemple Supabase.
+
 ## Commandes
 
 | Action | Tactile ou souris | Clavier |
@@ -61,6 +75,7 @@ Après chaque geste, l'écran montre la note actuelle de la fournée et le prix 
 
 Tous les réglages se trouvent au début du script, section « 2. ÉQUILIBRAGE ». Les montants sont exprimés en centimes.
 
+- `CONFIG.accelerationJeu` (1,25) : vitesse de l'horloge, de la pousse, de la cuisson, des ouvriers et de l'arrivée des clients. Les gestes du joueur, la patience des clients et le ménage restent en temps réel.
 - `CONFIG` : capital initial (1 500 €), charges quotidiennes, durées des phases, gains d'XP, seuil du mode rapide, clients par étoile de réputation, patience, bradage des invendus, événements, conditions d'embauche, seuil de faillite.
 - `INGREDIENTS` : prix au kilogramme, stock initial et taille des lots (en grammes).
 - `RECETTES` : dosages en grammes pour une pâte de base, nombre de pièces, prix, étapes, temps de pousse et de cuisson (secondes réelles), niveau de déblocage, popularité.
