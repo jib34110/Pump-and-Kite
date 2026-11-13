@@ -188,6 +188,46 @@ label.case { display: flex; gap: 8px; align-items: center; justify-content: cent
   background: linear-gradient(180deg, #4a2b16, #2e1a0c); color: var(--miel); border-radius: 12px; padding: 10px 16px; margin: 8px auto; display: inline-block;
   box-shadow: inset 0 2px 6px rgba(0,0,0,.5); -webkit-user-select: all; user-select: all; }
 @keyframes saut { from { transform: translateY(0) rotate(-4deg); } to { transform: translateY(-8px) rotate(4deg); } }
+/* ---- Fin de journée : étoiles, coffre, gains ---- */
+.recompense h2 { border: 0; margin-bottom: 4px; }
+.etoiles-jour { display: flex; justify-content: center; gap: 10px; margin: 6px 0 4px; }
+.etoiles-jour .et { font-size: 64px; line-height: 1; color: #d9c9a8; filter: drop-shadow(0 3px 0 rgba(0,0,0,.15)); opacity: 0; animation: etoile .55s cubic-bezier(.2,1.6,.4,1) forwards; }
+.etoiles-jour .et:nth-child(2) { font-size: 80px; transform-origin: center; margin-top: -10px; }
+.recompense.fixe, .recompense.fixe .et { animation: none; opacity: 1; }
+.etoiles-jour .et.on { color: #ffc93c; text-shadow: 0 0 18px rgba(255,201,60,.8); }
+@keyframes etoile { 0% { opacity: 0; transform: scale(2.4) rotate(-30deg); } 100% { opacity: 1; transform: none; } }
+.recompense .msg { font-family: var(--titre); font-size: 19px; color: var(--brun); margin: 4px 0 10px; }
+ul.objectifs { list-style: none; padding: 0; margin: 8px auto; display: flex; flex-direction: column; gap: 6px; max-width: 420px; text-align: left; }
+ul.objectifs li { background: #fffdf7; border: 1px solid #eedcb6; border-radius: 12px; padding: 8px 12px; font-weight: 700; color: var(--texte); }
+ul.objectifs li.ok { background: #eef8e8; border-color: #b9dcaa; }
+ul.objectifs li.ko { opacity: .7; }
+.coffre { position: relative; width: 130px; height: 104px; margin: 16px auto 4px; display: block; border: 0; background: none; cursor: pointer; animation: secoue 1.2s ease-in-out infinite; }
+.coffre .caisse-c { position: absolute; left: 0; right: 0; bottom: 0; height: 62px; border-radius: 10px; background: linear-gradient(180deg, #a8692e, #6e3f17); border: 4px solid #e3a33b; box-shadow: 0 8px 18px rgba(0,0,0,.35); }
+.coffre .couvercle { position: absolute; left: -4px; right: -4px; top: 8px; height: 40px; border-radius: 40px 40px 8px 8px; background: linear-gradient(180deg, #c07c3a, #7c4719); border: 4px solid #e3a33b; z-index: 2; }
+.coffre .serrure { position: absolute; left: 50%; top: 40px; width: 22px; height: 26px; margin-left: -11px; border-radius: 6px; background: linear-gradient(180deg, #ffe08a, #e3a33b); z-index: 3; box-shadow: 0 2px 4px rgba(0,0,0,.4); }
+@keyframes secoue { 0%, 70%, 100% { transform: rotate(0); } 75% { transform: rotate(-6deg); } 85% { transform: rotate(6deg); } 92% { transform: rotate(-3deg); } }
+.gains { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 14px 0 6px; }
+.gain-carte { background: linear-gradient(180deg, #fffaf0, #fbecc9); border: 2px solid #f2c96b; border-radius: 16px; padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  box-shadow: 0 6px 14px rgba(0,0,0,.2); opacity: 0; animation: retourne .5s cubic-bezier(.2,1.4,.4,1) forwards; }
+.gain-carte span { font-size: 34px; line-height: 1; }
+.gain-carte b { font-size: 15px; color: var(--brun); }
+.gain-carte small { font-size: 11px; color: #7b6048; line-height: 1.2; }
+.gain-carte.rare { background: linear-gradient(180deg, #fff3d0, #ffd98c); border-color: #e3a33b; box-shadow: 0 0 22px rgba(255,201,60,.6), 0 6px 14px rgba(0,0,0,.2); }
+.gain-carte.vide { filter: grayscale(.8); opacity: .6; }
+@keyframes retourne { 0% { opacity: 0; transform: rotateY(90deg) scale(.8); } 100% { opacity: 1; transform: none; } }
+/* ---- Carte des journées ---- */
+.carte-jours { display: flex; gap: 0; overflow-x: auto; padding: 10px 4px 14px; margin: 0 0 6px; align-items: center; }
+.carte-jours .jour { flex: 0 0 auto; position: relative; width: 66px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.carte-jours .jour::before { content: ""; position: absolute; top: 22px; left: -50%; width: 100%; height: 4px; background: #e6cf9f; z-index: 0; }
+.carte-jours .jour:first-child::before { display: none; }
+.carte-jours .num { position: relative; z-index: 1; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 17px;
+  background: #efe1c2; color: #a08868; border: 3px solid #e6cf9f; }
+.carte-jours .passe .num { background: linear-gradient(180deg, #ffe08a, #f2b544); color: var(--brunF); border-color: #c98a2a; }
+.carte-jours .actuel .num { background: linear-gradient(180deg, #6b4423, #4a2b16); color: var(--miel); border-color: #f2b544; box-shadow: 0 0 0 4px rgba(242,181,68,.35); animation: pulse 1.4s ease-in-out infinite; }
+.carte-jours .ets { font-size: 12px; color: #f2a81d; letter-spacing: -1px; white-space: nowrap; font-weight: 800; }
+.carte-jours .ets i { color: #dccbaa; font-style: normal; }
+.carte-jours .actuel .ets { color: var(--doreF); letter-spacing: 0; font-size: 11px; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 4px rgba(242,181,68,.35); } 50% { box-shadow: 0 0 0 9px rgba(242,181,68,.1); } }
 @media (max-width: 420px) {
   #hud { gap: 4px; padding: 5px 5px; font-size: 12px; }
   #hDate { display: none; }
@@ -199,7 +239,8 @@ label.case { display: flex; gap: 8px; align-items: center; justify-content: cent
   .btn { font-size: 16px; padding: 0 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  #bulle, .carte, #panneau, #toast, .btn::after, .cadeau .paquet, #hArgent.gain, #hArgent.perte { animation: none; }
+  #bulle, .carte, #panneau, #toast, .btn::after, .cadeau .paquet, #hArgent.gain, #hArgent.perte, .coffre, .carte-jours .actuel .num { animation: none; }
+  .etoiles-jour .et, .gain-carte { animation: none; opacity: 1; }
   .barre i { transition: none; }
 }
 </style>
@@ -343,6 +384,9 @@ label.case { display: flex; gap: 8px; align-items: center; justify-content: cent
  * @property {boolean} aideMonnaie  Affiche le montant à rendre (pas de bonus)
  * @property {boolean} prologue  Journée découverte Chez les voisins (jamais sauvegardée)
  * @property {string} nomBoulangerie
+ * @property {number[]} etoilesJours  Étoiles obtenues par journée (index = jour − 1)
+ * @property {BonusId|null} bonus  Bonus actif aujourd'hui
+ * @property {BonusId|null} bonusDemain
  * @property {Historique[]} historique
  * @property {EvenementId|null} evenement
  * @property {number} prochainId
@@ -365,6 +409,7 @@ label.case { display: flex; gap: 8px; align-items: center; justify-content: cent
  * @property {number} proprete
  * @property {number} amende
  * @property {number} bonusCalcul
+ * @property {number} fournees3
  * @property {number} heureOuverture
  * @property {StatOuvrier[]} ouvriers
  * @property {number} niveauAvant
@@ -387,6 +432,10 @@ label.case { display: flex; gap: 8px; align-items: center; justify-content: cent
  * @property {number[]} tours
  * @property {number} debut
  * @property {number} requis
+ * @property {number} periode   Durée d'un battement (s)
+ * @property {number} depart    Instant du premier battement
+ * @property {Array<'parfait'|'bien'|'rate'>} jugements
+ * @property {number} combo
  */
 /**
  * @typedef {Object} MJFaconner
@@ -402,6 +451,11 @@ label.case { display: flex; gap: 8px; align-items: center; justify-content: cent
  * @property {Point[]} chemin
  * @property {Point[]} trace
  * @property {boolean} actif
+ * @property {number} prog      Avancée de la boule de pâte (−1 = pas encore partie)
+ * @property {number} duree
+ * @property {number} surCible
+ * @property {number} mesures
+ * @property {boolean} dessus
  */
 /**
  * @typedef {Object} MJScarifier
@@ -416,6 +470,9 @@ label.case { display: flex; gap: 8px; align-items: center; justify-content: cent
  * @property {Point[]} trace
  * @property {boolean} actif
  * @property {number} t0
+ * @property {Array<{a: Point, b: Point, fait: boolean, note: number}>} marques
+ * @property {Array<{a: Point, b: Point, note: number}>} coupes
+ * @property {number} premiereCoupe
  */
 /** @typedef {MJPetrir|MJFaconner|MJScarifier} MiniJeu */
 /**
@@ -451,8 +508,30 @@ label.case { display: flex; gap: 8px; align-items: center; justify-content: cent
 /** @typedef {{x: number, y: number, t: number, texte: string, coul: string}} Flottant */
 /** @typedef {{valeur: number, n: number}} Coupure */
 /** @typedef {{attendu: number, saisie: string, contenu: Coupure[], resultat: boolean|null, t: number}} EtatCaisse */
-/** @typedef {{zone: number, nx: number, ny: number, nr: number, sale: number}} Tache */
-/** @typedef {{taches: Tache[], temps: number, duree: number, fini: boolean}} EtatMenage */
+/** @typedef {{x: number, y: number, r: number, sale: number, age: number, incrustee: boolean, genre: number}} Tache */
+/** @typedef {{x: number, y: number, vx: number}} Souris */
+/**
+ * @typedef {Object} EtatMenage
+ * @property {Tache[]} taches
+ * @property {number[]} apparitions
+ * @property {number} temps
+ * @property {number} duree
+ * @property {boolean} fini
+ * @property {number} nettoyees
+ * @property {number} ratees
+ * @property {number} combo
+ * @property {number} comboMax
+ * @property {number} dernier
+ * @property {Souris|null} souris
+ * @property {number} prochaineSouris
+ * @property {number} sourisAttrapees
+ * @property {number} plongeurT
+ */
+/** @typedef {'ca'|'etoiles3'|'servis'|'zeroPerdu'|'satisfaction'|'caisse'|'proprete'} ObjectifId */
+/** @typedef {{id: ObjectifId, texte: string, cible: number}} Objectif */
+/** @typedef {'pousseRapide'|'fourTurbo'|'patience'|'pub'|'livraison'} BonusId */
+/** @typedef {{nom: string, texte: string, icone: string}} InfoBonus */
+/** @typedef {{etoiles: number, argent: number, xp: number, bonus: BonusId|null, reussis: boolean[], ouvert: boolean, vue: boolean}} Recompense */
 /**
  * @typedef {Object} Bilan
  * @property {number} ca
@@ -463,6 +542,7 @@ label.case { display: flex; gap: 8px; align-items: center; justify-content: cent
  * @property {number} reparation
  * @property {number} amende
  * @property {number} boutique2
+ * @property {number} coffre
  * @property {number} bonusCalcul
  * @property {number} benefice
  * @property {number} repAvant
@@ -507,6 +587,9 @@ label.case { display: flex; gap: 8px; align-items: center; justify-content: cent
  * @property {CadeauObtenu|null} cadeauAffiche
  * @property {boolean} listeCadeaux
  * @property {string} confirmerCadeau
+ * @property {Objectif[]} objectifs
+ * @property {boolean[]} objFaits
+ * @property {Recompense|null} recompense
  */
 /** @typedef {{id: string, r: Rect, action: () => void, glisser: ProduitId|null}} Zone */
 /** @typedef {'farine'|'fumee'|'vapeur'|'piece'|'bulle'|'etincelle'} TypeParticule */
@@ -531,7 +614,7 @@ const CONFIG = Object.freeze({
   heureOuvertureNormale: 11,
   heureFermeture: 19,
   bonusSansAide: 0.10,         // +10 % sur les ventes avec monnaie rendue sans aide
-  dureeMenage: 25,
+  dureeMenage: 15,             // ménage arcade
   xpBase: 100,
   xpExposant: 1.5,
   xpFournee: 5,                // × étoiles
@@ -644,6 +727,17 @@ const CADEAUX = [
     texte: 'Dix journées tenues, chapeau ! Profite de 10 % de réduction sur l’ensemble du magasin.', validiteJours: 30 },
 ];
 const CLE_CADEAUX = 'laMieDoree.cadeaux.v1';
+/** Bonus gagnés dans le coffre de fin de journée, actifs le lendemain. */
+/** @type {Readonly<Record<BonusId, InfoBonus>>} */
+const BONUS = {
+  pousseRapide: { nom: 'Levure magique', texte: 'Pousse 30 % plus rapide', icone: '🧪' },
+  fourTurbo: { nom: 'Four turbo', texte: 'Cuisson 25 % plus rapide', icone: '🔥' },
+  patience: { nom: 'Sourire du patron', texte: 'Clients 40 % plus patients', icone: '😊' },
+  pub: { nom: 'Pub dans le journal', texte: '25 % de clients en plus', icone: '📰' },
+  livraison: { nom: 'Livraison offerte', texte: '+5 kg de farine et +1 kg de beurre', icone: '📦' },
+};
+/** @type {ReadonlyArray<BonusId>} */
+const LISTE_BONUS = ['pousseRapide', 'fourTurbo', 'patience', 'pub', 'livraison'];
 const BOUTIQUE_CADEAUX = 'boulangerie Chez les voisins, à Frontignan';
 /** @type {Readonly<Record<RoleId, string>>} */
 const ROLES = { fournier: 'Fournier', vendeur: 'Vendeur', plongeur: 'Plongeur' };
@@ -805,7 +899,7 @@ function nouvelEtat(tutoriel) {
     competences: parProduit(() => ({ niv: 1, xp: 0 })),
     employes: [], candidats: [],
     ameliorations: { chambrePousse: false, petrin: false, secondFour: false, vitrine: false, boutique2: false },
-    tutoriel, tutoVus: [], muet: false, aideMonnaie: true, prologue: false, nomBoulangerie: '', historique: [], evenement: null, prochainId: 1,
+    tutoriel, tutoVus: [], muet: false, aideMonnaie: true, prologue: false, nomBoulangerie: '', etoilesJours: [], bonus: null, bonusDemain: null, historique: [], evenement: null, prochainId: 1,
   };
 }
 /** @param {unknown} x @returns {x is EtatDeJeu} */
@@ -828,6 +922,9 @@ function reparer(e) {
   if (typeof e.aideMonnaie !== 'boolean') e.aideMonnaie = true;
   if (typeof e.prologue !== 'boolean') e.prologue = false;
   if (typeof e.nomBoulangerie !== 'string') e.nomBoulangerie = '';
+  if (!Array.isArray(e.etoilesJours)) e.etoilesJours = [];
+  if (e.bonus === undefined) e.bonus = null;
+  if (e.bonusDemain === undefined) e.bonusDemain = null;
   if (typeof e.prochainId !== 'number') e.prochainId = 1;
   for (const emp of e.employes.concat(e.candidats)) {
     if (!emp.taches) emp.taches = tachesInitiales(emp.role, emp.competence);
@@ -928,14 +1025,14 @@ function effacerSauvegarde() {
 function nouveauJournal() {
   return { ca: 0, braderie: 0, coutMatieres: 0, ventes: parProduit(() => 0), clientsServis: 0, clientsPerdus: 0,
     satisfactions: [], xp: 0, invendusPerdus: 0, invendusBrades: 0, fourneesFaites: 0, fourneesRatees: 0,
-    caisseJuste: null, proprete: 1, amende: 0, bonusCalcul: 0, ouvriers: [], heureOuverture: CONFIG.heureOuvertureNormale, niveauAvant: E.niveau, notes: [] };
+    caisseJuste: null, proprete: 1, amende: 0, bonusCalcul: 0, fournees3: 0, ouvriers: [], heureOuverture: CONFIG.heureOuvertureNormale, niveauAvant: E.niveau, notes: [] };
 }
 /** @param {Phase} phase @returns {Session} */
 function nouvelleSession(phase) {
   return { phase, fournees: [], prochaineFournee: 1, vitrine: parProduit(() => []), horloge: 0, dureeMatin: CONFIG.dureeMatin,
     mj: null, comptoir: null, caisse: null, menage: null, journal: nouveauJournal(), bilan: null, planClients: [],
     demande: parProduit(() => 0), onglet: 'jour', menu: false, reserveExpress: false, confirmer: false, tuto: null,
-    repAvant: E.reputation, travaux: [], nommageTuto: true, cadeauAffiche: null, listeCadeaux: false, confirmerCadeau: '' };
+    repAvant: E.reputation, travaux: [], nommageTuto: true, cadeauAffiche: null, listeCadeaux: false, confirmerCadeau: '', objectifs: [], objFaits: [false, false, false], recompense: null };
 }
 
 /** @type {EtatDeJeu} */
@@ -970,9 +1067,9 @@ function recetteDebloquee(r) {
 /** @returns {ProduitId[]} */
 function produitsDebloques() { return LISTE_PRODUITS.filter((p) => recetteDebloquee(RECETTES[p])); }
 /** @param {ProduitId} p */
-function dureePousse(p) { return RECETTES[p].pousse * facteurCompetence(p) * facteurNiveau() * (E.ameliorations.chambrePousse ? 0.8 : 1); }
+function dureePousse(p) { return RECETTES[p].pousse * facteurCompetence(p) * facteurNiveau() * (E.ameliorations.chambrePousse ? 0.8 : 1) * (E.bonus === 'pousseRapide' ? 0.7 : 1); }
 /** @param {ProduitId} p */
-function dureeCuisson(p) { return RECETTES[p].cuisson * facteurCompetence(p) * facteurNiveau(); }
+function dureeCuisson(p) { return RECETTES[p].cuisson * facteurCompetence(p) * facteurNiveau() * (E.bonus === 'fourTurbo' ? 0.75 : 1); }
 /** @param {ProduitId} p @param {number} n */
 function prixVente(p, n) {
   const f = (0.8 + 0.1 * n) * (1 + 0.02 * (E.competences[p].niv - 1));
@@ -1074,6 +1171,7 @@ function nombreClients() {
   if (E.prologue) return 85;
   let n = (CONFIG.clientsBase + CONFIG.clientsParEtoile * E.reputation) * (E.ameliorations.vitrine ? 1.25 : 1);
   if (E.evenement === 'fete') n *= 1.4;
+  if (E.bonus === 'pub') n *= 1.25;
   if (E.evenement === 'marcheNoel') n *= 1.6;
   if (E.jour === 1) n = Math.min(n, 13);
   if (E.jour === 2) n = Math.min(n, 15);
@@ -1091,7 +1189,7 @@ function creerClient(id, arrivee) {
     const p = choisirPondere(restants, (q) => RECETTES[q].popularite * (E.evenement === 'marcheNoel' && q === 'buche' ? 3 : 1));
     commande.push({ produit: p, qte: Math.max(1, Math.ceil(Math.pow(Math.random(), 1.6) * RECETTES[p].qteMax)) });
   }
-  const pat = CONFIG.patienceBase * (E.tutoriel ? 1.4 : 1) * entre(0.85, 1.2);
+  const pat = CONFIG.patienceBase * (E.tutoriel ? 1.4 : 1) * (E.bonus === 'patience' ? 1.4 : 1) * entre(0.85, 1.2);
   return { id, commande, patience: pat, patienceMax: pat, arrivee, x: -0.15, teinte: choisir(TEINTES), habit: choisir(HABITS),
     humeur: 0.7, erreurs: 0, special: false, sortie: -1 };
 }
@@ -1287,9 +1385,57 @@ function continuerPartie() {
 function allerPreparation() {
   S = nouvelleSession('preparation');
   preparerJournee();
+  genererObjectifs();
   sauver();
   rafraichirUI();
 }
+/** Trois objectifs par journée, comme les niveaux d'un jeu : 1 étoile par objectif rempli. */
+function genererObjectifs() {
+  if (E.prologue) { S.objectifs = []; return; }
+  let caPrevu = 0;
+  for (const p of LISTE_PRODUITS) caPrevu += S.demande[p] * RECETTES[p].prix;
+  const ca = Math.max(1000, Math.round(caPrevu * 0.6 / 500) * 500);
+  /** @type {Objectif[]} */
+  const o = [{ id: 'ca', texte: 'Chiffre d’affaires d’au moins ' + euros(ca), cible: ca }];
+  const n3 = Math.min(6, 2 + Math.floor(E.jour / 4));
+  const nServ = Math.max(5, Math.round(S.planClients.length * 0.8));
+  /** @type {Objectif[]} */
+  const second = [{ id: 'etoiles3', texte: n3 + ' fournées à ★★★', cible: n3 }, { id: 'servis', texte: 'Servir au moins ' + nServ + ' clients', cible: nServ }];
+  /** @type {Objectif[]} */
+  const troisieme = [{ id: 'zeroPerdu', texte: 'Aucun client parti fâché', cible: 0 }, { id: 'satisfaction', texte: 'Satisfaction d’au moins 85 %', cible: 85 },
+    { id: 'caisse', texte: 'Caisse juste', cible: 1 }, { id: 'proprete', texte: 'Propreté d’au moins 90 %', cible: 90 }];
+  if (E.jour <= 2) { o.push({ id: 'caisse', texte: 'Caisse juste', cible: 1 }, { id: 'proprete', texte: 'Propreté d’au moins 80 %', cible: 80 }); }
+  else { o.push(choisir(second), choisir(troisieme)); }
+  S.objectifs = o;
+  S.objFaits = [false, false, false];
+}
+/** @param {Objectif} o @param {boolean} fin @returns {{fait: boolean, suivi: string}} */
+function etatObjectif(o, fin) {
+  const J = S.journal;
+  const pct = J.satisfactions.length ? Math.round(100 * moyenne(J.satisfactions)) : 0;
+  const menageFait = fin || S.phase === 'bilan';
+  switch (o.id) {
+    case 'ca': return { fait: J.ca + J.braderie >= o.cible, suivi: euros(J.ca + J.braderie) + ' / ' + euros(o.cible) };
+    case 'etoiles3': return { fait: J.fournees3 >= o.cible, suivi: J.fournees3 + ' / ' + o.cible };
+    case 'servis': return { fait: J.clientsServis >= o.cible, suivi: J.clientsServis + ' / ' + o.cible };
+    case 'zeroPerdu': return { fait: fin && J.clientsPerdus === 0 && J.clientsServis > 0, suivi: J.clientsPerdus === 0 ? 'aucun pour l’instant' : J.clientsPerdus + ' perdu(s)' };
+    case 'satisfaction': return { fait: fin && pct >= o.cible, suivi: J.satisfactions.length ? pct + ' %' : '—' };
+    case 'caisse': return { fait: J.caisseJuste === true, suivi: J.caisseJuste === null ? 'ce soir' : J.caisseJuste ? 'juste' : 'erreur' };
+    default: return { fait: menageFait && Math.round(J.proprete * 100) >= o.cible, suivi: menageFait ? Math.round(J.proprete * 100) + ' %' : 'ce soir' };
+  }
+}
+/** Annonce chaque objectif dès qu'il est rempli. */
+function suivreObjectifs() {
+  if (S.phase !== 'matin' && S.phase !== 'midi' && S.phase !== 'caisse' && S.phase !== 'menage') return;
+  S.objectifs.forEach((o, i) => {
+    if (S.objFaits[i] || !etatObjectif(o, false).fait) return;
+    S.objFaits[i] = true;
+    toast('🎯 Objectif rempli : ' + o.texte);
+    flotter(W / 2, H * 0.45, '🎯 ★ ' + (S.objFaits.filter((x) => x).length) + '/3', '#ffd35c');
+    son('succes');
+  });
+}
+function nbObjectifsFaits() { return S.objectifs.filter((o, i) => S.objFaits[i] || etatObjectif(o, false).fait).length; }
 function demarrerMatin() {
   if (S.phase !== 'preparation') return;
   S.phase = 'matin';
@@ -1297,7 +1443,7 @@ function demarrerMatin() {
   S.repAvant = E.reputation;
   S.dureeMatin = E.tutoriel && E.jour === 1 ? CONFIG.dureeMatinTuto : CONFIG.dureeMatin;
   S.horloge = 0;
-  annoncer(E.prologue ? 'Chez les voisins' : 'Le fournil', E.prologue ? 'Une journée avec l’équipe de Jean-Baptiste' : '6h00 · lance tes fournées');
+  annoncer(E.prologue ? 'Chez les voisins' : 'Jour ' + E.jour + ' · Le fournil', E.prologue ? 'Une journée avec l’équipe de Jean-Baptiste' : E.bonus ? BONUS[E.bonus].icone + ' ' + BONUS[E.bonus].nom + ' : ' + BONUS[E.bonus].texte.toLowerCase() : '🎯 3 objectifs = 3 étoiles');
   for (const e of presents('vendeur')) statOuvrier(e);
   const sansConsigne = E.employes.filter((e) => e.role === 'fournier' && !e.enFormation && !e.affectation);
   if (sansConsigne.length) toast(sansConsigne.map((e) => e.nom).join(', ') + ' attend tes consignes : donne-lui une tâche dans l’onglet Journée.');
@@ -1436,32 +1582,109 @@ function toucheCaisse(t) {
 function demarrerMenage() {
   S.caisse = null;
   S.phase = 'menage';
-  const nb = borner(8 + S.journal.fourneesFaites + Math.floor(S.journal.clientsServis / 3), 8, 26);
-  /** @type {Tache[]} */
-  const taches = [];
-  for (let i = 0; i < nb; i++) taches.push({ zone: i % 3, nx: entre(0.14, 0.86), ny: entre(0.3, 0.86), nr: entre(0.1, 0.17), sale: 1 });
+  const duree = CONFIG.dureeMenage;
+  const nb = borner(12 + S.journal.fourneesFaites + Math.floor(S.journal.clientsServis / 4), 12, 30);
+  /** @type {number[]} */
+  const apparitions = [];
+  for (let i = 0; i < nb; i++) apparitions.push(i < 3 ? i * 0.25 : borner((duree - 3) * (i / nb) + entre(-0.3, 0.3), 0.3, duree - 2.6));
+  apparitions.sort((a, b) => a - b);
   const plongeurs = presents('plongeur');
   if (plongeurs.length) {
-    const part = borner(plongeurs.reduce((s, e) => s + 0.35 + 0.06 * e.taches.menage.niv, 0), 0, 0.95);
     for (const e of plongeurs) { const st = statOuvrier(e); st.actions++; gagnerTache(e, 'menage', 3); }
-    let aNettoyer = Math.floor(nb * part);
-    for (const t of taches) { if (aNettoyer <= 0) break; t.sale = 0; aNettoyer--; }
-    toast(plongeurs.map((e) => e.nom).join(' et ') + ' a déjà nettoyé ' + Math.round(part * 100) + ' %.');
+    toast(plongeurs.map((e) => e.nom).join(' et ') + ' t’aide à nettoyer !');
   }
-  S.menage = { taches, temps: 0, duree: CONFIG.dureeMenage, fini: false };
-  annoncer('Le ménage', 'Frotte les taches avec le doigt');
+  S.menage = { taches: [], apparitions, temps: 0, duree, fini: false, nettoyees: 0, ratees: 0, combo: 0, comboMax: 0, dernier: -9,
+    souris: null, prochaineSouris: entre(3, 5), sourisAttrapees: 0, plongeurT: 1.5 };
+  annoncer('Le ménage · 15 s', 'Frotte les taches avant qu’elles sèchent, attrape les souris !');
   rafraichirUI();
+}
+/** Durée de vie d'une tache avant qu'elle ne sèche (s). */
+const VIE_TACHE = 3.2;
+function rectMenage() { return { x: 8, y: 50, w: W - 16, h: H - 58 }; }
+/** @param {number} dt */
+function majMenage(dt) {
+  const M = S.menage;
+  if (!M || M.fini) return;
+  M.temps += dt;
+  while (M.apparitions.length && M.apparitions[0] <= M.temps) {
+    M.apparitions.shift();
+    M.taches.push({ x: entre(0.08, 0.92), y: entre(0.1, 0.92), r: entre(0.055, 0.09), sale: 1, age: 0, incrustee: false, genre: entier(0, 2) });
+  }
+  for (const t of M.taches) {
+    if (t.sale <= 0 || t.incrustee) continue;
+    t.age += dt;
+    if (t.age >= VIE_TACHE) {
+      t.incrustee = true;
+      M.ratees++;
+      M.combo = 0;
+      const R = rectMenage();
+      flotter(R.x + t.x * R.w, R.y + t.y * R.h, 'Séché !', '#ff9a7a');
+      son('echec');
+    }
+  }
+  // Souris
+  if (!M.souris && M.temps >= M.prochaineSouris && M.temps < M.duree - 1.5) {
+    const gauche = Math.random() < 0.5;
+    M.souris = { x: gauche ? -0.05 : 1.05, y: entre(0.2, 0.85), vx: (gauche ? 1 : -1) * entre(0.32, 0.45) };
+  }
+  if (M.souris) {
+    M.souris.x += M.souris.vx * dt;
+    if (M.souris.x < -0.1 || M.souris.x > 1.1) { M.souris = null; M.prochaineSouris = M.temps + entre(3, 5); }
+  }
+  // Plongeur
+  const pl = presents('plongeur');
+  if (pl.length) {
+    M.plongeurT -= dt;
+    if (M.plongeurT <= 0) {
+      const t = M.taches.find((x) => x.sale > 0 && !x.incrustee);
+      if (t) nettoyerTache(t, false);
+      const niv = Math.max(...pl.map((e) => e.taches.menage.niv));
+      M.plongeurT = Math.max(0.7, 2.6 - 0.18 * niv) / pl.length;
+    }
+  }
+  if (M.temps >= M.duree) terminerMenage();
+}
+/** @param {Tache} t @param {boolean} parJoueur */
+function nettoyerTache(t, parJoueur) {
+  const M = S.menage;
+  if (!M) return;
+  t.sale = 0;
+  M.nettoyees++;
+  const R = rectMenage();
+  const x = R.x + t.x * R.w, y = R.y + t.y * R.h;
+  for (let i = 0; i < 8; i++) ajouterParticule(x, y, 'etincelle');
+  if (parJoueur) {
+    M.combo = M.temps - M.dernier < 1.3 ? M.combo + 1 : 1;
+    M.dernier = M.temps;
+    M.comboMax = Math.max(M.comboMax, M.combo);
+    flotter(x, y, M.combo >= 2 ? 'Combo ×' + M.combo : 'Propre !', M.combo >= 3 ? '#ffd35c' : '#b8f0a8');
+  } else flotter(x, y, '🧽', '#b8f0a8');
+  son('clic');
+}
+/** @param {number} x @param {number} y */
+function attraperSouris(x, y) {
+  const M = S.menage;
+  if (!M || !M.souris) return;
+  const R = rectMenage();
+  const sx = R.x + M.souris.x * R.w, sy = R.y + M.souris.y * R.h;
+  if (Math.hypot(x - sx, y - sy) > 34) return;
+  M.souris = null;
+  M.prochaineSouris = M.temps + entre(3, 5);
+  M.sourisAttrapees++;
+  flotter(sx, sy, 'Souris chassée ! +5 %', '#ffd35c');
+  for (let i = 0; i < 14; i++) ajouterParticule(sx, sy, 'etincelle');
+  son('succes');
 }
 function terminerMenage() {
   const M = S.menage;
   if (!M || M.fini) return;
   M.fini = true;
-  let reste = 0;
-  for (const t of M.taches) reste += t.sale;
-  const pr = M.taches.length ? 1 - reste / M.taches.length : 1;
+  const vivantes = M.taches.filter((t) => t.sale > 0 && !t.incrustee).length + M.apparitions.length;
+  const pr = borner(M.nettoyees / Math.max(1, M.nettoyees + M.ratees + vivantes) + 0.05 * M.sourisAttrapees, 0, 1);
   E.proprete = pr;
   S.journal.proprete = pr;
-  gagnerXP(Math.round(CONFIG.xpMenage * pr));
+  gagnerXP(Math.round(CONFIG.xpMenage * pr) + M.comboMax);
+  if (M.comboMax >= 3) S.journal.notes.push('Ménage : combo ×' + M.comboMax + ' !');
   if (E.evenement === 'inspection') {
     if (pr < 0.6) {
       S.journal.amende = 15000;
@@ -1500,9 +1723,26 @@ function finJournee() {
       J.notes.push(emp.nom + ' (' + ROLES[emp.role] + ') a démissionné : moral trop bas.');
     }
   }
-  const benefice = J.ca + J.braderie + J.bonusCalcul + boutique2 - J.coutMatieres - CONFIG.chargesJour - salaires - reparation - J.amende;
+  // Étoiles du jour et coffre de récompense
+  let coffre = 0;
+  S.recompense = null;
+  if (!E.prologue && S.objectifs.length) {
+    const reussis = S.objectifs.map((o) => etatObjectif(o, true).fait);
+    const nEt = reussis.filter((x) => x).length;
+    coffre = nEt > 0 ? nEt * (800 + 150 * E.jour) : 300;
+    const xpC = 10 + 15 * nEt;
+    /** @type {BonusId|null} */
+    const bonus = nEt >= 2 ? choisir(LISTE_BONUS) : null;
+    E.argent += coffre;
+    gagnerXP(xpC);
+    if (bonus === 'livraison') { E.stock.farine += 5000; E.stock.beurre += 1000; }
+    else E.bonusDemain = bonus;
+    E.etoilesJours[E.jour - 1] = Math.max(E.etoilesJours[E.jour - 1] || 0, nEt);
+    S.recompense = { etoiles: nEt, argent: coffre, xp: xpC, bonus, reussis, ouvert: false, vue: false };
+  }
+  const benefice = J.ca + J.braderie + J.bonusCalcul + coffre + boutique2 - J.coutMatieres - CONFIG.chargesJour - salaires - reparation - J.amende;
   S.bilan = { ca: J.ca, braderie: J.braderie, matieres: J.coutMatieres, charges: CONFIG.chargesJour, salaires, reparation,
-    amende: J.amende, boutique2, bonusCalcul: J.bonusCalcul, benefice, repAvant, repApres: E.reputation, notes: J.notes.slice() };
+    amende: J.amende, boutique2, coffre, bonusCalcul: J.bonusCalcul, benefice, repAvant, repApres: E.reputation, notes: J.notes.slice() };
   E.historique.push({ jour: E.jour, ca: J.ca + J.braderie, benefice });
   if (E.historique.length > 60) E.historique.shift();
   S.menage = null;
@@ -1513,6 +1753,8 @@ function finJournee() {
 }
 function journeeSuivante() {
   E.jour++;
+  E.bonus = E.bonusDemain;
+  E.bonusDemain = null;
   for (const e of E.employes) if (e.role === 'fournier') e.affectation = null;
   if (E.jour > 3) E.tutoriel = false;
   E.evenement = tirerEvenement();
@@ -1571,12 +1813,19 @@ function faireGeste(f, rapide) {
 /** @param {EtapeId} et @param {Fournee} f @returns {MiniJeu|null} */
 function creerMiniJeu(et, f) {
   const base = { fournee: f.id, temps: 0, fini: false, finT: 0, etoiles: 0, texte: '' };
-  if (et === 'petrir') return { ...base, type: 'petrir', limite: 12, angle: 0, dernier: null, tours: [], debut: -1, requis: tourDePetrissage() };
+  const c = E.competences[f.recette].niv;
+  if (et === 'petrir') return { ...base, type: 'petrir', limite: 14, angle: 0, dernier: null, tours: [], debut: -1, requis: tourDePetrissage(),
+    periode: 0.95 - 0.02 * (c - 1), depart: 1.2, jugements: [], combo: 0 };
   if (et === 'faconner') {
     const forme = RECETTES[f.recette].forme;
-    return { ...base, type: 'faconner', limite: 12, forme, chemin: cheminForme(forme), trace: [], actif: false };
+    return { ...base, type: 'faconner', limite: 12, forme, chemin: cheminForme(forme), trace: [], actif: false,
+      prog: -1, duree: Math.max(2.2, 3.8 - 0.12 * (c - 1)), surCible: 0, mesures: 0, dessus: false };
   }
-  if (et === 'scarifier') return { ...base, type: 'scarifier', limite: 10, trace: [], actif: false, t0: 0 };
+  if (et === 'scarifier') {
+    /** @type {Array<{a: Point, b: Point, fait: boolean, note: number}>} */
+    const marques = [0.3, 0.5, 0.7].map((x) => ({ a: { x: x - 0.06, y: 0.56 }, b: { x: x + 0.06, y: 0.44 }, fait: false, note: 0 }));
+    return { ...base, type: 'scarifier', limite: 6, trace: [], actif: false, t0: 0, marques, coupes: [], premiereCoupe: -1 };
+  }
   return null;
 }
 /** @param {FormeId} forme @returns {Point[]} */
@@ -1617,27 +1866,40 @@ function appliquerMiniJeu() {
 }
 /** @param {MJPetrir} mj */
 function evaluerPetrissage(mj) {
-  const durees = [];
-  for (let i = 0; i < mj.tours.length; i++) durees.push(mj.tours[i] - (i === 0 ? mj.debut : mj.tours[i - 1]));
-  const m = moyenne(durees);
-  let v = 0;
-  for (const x of durees) v += (x - m) * (x - m);
-  const cv = m > 0 ? Math.sqrt(v / durees.length) / m : 1;
-  const n = cv < 0.2 ? 3 : cv < 0.4 ? 2 : 1;
-  finirMiniJeu(mj, n, n === 3 ? 'Rythme parfait !' : n === 2 ? 'Rythme correct' : 'Rythme irrégulier');
+  let pts = 0;
+  for (const j of mj.jugements) pts += j === 'parfait' ? 2 : j === 'bien' ? 1 : 0;
+  const moy = pts / Math.max(1, mj.requis);
+  const n = moy >= 1.5 ? 3 : moy >= 0.8 ? 2 : 1;
+  const parfaits = mj.jugements.filter((j) => j === 'parfait').length;
+  finirMiniJeu(mj, n, (n === 3 ? 'En rythme !' : n === 2 ? 'Pas mal' : 'À contretemps') + ' · ' + parfaits + ' parfait' + (parfaits > 1 ? 's' : ''));
+}
+/** Juge un tour de pétrin par rapport au battement. @param {MJPetrir} mj @param {number} t */
+function jugerTour(mj, t) {
+  const P = mj.periode;
+  const ph = (((t - mj.depart) % P) + P) % P;
+  const d = Math.min(ph, P - ph);
+  /** @type {'parfait'|'bien'|'rate'} */
+  const j = d < 0.11 ? 'parfait' : d < 0.24 ? 'bien' : 'rate';
+  mj.jugements.push(j);
+  mj.combo = j === 'rate' ? 0 : mj.combo + 1;
+  const R = rectMJ();
+  flotter(R.x + R.w / 2, R.y + R.h * 0.3, j === 'parfait' ? (mj.combo >= 2 ? 'PARFAIT ×' + mj.combo : 'PARFAIT !') : j === 'bien' ? 'BIEN' : 'RATÉ', j === 'parfait' ? '#ffd35c' : j === 'bien' ? '#b8f0a8' : '#ff9a7a');
+  son(j === 'rate' ? 'echec' : 'pate');
+  if (mj.tours.length >= mj.requis) evaluerPetrissage(mj);
 }
 /** @param {MJFaconner} mj */
 function evaluerFaconnage(mj) {
-  const tr = mj.trace;
-  if (tr.length < 6 || longueur(tr) < 0.35 * longueur(mj.chemin)) { mj.trace = []; mj.texte = 'Tracez tout le geste, sans lever le doigt.'; return; }
-  let s = 0;
-  for (const p of tr) s += distMin(p, mj.chemin);
-  const precision = s / tr.length;
-  let couverts = 0;
-  for (const q of mj.chemin) if (distMin(q, tr) < 0.055) couverts++;
-  const couv = couverts / mj.chemin.length;
-  const n = couv >= 0.86 && precision < 0.032 ? 3 : couv >= 0.65 && precision < 0.06 ? 2 : 1;
-  finirMiniJeu(mj, n, (n === 3 ? 'Façonnage net !' : n === 2 ? 'Bien façonné' : 'Forme approximative') + ' · ' + Math.round(couv * 100) + ' % du tracé');
+  const ratio = mj.mesures ? mj.surCible / mj.mesures : 0;
+  const n = ratio >= 0.85 ? 3 : ratio >= 0.6 ? 2 : 1;
+  finirMiniJeu(mj, n, (n === 3 ? 'Façonnage parfait !' : n === 2 ? 'Bien suivi' : 'Tu as perdu la pâte') + ' · ' + Math.round(ratio * 100) + ' % sur la boule');
+}
+/** Position de la boule de pâte sur le tracé. @param {MJFaconner} mj @returns {Point} */
+function bouleFaconnage(mj) {
+  const n = mj.chemin.length;
+  const k = borner(mj.prog, 0, 1) * (n - 1);
+  const i = Math.min(n - 2, Math.floor(k));
+  const f = k - i;
+  return { x: mj.chemin[i].x + (mj.chemin[i + 1].x - mj.chemin[i].x) * f, y: mj.chemin[i].y + (mj.chemin[i + 1].y - mj.chemin[i].y) * f };
 }
 /** @param {MJScarifier} mj */
 function evaluerScarification(mj) {
@@ -1645,21 +1907,37 @@ function evaluerScarification(mj) {
   if (tr.length < 2) return;
   const a = tr[0], b = tr[tr.length - 1];
   const L = dist(a, b);
-  if (L < 0.08) { mj.trace = []; mj.texte = 'Faites un trait d’un seul geste sur la pâte.'; return; }
-  let dev = 0;
-  for (const p of tr) {
-    const v = Math.abs((b.x - a.x) * (a.y - p.y) - (a.x - p.x) * (b.y - a.y)) / L;
-    if (v > dev) dev = v;
-  }
-  const ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
-  const ideal = -22;
-  let diff = Math.abs(((ang - ideal) % 180 + 180) % 180);
-  diff = Math.min(diff, 180 - diff);
+  if (L < 0.05) return;
   const milieu = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-  const centre = dist(milieu, { x: 0.5, y: 0.5 }) < 0.18;
-  const duree = mj.temps - mj.t0;
-  const n = L >= 0.3 && dev < 0.025 && diff < 12 && centre && duree < 1.3 ? 3 : L >= 0.2 && dev < 0.055 && diff < 25 ? 2 : 1;
-  finirMiniJeu(mj, n, n === 3 ? 'Coup de lame net !' : n === 2 ? 'Belle grigne' : 'Trait hésitant');
+  const libres = mj.marques.filter((m) => !m.fait);
+  if (!libres.length) return;
+  const m = libres.reduce((x, y) => (dist(milieu, { x: (y.a.x + y.b.x) / 2, y: (y.a.y + y.b.y) / 2 }) < dist(milieu, { x: (x.a.x + x.b.x) / 2, y: (x.a.y + x.b.y) / 2 }) ? y : x));
+  const cm = { x: (m.a.x + m.b.x) / 2, y: (m.a.y + m.b.y) / 2 };
+  const ecart = dist(milieu, cm);
+  let dev = 0;
+  for (const p of tr) dev = Math.max(dev, Math.abs((b.x - a.x) * (a.y - p.y) - (a.x - p.x) * (b.y - a.y)) / L);
+  const angC = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+  const angM = Math.atan2(m.b.y - m.a.y, m.b.x - m.a.x) * 180 / Math.PI;
+  let diff = Math.abs(((angC - angM) % 180 + 180) % 180);
+  diff = Math.min(diff, 180 - diff);
+  const ratio = L / dist(m.a, m.b);
+  const note = ecart < 0.05 && diff < 16 && dev < 0.025 && ratio > 0.7 && ratio < 1.8 ? 2 : ecart < 0.1 && diff < 32 && dev < 0.06 ? 1 : 0;
+  m.fait = true;
+  m.note = note;
+  mj.coupes.push({ a, b, note });
+  if (mj.premiereCoupe < 0) mj.premiereCoupe = mj.t0;
+  const R = rectMJ();
+  flotter(R.x + cm.x * R.w, R.y + cm.y * R.h - 30, note === 2 ? 'NET !' : note === 1 ? 'BIEN' : 'RATÉ', note === 2 ? '#ffd35c' : note === 1 ? '#b8f0a8' : '#ff9a7a');
+  son(note ? 'coupe' : 'echec');
+  if (mj.marques.every((x) => x.fait)) terminerScarification(mj);
+}
+/** @param {MJScarifier} mj */
+function terminerScarification(mj) {
+  let pts = mj.marques.reduce((s2, x) => s2 + x.note, 0);
+  const rapide = mj.premiereCoupe >= 0 && mj.temps - mj.premiereCoupe < 2 && mj.marques.every((x) => x.fait);
+  if (rapide) pts += 1;
+  const n = pts >= 6 ? 3 : pts >= 3 ? 2 : 1;
+  finirMiniJeu(mj, n, (n === 3 ? 'Grignes parfaites !' : n === 2 ? 'Belles grignes' : 'Coupes hésitantes') + (rapide ? ' · rapide !' : ''));
 }
 /** @param {Fournee} f */
 function defourner(f) {
@@ -1677,6 +1955,7 @@ function terminerFournee(f) {
   ajouterVitrine(f.recette, nb, n);
   S.fournees = S.fournees.filter((x) => x !== f);
   S.journal.fourneesFaites++;
+  if (n === 3) S.journal.fournees3++;
   gagnerXP(CONFIG.xpFournee * n);
   gagnerCompetence(f.recette, 3 * n);
   { const rf = rectsFour.get(f.id); flotter(rf ? rf.x + rf.w / 2 : W / 2, rf ? rf.y + rf.h * 0.3 : H / 2, '+' + CONFIG.xpFournee * n + ' XP ' + '★'.repeat(n), '#b8f0a8'); }
@@ -2106,7 +2385,7 @@ const TUTO = [
   { id: 'z9', jour: -1, phase: 'caisse', pause: false, cible: 'pave', fini: () => !!(S.caisse && (S.caisse.saisie !== '' || S.caisse.resultat !== null)), quand: () => true,
     texte: 'Une grosse journée, ça fait du monde dans le tiroir ! Compte tout, fond de caisse compris, et tape le total.' },
   { id: 'z10', jour: -1, phase: 'menage', pause: false, cible: null, fini: () => S.phase !== 'menage', quand: () => true,
-    texte: 'Même ici, le ménage compte : frotte les taches pour garder la réputation au top.' },
+    texte: 'Même ici, le ménage compte : 15 secondes pour frotter les taches avant qu’elles sèchent. Attrape les souris pour un bonus !' },
   { id: 'z11', jour: -1, phase: 'bilan', pause: false, cible: null, fini: null, quand: () => true,
     texte: 'Voilà une vraie journée Chez les voisins ! Maintenant, à toi : tu vas démarrer petit, tout seul, et faire grandir ta propre boulangerie. Je reste avec toi pendant tes trois premiers jours.' },
   { id: 'p1', jour: 1, phase: 'preparation', pause: false, cible: null, fini: null, quand: () => true,
@@ -2116,15 +2395,15 @@ const TUTO = [
   { id: 'm1', jour: 1, phase: 'matin', pause: false, cible: 'recette-baguette', fini: () => S.fournees.length > 0 || S.journal.fourneesFaites > 0, quand: () => true,
     texte: 'Bienvenue au fournil ! Touche la carte Baguette pour lancer une fournée : 1 000 g de farine, 650 g d’eau, 20 g de sel, 4 g de levure.' },
   { id: 'm2', jour: 1, phase: 'matin', pause: false, cible: 'geste-premier', fini: () => S.mj !== null, quand: () => uneFournee((f) => f.etape === 0),
-    texte: 'Touche « Pétrir », puis fais des cercles réguliers autour du pétrin. Le rythme compte plus que la vitesse.' },
+    texte: 'Touche « Pétrir », puis tourne autour du pétrin en suivant la boule verte : un tour complet à chaque battement. PARFAIT = 3 étoiles !' },
   { id: 'e1', jour: 1, phase: 'matin', pause: false, cible: null, fini: () => S.mj !== null, quand: () => !S.mj && uneFournee((f) => f.notes.length > 0),
     texte: 'Chaque geste donne 1 à 3 étoiles, et la fournée prend la moyenne. ★ : prix −10 %. ★★ : prix normal. ★★★ : prix +10 % et clients ravis. Plus d’étoiles, c’est aussi plus d’XP.' },
   { id: 'm3', jour: 1, phase: 'matin', pause: false, cible: 'geste-premier', fini: () => S.mj !== null, quand: () => !S.mj && uneFournee((f) => etapeCourante(f) === 'faconner'),
-    texte: 'Maintenant, on façonne : suis le tracé en pointillés d’un seul geste, en partant du point vert.' },
+    texte: 'Maintenant, on façonne : pose le doigt sur la boule de pâte, puis garde-le dessus jusqu’au bout du tracé. Ne la lâche pas !' },
   { id: 'm4', jour: 1, phase: 'matin', pause: false, cible: 'recette-baguette', fini: () => S.fournees.length >= 2, quand: () => !S.mj && uneFournee((f) => f.lieu === 'pousse'),
     texte: 'La pâte pousse. Le temps est réel : profites-en pour lancer une deuxième fournée !' },
   { id: 'm5', jour: 1, phase: 'matin', pause: false, cible: 'geste-scarifier', fini: () => S.mj !== null, quand: () => !S.mj && uneFournee((f) => etapeCourante(f) === 'scarifier'),
-    texte: 'La pousse est finie. Touche « Scarifier » et donne un coup de lame net, en diagonale, d’un seul trait.' },
+    texte: 'La pousse est finie. Touche « Scarifier » : 3 coups de lame nets sur les pointillés. Si tu enchaînes vite, bonus « rapide » !' },
   { id: 'm6', jour: 1, phase: 'matin', pause: false, cible: 'four-premier', fini: () => S.journal.fourneesFaites > 0, quand: () => !S.mj && uneFournee((f) => f.lieu === 'four'),
     texte: 'Au four ! Touche la fournée quand la jauge est dans la zone dorée. Aujourd’hui, je surveille pour que rien ne brûle.' },
   { id: 'm7', jour: 1, phase: 'matin', pause: false, cible: null, fini: () => S.phase !== 'matin', quand: () => !S.mj && S.journal.fourneesFaites > 0,
@@ -2139,7 +2418,7 @@ const TUTO = [
   { id: 'k1', jour: 1, phase: 'caisse', pause: false, cible: 'pave', fini: () => !!(S.caisse && (S.caisse.saisie !== '' || S.caisse.resultat !== null)), quand: () => true,
     texte: 'Fin du service. Compte l’argent du tiroir, fond de caisse compris, et tape le total. Une caisse juste rapporte de l’XP.' },
   { id: 'n1', jour: 1, phase: 'menage', pause: false, cible: null, fini: () => S.phase !== 'menage', quand: () => true,
-    texte: 'Frotte les taches avec le doigt. Une boutique propre, ça améliore la réputation et ça attire plus de clients.' },
+    texte: '15 secondes chrono ! Frotte les taches avant qu’elles sèchent, enchaîne-les pour faire des combos, et attrape les souris qui passent.' },
   { id: 'b1', jour: 1, phase: 'bilan', pause: false, cible: null, fini: null, quand: () => true,
     texte: 'Voici ton bilan. Chaque geste, chaque client, une caisse juste et le ménage te rapportent de l’XP. En montant de niveau, tu travailles plus vite.' },
   { id: 'p3', jour: 2, phase: 'preparation', pause: false, cible: null, fini: null, quand: () => true,
@@ -3085,9 +3364,9 @@ function dessinerMiniJeu(mj) {
   const f = trouverFournee(mj.fournee);
   const nomProduit = f ? RECETTES[f.recette].nom.replace(' (part)', '') : '';
   const consignes = {
-    petrir: 'Faites des cercles réguliers autour du pétrin',
-    faconner: 'Suivez le tracé d’un seul geste depuis le point vert',
-    scarifier: 'Un coup de lame net, en diagonale, sur la pâte',
+    petrir: 'Un tour complet à chaque battement : suis la boule verte',
+    faconner: 'Garde le doigt sur la boule de pâte jusqu’au bout',
+    scarifier: '3 coups de lame nets sur les pointillés, vite !',
   };
   ecrire(NOM_ETAPE[mj.type] + ' · ' + nomProduit, W / 2, 18, 18, '#fbf3e3', 'center', 800, W - 20);
   ecrire(mj.fini ? mj.texte : mj.texte || consignes[mj.type], W / 2, 40, 14, mj.fini ? '#ffd35c' : '#f1e0bf', 'center', 600, W - 20);
@@ -3129,20 +3408,28 @@ function dessinerMiniJeu(mj) {
 /** @param {MJPetrir} mj @param {Rect} R */
 function dessinerPetrir(mj, R) {
   const cx = R.x + R.w / 2, cy = R.y + R.h / 2;
-  const rb = R.w * 0.4;
+  const rb = R.w * 0.38;
+  const P = mj.periode;
+  const ph = mj.temps >= mj.depart ? (((mj.temps - mj.depart) % P) + P) % P / P : 1;
+  // Anneau qui bat la mesure
+  if (mj.temps >= mj.depart - 0.05) {
+    ctx.strokeStyle = 'rgba(255,211,92,' + (0.9 * (1 - ph)) + ')';
+    ctx.lineWidth = 8 * (1 - ph) + 2;
+    ctx.beginPath(); ctx.arc(cx, cy, rb * (1.04 + 0.1 * ph), 0, Math.PI * 2); ctx.stroke();
+  }
   ctx.beginPath(); ctx.arc(cx, cy, rb, 0, Math.PI * 2);
   const g = ctx.createRadialGradient(cx - rb * 0.3, cy - rb * 0.3, rb * 0.2, cx, cy, rb);
-  g.addColorStop(0, '#d9dde0'); g.addColorStop(1, '#8e979c');
+  g.addColorStop(0, '#e3e7ea'); g.addColorStop(1, '#8e979c');
   ctx.fillStyle = g; ctx.fill();
   ctx.beginPath(); ctx.arc(cx, cy, rb * 0.86, 0, Math.PI * 2); ctx.fillStyle = '#b8c0c4'; ctx.fill();
-  // Pâte qui tourne
   ctx.save();
   ctx.translate(cx, cy);
   ctx.rotate(mj.angle);
+  const gonfle = 1 + 0.06 * Math.max(0, 1 - ph * 3);
   ctx.beginPath();
   for (let i = 0; i <= 24; i++) {
     const a = (i / 24) * Math.PI * 2;
-    const rr2 = rb * 0.5 * (1 + 0.08 * Math.sin(a * 3) + 0.04 * Math.sin(a * 5 + mj.angle));
+    const rr2 = rb * 0.5 * gonfle * (1 + 0.08 * Math.sin(a * 3) + 0.04 * Math.sin(a * 5 + mj.angle));
     const x = Math.cos(a) * rr2, y = Math.sin(a) * rr2;
     if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
   }
@@ -3153,96 +3440,154 @@ function dessinerPetrir(mj, R) {
   ctx.lineWidth = 3;
   ctx.beginPath(); ctx.arc(0, 0, rb * 0.25, 0, Math.PI * 1.4); ctx.stroke();
   ctx.restore();
-  // Guide circulaire
+  // Rail et boule-guide qui fait exactement un tour par battement
   ctx.setLineDash([8, 8]);
   ctx.strokeStyle = 'rgba(90,56,32,0.45)';
   ctx.lineWidth = 3;
   ctx.beginPath(); ctx.arc(cx, cy, rb * 0.7, 0, Math.PI * 2); ctx.stroke();
   ctx.setLineDash([]);
-  const a = performance.now() / 500;
+  const ag = Math.PI * 2 * ((mj.temps - mj.depart) / P) - Math.PI / 2;
   ctx.fillStyle = '#4f8a45';
-  ctx.beginPath(); ctx.arc(cx + Math.cos(a) * rb * 0.7, cy + Math.sin(a) * rb * 0.7, 9, 0, Math.PI * 2); ctx.fill();
-  // Tours et rythme
-  ecrire('Tour ' + Math.min(mj.tours.length, mj.requis) + ' / ' + mj.requis, cx, R.y + R.h - 26, 16, '#3a2414', 'center', 800);
-  for (let i = 0; i < mj.requis; i++) {
-    ctx.beginPath();
-    ctx.arc(cx + (i - (mj.requis - 1) / 2) * 22, R.y + R.h - 48, 7, 0, Math.PI * 2);
-    ctx.fillStyle = i < mj.tours.length ? '#e3a33b' : 'rgba(90,56,32,0.25)';
-    ctx.fill();
+  ctx.shadowColor = '#9be38b';
+  ctx.shadowBlur = 12;
+  ctx.beginPath(); ctx.arc(cx + Math.cos(ag) * rb * 0.7, cy + Math.sin(ag) * rb * 0.7, 10, 0, Math.PI * 2); ctx.fill();
+  ctx.shadowBlur = 0;
+  // Piste de rythme
+  const py = R.y + R.h - 34, pw = R.w * 0.8, px = R.x + R.w * 0.1;
+  rr(ctx, px, py - 12, pw, 24, 12);
+  ctx.fillStyle = 'rgba(47,29,16,0.75)';
+  ctx.fill();
+  const xc = R.x + R.w / 2;
+  ctx.strokeStyle = '#ffd35c'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(xc, py, 10, 0, Math.PI * 2); ctx.stroke();
+  const prochain = Math.ceil((mj.temps - mj.depart) / P);
+  for (let k = prochain - 1; k < prochain + 4; k++) {
+    const tb = mj.depart + k * P;
+    const x = xc + (tb - mj.temps) / P * (pw * 0.22);
+    if (x < px + 8 || x > px + pw - 8) continue;
+    ctx.fillStyle = '#4f8a45';
+    ctx.beginPath(); ctx.arc(x, py, 6, 0, Math.PI * 2); ctx.fill();
   }
+  if (mj.temps < mj.depart) ecrire('Prêt…', cx, cy, 26, '#3a2414', 'center', 800);
+  const der = mj.jugements[mj.jugements.length - 1];
+  ecrire('Tour ' + Math.min(mj.tours.length, mj.requis) + ' / ' + mj.requis + (mj.combo >= 2 ? ' · combo ×' + mj.combo : ''), cx, R.y + 22, 15, '#3a2414', 'center', 800);
+  if (der) ecrire(der === 'parfait' ? '★' : der === 'bien' ? '✓' : '✗', xc + pw * 0.42, py, 14, der === 'rate' ? '#ff9a7a' : '#ffd35c', 'center', 800);
 }
 /** @param {MJFaconner} mj @param {Rect} R */
 function dessinerFaconner(mj, R) {
-  rr(ctx, R.x + R.w * 0.08, R.y + R.h * 0.12, R.w * 0.84, R.h * 0.76, R.w * 0.2);
+  rr(ctx, R.x + R.w * 0.06, R.y + R.h * 0.1, R.w * 0.88, R.h * 0.8, R.w * 0.18);
   ctx.fillStyle = '#f2e3c4';
   ctx.fill();
   ctx.strokeStyle = '#dcc69c';
   ctx.lineWidth = 3;
   ctx.stroke();
+  // Tracé à suivre
   ctx.setLineDash([10, 9]);
-  ctx.strokeStyle = 'rgba(90,56,32,0.55)';
+  ctx.strokeStyle = 'rgba(90,56,32,0.45)';
   ctx.lineWidth = 6;
   ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
   ctx.beginPath();
   mj.chemin.forEach((p, i) => { const q = versEcran(R, p); if (i === 0) ctx.moveTo(q.x, q.y); else ctx.lineTo(q.x, q.y); });
   ctx.stroke();
   ctx.setLineDash([]);
-  const s = versEcran(R, mj.chemin[0]);
-  const pulse = 10 + 3 * Math.sin(performance.now() / 150);
-  ctx.beginPath(); ctx.arc(s.x, s.y, pulse, 0, Math.PI * 2); ctx.fillStyle = '#4f8a45'; ctx.fill();
-  const s2 = versEcran(R, mj.chemin[Math.min(6, mj.chemin.length - 1)]);
-  ctx.strokeStyle = '#4f8a45'; ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s2.x, s2.y); ctx.stroke();
-  if (mj.trace.length > 1) {
-    ctx.strokeStyle = mj.fini ? '#b4761c' : '#8a5a32';
-    ctx.lineWidth = Math.max(10, R.w * 0.035);
-    ctx.lineJoin = 'round';
+  // Pâte déjà façonnée
+  if (mj.prog > 0) {
+    const n = Math.max(1, Math.floor(borner(mj.prog, 0, 1) * (mj.chemin.length - 1)));
+    ctx.strokeStyle = '#e8c58a';
+    ctx.lineWidth = Math.max(16, R.w * 0.05);
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) { const q = versEcran(R, mj.chemin[i]); if (i === 0) ctx.moveTo(q.x, q.y); else ctx.lineTo(q.x, q.y); }
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+  }
+  // Traînée du doigt
+  if (mj.trace.length > 1 && !mj.fini) {
+    ctx.strokeStyle = mj.prog < 0 || mj.dessus ? 'rgba(79,138,69,0.55)' : 'rgba(200,70,50,0.55)';
+    ctx.lineWidth = 8;
     ctx.beginPath();
     mj.trace.forEach((p, i) => { const q = versEcran(R, p); if (i === 0) ctx.moveTo(q.x, q.y); else ctx.lineTo(q.x, q.y); });
     ctx.stroke();
   }
+  // Boule de pâte
+  const b = versEcran(R, mj.prog < 0 ? mj.chemin[0] : bouleFaconnage(mj));
+  const pulse = mj.prog < 0 ? 1 + 0.12 * Math.sin(performance.now() / 150) : 1;
+  const rad = Math.max(14, R.w * 0.045) * pulse;
+  ctx.strokeStyle = mj.prog < 0 ? 'rgba(79,138,69,0.6)' : mj.dessus ? 'rgba(79,138,69,0.9)' : 'rgba(200,70,50,0.8)';
+  ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(b.x, b.y, rad * 1.9, 0, Math.PI * 2); ctx.stroke();
+  const gb = ctx.createRadialGradient(b.x - rad * 0.3, b.y - rad * 0.3, 2, b.x, b.y, rad);
+  gb.addColorStop(0, '#fff6e2'); gb.addColorStop(1, '#e2c48e');
+  ctx.fillStyle = gb;
+  ctx.shadowColor = mj.prog < 0 ? '#9be38b' : 'rgba(0,0,0,0.3)';
+  ctx.shadowBlur = 12;
+  ctx.beginPath(); ctx.arc(b.x, b.y, rad, 0, Math.PI * 2); ctx.fill();
+  ctx.shadowBlur = 0;
+  // Jauge de précision
+  if (mj.prog >= 0) {
+    const ratio = mj.mesures ? mj.surCible / mj.mesures : 1;
+    const jx = R.x + R.w * 0.15, jw = R.w * 0.7, jy = R.y + R.h - 22;
+    rr(ctx, jx, jy, jw, 10, 5); ctx.fillStyle = 'rgba(47,29,16,0.3)'; ctx.fill();
+    rr(ctx, jx, jy, jw * ratio, 10, 5); ctx.fillStyle = ratio >= 0.85 ? '#4f8a45' : ratio >= 0.6 ? '#e3a33b' : '#c0503a'; ctx.fill();
+    ecrire('Précision ' + Math.round(ratio * 100) + ' %', R.x + R.w / 2, jy - 12, 13, '#3a2414', 'center', 800);
+  } else ecrire('Pose le doigt sur la boule', R.x + R.w / 2, R.y + R.h - 26, 14, '#3a2414', 'center', 800);
 }
 /** @param {MJScarifier} mj @param {Rect} R @param {ProduitId} p */
 function dessinerScarifier(mj, R, p) {
-  const cx = R.x + R.w / 2, cy = R.y + R.h / 2;
+  const v = (/** @type {Point} */ q) => versEcran(R, q);
+  // Pâton allongé
+  const l0 = v({ x: 0.1, y: 0.38 }), l1 = v({ x: 0.9, y: 0.62 });
   ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate(-0.38);
-  rr(ctx, -R.w * 0.42, -R.h * 0.11, R.w * 0.84, R.h * 0.22, R.h * 0.11);
-  ctx.fillStyle = p === 'complet' ? '#cbb08a' : '#f2e3c4';
+  ctx.shadowColor = 'rgba(0,0,0,0.25)';
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 4;
+  rr(ctx, l0.x, l0.y, l1.x - l0.x, l1.y - l0.y, (l1.y - l0.y) / 2);
+  const g = ctx.createLinearGradient(0, l0.y, 0, l1.y);
+  g.addColorStop(0, p === 'complet' ? '#d9c09a' : '#f8ecd3');
+  g.addColorStop(1, p === 'complet' ? '#b99a70' : '#e3cfa8');
+  ctx.fillStyle = g;
   ctx.fill();
-  ctx.strokeStyle = '#d6c094';
-  ctx.lineWidth = 3;
-  ctx.stroke();
   ctx.restore();
-  const a = versEcran(R, { x: 0.3, y: 0.58 }), b = versEcran(R, { x: 0.7, y: 0.42 });
-  ctx.setLineDash([6, 10]);
-  ctx.strokeStyle = 'rgba(90,56,32,0.35)';
-  ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-  ctx.setLineDash([]);
-  if (mj.trace.length > 1) {
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = mj.fini ? '#fff4dc' : '#6b4a2c';
-    ctx.lineWidth = mj.fini ? 9 : 4;
-    ctx.beginPath();
-    mj.trace.forEach((q, i) => { const e = versEcran(R, q); if (i === 0) ctx.moveTo(e.x, e.y); else ctx.lineTo(e.x, e.y); });
-    ctx.stroke();
-    if (mj.fini) {
-      ctx.strokeStyle = '#b58a52';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    }
+  // Marques à suivre
+  for (const m of mj.marques) {
+    if (m.fait) continue;
+    const a = v(m.a), b = v(m.b);
+    ctx.setLineDash([6, 6]);
+    ctx.strokeStyle = 'rgba(227,163,59,' + (0.6 + 0.3 * Math.sin(performance.now() / 160)) + ')';
+    ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    ctx.setLineDash([]);
   }
-  // Lame
+  // Grignes réalisées
+  for (const c of mj.coupes) {
+    const a = v(c.a), b = v(c.b);
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = c.note === 2 ? '#fff4dc' : c.note === 1 ? '#f2e0bb' : '#c9a37a';
+    ctx.lineWidth = c.note === 2 ? 10 : 7;
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    ctx.strokeStyle = '#a77a45';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+  // Trait en cours
+  if (mj.trace.length > 1 && !mj.fini) {
+    ctx.strokeStyle = '#6b4a2c';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    mj.trace.forEach((q, i) => { const e = v(q); if (i === 0) ctx.moveTo(e.x, e.y); else ctx.lineTo(e.x, e.y); });
+    ctx.stroke();
+  }
+  ecrire('Coups : ' + mj.coupes.length + ' / 3', R.x + R.w / 2, R.y + R.h * 0.2, 16, '#3a2414', 'center', 800);
   if (pointeur.bas && !mj.fini) {
-    ctx.fillStyle = '#d9dde0';
     ctx.save();
     ctx.translate(pointeur.x, pointeur.y);
-    ctx.rotate(-0.4);
-    ctx.fillRect(-3, -26, 6, 26);
+    ctx.rotate(-0.5);
+    ctx.fillStyle = '#e6eaec';
+    ctx.fillRect(-3, -28, 6, 28);
     ctx.fillStyle = '#5a3820';
-    ctx.fillRect(-4, -46, 8, 20);
+    ctx.fillRect(-4, -50, 8, 22);
     ctx.restore();
   }
 }
@@ -3734,78 +4079,108 @@ function dessinerCasiers(liste, R, billets) {
 }
 
 // ---- Ménage ----
-/** @param {number} i @returns {Rect} */
-function rectZoneMenage(i) {
-  const p = 8;
-  if (estPortrait()) { const h = (H - 50 - p * 4) / 3; return { x: p, y: 44 + p + i * (h + p), w: W - 2 * p, h }; }
-  const w = (W - p * 4) / 3;
-  return { x: p + i * (w + p), y: 44 + p, w, h: H - 44 - 2 * p };
-}
 function dessinerMenage() {
   const M = S.menage;
   if (!M) return;
   fondFournil();
-  let reste = 0;
-  for (const t of M.taches) reste += t.sale;
-  const pr = M.taches.length ? 1 - reste / M.taches.length : 1;
-  ecrire('Ménage · propreté ' + Math.round(pr * 100) + ' % · ' + Math.max(0, Math.ceil(M.duree - M.temps)) + ' s', W / 2, 22, 17, '#ffe2a6', 'center', 800, W - 16);
-  const noms = ['Sol', 'Comptoir', 'Four'];
-  for (let i = 0; i < 3; i++) {
-    const r = rectZoneMenage(i);
-    rr(ctx, r.x, r.y, r.w, r.h, 12);
-    if (i === 0) {
-      ctx.fillStyle = '#e9e1d3'; ctx.fill();
-      ctx.save(); rr(ctx, r.x, r.y, r.w, r.h, 12); ctx.clip();
-      for (let x = r.x; x < r.x + r.w; x += 36) for (let y = r.y; y < r.y + r.h; y += 36) if (((x - r.x) / 36 + (y - r.y) / 36) % 2 < 1) { ctx.fillStyle = '#d7cbb7'; ctx.fillRect(x, y, 36, 36); }
-      ctx.restore();
-    } else if (i === 1) { ctx.fillStyle = '#b07a48'; ctx.fill(); }
-    else { ctx.fillStyle = '#6d625c'; ctx.fill(); }
-    ecrire(noms[i], r.x + 12, r.y + 14, 13, i === 2 ? '#f1e0bf' : '#3a2414', 'left', 800);
+  const R = rectMenage();
+  ctx.save();
+  rr(ctx, R.x, R.y, R.w, R.h, 14);
+  ctx.clip();
+  for (let x = R.x; x < R.x + R.w; x += 40) for (let y = R.y; y < R.y + R.h; y += 40) {
+    ctx.fillStyle = ((x - R.x) / 40 + (y - R.y) / 40) % 2 < 1 ? '#efe6d6' : '#d9cbb4';
+    ctx.fillRect(x, y, 40, 40);
   }
+  ctx.restore();
+  rr(ctx, R.x, R.y, R.w, R.h, 14);
+  ctx.strokeStyle = '#7a4c28';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  const total = Math.max(1, M.nettoyees + M.ratees);
+  const pr = Math.round(100 * M.nettoyees / total);
+  ecrire('🧽 ' + Math.max(0, Math.ceil(M.duree - M.temps)) + ' s · propreté ' + pr + ' %' + (M.combo >= 2 ? ' · combo ×' + M.combo : ''), W / 2, 18, 16, '#ffe2a6', 'center', 800, W - 16);
+  rr(ctx, R.x, 34, R.w, 7, 3.5);
+  ctx.fillStyle = 'rgba(255,255,255,0.15)';
+  ctx.fill();
+  rr(ctx, R.x, 34, R.w * Math.max(0, 1 - M.temps / M.duree), 7, 3.5);
+  ctx.fillStyle = M.duree - M.temps < 4 ? '#e0634a' : '#f2b544';
+  ctx.fill();
+  const couleurs = ['#8a6a48', '#3b2414', '#b8323a'];
+  const tps = performance.now() / 1000;
   for (const t of M.taches) {
-    if (t.sale <= 0.02) continue;
-    const r = rectZoneMenage(t.zone);
-    const rad = t.nr * Math.min(r.w, r.h);
-    ctx.globalAlpha = t.sale * 0.85;
-    ctx.fillStyle = t.zone === 2 ? '#2a1c12' : t.zone === 1 ? '#f4ead8' : '#8a6a48';
+    if (t.sale <= 0) continue;
+    const cx = R.x + t.x * R.w, cy = R.y + t.y * R.h;
+    const base = t.r * Math.min(R.w, R.h);
+    const rad = base * (0.6 + 0.4 * Math.min(1, t.age / 0.35));
+    const urgent = !t.incrustee && t.age > VIE_TACHE - 1;
+    ctx.globalAlpha = t.incrustee ? 0.9 : (urgent && Math.sin(tps * 20) > 0 ? 0.55 : 0.85) * Math.max(0.25, t.sale);
+    ctx.fillStyle = t.incrustee ? '#2a1a10' : couleurs[t.genre];
     ctx.beginPath();
-    const cx = r.x + t.nx * r.w, cy = r.y + t.ny * r.h;
-    for (let k = 0; k <= 10; k++) {
-      const a = (k / 10) * Math.PI * 2;
-      const rr2 = rad * (0.8 + 0.25 * Math.sin(a * 3 + t.nx * 10));
-      if (k === 0) ctx.moveTo(cx + Math.cos(a) * rr2, cy + Math.sin(a) * rr2); else ctx.lineTo(cx + Math.cos(a) * rr2, cy + Math.sin(a) * rr2);
+    for (let k = 0; k <= 12; k++) {
+      const a = (k / 12) * Math.PI * 2;
+      const r2 = rad * (0.8 + 0.22 * Math.sin(a * 3 + t.x * 17));
+      if (k === 0) ctx.moveTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2); else ctx.lineTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2);
     }
     ctx.fill();
     ctx.globalAlpha = 1;
+    if (!t.incrustee) {
+      ctx.strokeStyle = urgent ? '#e0634a' : 'rgba(79,138,69,0.8)';
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(cx, cy, rad + 7, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (1 - t.age / VIE_TACHE)); ctx.stroke();
+    } else ecrire('✗', cx, cy, 16, '#ff9a7a', 'center', 800);
   }
+  // Souris
+  if (M.souris) {
+    const sx = R.x + M.souris.x * R.w, sy = R.y + M.souris.y * R.h;
+    const dir = M.souris.vx > 0 ? 1 : -1;
+    const pas = Math.sin(tps * 30) * 2;
+    ctx.save();
+    ctx.translate(sx, sy + pas);
+    ctx.scale(dir, 1);
+    ctx.strokeStyle = '#8c7f78'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(-14, 2); ctx.quadraticCurveTo(-28, -8 + pas, -34, 4); ctx.stroke();
+    ctx.fillStyle = '#9d928c';
+    ctx.beginPath(); ctx.ellipse(0, 0, 16, 10, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(14, -3, 8, 7, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#e8b0b0';
+    ctx.beginPath(); ctx.arc(11, -10, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#1d1d1d';
+    ctx.beginPath(); ctx.arc(18, -4, 1.6, 0, Math.PI * 2); ctx.arc(22, -2, 1.4, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+  if (presents('plongeur').length) ecrire('🧽 ' + presents('plongeur').map((e) => e.nom).join(', ') + ' t’aide', R.x + R.w - 10, R.y + R.h - 14, 12, '#5a3820', 'right', 700);
   if (pointeur.bas) {
+    ctx.save();
+    ctx.translate(pointeur.x, pointeur.y);
+    ctx.rotate(Math.sin(tps * 25) * 0.15);
     ctx.fillStyle = '#f2d24a';
-    rr(ctx, pointeur.x - 22, pointeur.y - 14, 44, 28, 8);
+    rr(ctx, -24, -15, 48, 30, 8);
     ctx.fill();
     ctx.fillStyle = '#4f8a45';
-    rr(ctx, pointeur.x - 22, pointeur.y - 14, 44, 9, 4);
+    rr(ctx, -24, -15, 48, 10, 4);
     ctx.fill();
+    ctx.restore();
   }
 }
 /** @param {number} x @param {number} y @param {number} dl */
 function frotter(x, y, dl) {
   const M = S.menage;
   if (!M || M.fini) return;
+  attraperSouris(x, y);
+  const R = rectMenage();
   let touche = false;
   for (const t of M.taches) {
-    if (t.sale <= 0) continue;
-    const r = rectZoneMenage(t.zone);
-    const rad = t.nr * Math.min(r.w, r.h);
-    const cx = r.x + t.nx * r.w, cy = r.y + t.ny * r.h;
-    if (Math.hypot(x - cx, y - cy) < rad * 1.25) {
-      t.sale = Math.max(0, t.sale - dl / (rad * 2.4));
+    if (t.sale <= 0 || t.incrustee) continue;
+    const rad = t.r * Math.min(R.w, R.h);
+    const cx = R.x + t.x * R.w, cy = R.y + t.y * R.h;
+    if (Math.hypot(x - cx, y - cy) < rad * 1.35) {
+      t.sale = Math.max(0, t.sale - dl / (rad * 1.5));
       touche = true;
-      if (Math.random() < 0.3) ajouterParticule(x, y, 'bulle');
-      if (t.sale <= 0) { for (let i = 0; i < 6; i++) ajouterParticule(cx, cy, 'etincelle'); son('clic'); }
+      if (Math.random() < 0.35) ajouterParticule(x, y, 'bulle');
+      if (t.sale <= 0) nettoyerTache(t, true);
     }
   }
   if (touche) son('frotte');
-  if (M.taches.every((t) => t.sale <= 0)) terminerMenage();
 }
 
 // ---- Accueil ----
@@ -3910,6 +4285,9 @@ function majHUD() {
     const C = S.comptoir;
     horloge = '⏰ ' + libelleHeure(Math.floor((C.ouverture + borner(C.temps / C.duree, 0, 1) * (CONFIG.heureFermeture - C.ouverture)) * 12) / 12);
   }
+  const bObj = barre.querySelector('[data-a="objectifs"]');
+  if (bObj instanceof HTMLButtonElement) majTexte(bObj, '🎯 ' + nbObjectifsFaits() + '/3');
+  suivreObjectifs();
   const bOuvrir = barre.querySelector('[data-a="ouvrir"]');
   if (bOuvrir instanceof HTMLButtonElement && S.phase === 'matin' && !S.confirmer) majTexte(bOuvrir, texteOuvrir());
   majTexte(hHorloge, horloge);
@@ -3966,11 +4344,11 @@ function rafraichirBarre() {
       break;
     case 'preparation': h = btn('commencer', '', 'Commencer la journée ▶'); break;
     case 'matin':
-      h = btn('express', '', '📦 Réserve', 'sec') + btn('ouvrir', '', S.confirmer ? 'Confirmer l’ouverture' : texteOuvrir(), S.confirmer ? 'danger' : '');
+      h = (S.objectifs.length ? btn('objectifs', '', '🎯 ' + nbObjectifsFaits() + '/3', 'sec petit') : '') + btn('express', '', S.objectifs.length ? '📦' : '📦 Réserve', 'sec') + btn('ouvrir', '', S.confirmer ? 'Confirmer l’ouverture' : texteOuvrir(), S.confirmer ? 'danger' : '');
       break;
-    case 'midi': h = btn('fermer', '', S.confirmer ? 'Confirmer la fermeture' : 'Fermer la boutique', S.confirmer ? 'danger' : 'sec'); break;
+    case 'midi': h = (S.objectifs.length ? btn('objectifs', '', '🎯 ' + nbObjectifsFaits() + '/3', 'sec petit') : '') + btn('fermer', '', S.confirmer ? 'Confirmer la fermeture' : 'Fermer la boutique', S.confirmer ? 'danger' : 'sec'); break;
     case 'menage': h = btn('finMenage', '', 'Terminer le ménage'); break;
-    case 'bilan': h = E.prologue ? btn('repreneur', '', 'Ouvrir ma boulangerie ▶') : btn('suivante', '', 'Journée suivante ▶'); break;
+    case 'bilan': h = S.recompense && !S.recompense.vue ? '' : E.prologue ? btn('repreneur', '', 'Ouvrir ma boulangerie ▶') : btn('suivante', '', 'Journée suivante ▶'); break;
     case 'faillite': h = btn('nouvelle', 'tuto', 'Nouvelle partie'); break;
     default: h = '';
   }
@@ -3978,7 +4356,8 @@ function rafraichirBarre() {
 }
 function rafraichirPanneau() {
   let h = '';
-  if (S.cadeauAffiche || S.listeCadeaux) h = htmlFenetreCadeaux();
+  if (S.phase === 'bilan' && S.recompense && !S.recompense.vue) h = htmlRecompense();
+  else if (S.cadeauAffiche || S.listeCadeaux) h = htmlFenetreCadeaux();
   else if (S.menu) h = htmlMenu();
   else if (S.phase === 'accueil') h = htmlAccueil();
   else if (S.phase === 'preparation') h = htmlPreparation(1);
@@ -4006,6 +4385,38 @@ function htmlNommage() {
     '<input id="nomBoulangerie" type="text" maxlength="32" autocomplete="off" placeholder="Ex. : Au Bon Pain" ' +
     'style="font:inherit;font-size:20px;padding:12px 14px;border-radius:12px;border:2px solid #c9a775;width:100%;max-width:360px;background:#fffaf0;color:#3a2414;-webkit-user-select:text;user-select:text">' +
     btn('nommer', '', 'C’est parti ▶') + '</form></div>';
+}
+function htmlRecompense() {
+  const Rc = S.recompense;
+  if (!Rc) return '';
+  const msg = ['Journée difficile… Demain, vise les objectifs !', 'Pas mal ! Une étoile en poche.', 'Belle journée, deux étoiles !', 'Journée parfaite, trois étoiles !'][Rc.etoiles];
+  let h = '<div class="carte titre-accueil recompense' + (Rc.ouvert ? ' fixe' : '') + '"><h2>Journée ' + E.jour + ' terminée</h2><div class="etoiles-jour">';
+  for (let i = 0; i < 3; i++) h += '<span class="et' + (i < Rc.etoiles ? ' on' : '') + '" style="animation-delay:' + (0.15 + i * 0.35) + 's">★</span>';
+  h += '</div><p class="msg">' + msg + '</p><ul class="objectifs">';
+  S.objectifs.forEach((o, i) => { h += '<li class="' + (Rc.reussis[i] ? 'ok' : 'ko') + '">' + (Rc.reussis[i] ? '✅' : '❌') + ' ' + esc(o.texte) + '</li>'; });
+  h += '</ul>';
+  if (!Rc.ouvert) {
+    h += '<button type="button" class="coffre" data-a="coffre" aria-label="Ouvrir le coffre"><span class="couvercle"></span><span class="caisse-c"></span><span class="serrure"></span></button><p class="discret">Touche le coffre pour l’ouvrir</p>';
+  } else {
+    h += '<div class="gains"><div class="gain-carte" style="animation-delay:0s"><span>💶</span><b>+' + euros(Rc.argent) + '</b><small>en caisse</small></div>' +
+      '<div class="gain-carte" style="animation-delay:.15s"><span>⭐</span><b>+' + Rc.xp + ' XP</b><small>expérience</small></div>' +
+      (Rc.bonus ? '<div class="gain-carte rare" style="animation-delay:.3s"><span>' + BONUS[Rc.bonus].icone + '</span><b>' + BONUS[Rc.bonus].nom + '</b><small>' + BONUS[Rc.bonus].texte + (Rc.bonus === 'livraison' ? ' (reçue)' : ' demain') + '</small></div>'
+        : '<div class="gain-carte vide" style="animation-delay:.3s"><span>🔒</span><b>Bonus</b><small>2 étoiles minimum</small></div>') + '</div>' +
+      '<div class="actions">' + btn('voirBilan', '', 'Voir le bilan ▶') + '</div>';
+  }
+  return h + '</div>';
+}
+/** Petite carte des journées, façon jeu de niveaux. */
+function htmlCarteJours() {
+  if (E.prologue) return '';
+  let h = '<div class="carte-jours">';
+  for (let d = Math.max(1, E.jour - 3); d <= E.jour + 4; d++) {
+    const et = E.etoilesJours[d - 1] || 0;
+    const cadeau = CADEAUX.some((c) => c.jour === d);
+    const cls = d < E.jour ? 'passe' : d === E.jour ? 'actuel' : 'futur';
+    h += '<div class="jour ' + cls + '"><span class="num">' + d + '</span>' + (d < E.jour ? '<span class="ets">' + '★'.repeat(et) + '<i>' + '★'.repeat(3 - et) + '</i></span>' : cadeau ? '<span class="ets">🎁</span>' : '<span class="ets">' + (d === E.jour ? 'Aujourd’hui' : '') + '</span>') + '</div>';
+  }
+  return h + '</div>';
 }
 function htmlAccueil() {
   return '<div class="carte titre-accueil"><h1>La Mie Dorée</h1>' +
@@ -4070,7 +4481,9 @@ function htmlPreparation(majoration) {
 }
 function htmlOngletJour() {
   const n = S.planClients.length;
-  let h = '<h2>' + (E.prologue ? 'Journée découverte Chez les voisins, à Frontignan' : esc(nomAffiche()) + ' · ' + esc(libelleDate(E.jour)) + ' · jour ' + E.jour) + '</h2>';
+  let h = '<h2>' + (E.prologue ? 'Journée découverte Chez les voisins, à Frontignan' : esc(nomAffiche()) + ' · ' + esc(libelleDate(E.jour)) + ' · jour ' + E.jour) + '</h2>' + htmlCarteJours();
+  if (S.objectifs.length) h += '<h3>🎯 Objectifs du jour · 1 étoile chacun</h3><ul class="objectifs">' + S.objectifs.map((o) => '<li>☆ ' + esc(o.texte) + '</li>').join('') + '</ul>';
+  if (E.bonus) h += '<div class="alerte"><b>' + BONUS[E.bonus].icone + ' Bonus du jour : ' + BONUS[E.bonus].nom + '</b><br>' + BONUS[E.bonus].texte + ' aujourd’hui.</div>';
   if (E.evenement) h += '<div class="alerte"><b>' + EVENEMENTS[E.evenement].nom + '</b><br>' + EVENEMENTS[E.evenement].texte + '</div>';
   h += '<div class="grille2"><div class="stat">Clients attendus<b>≈ ' + n + '</b></div><div class="stat">Réputation<b>' + etoiles(E.reputation) + ' ' + nombre(E.reputation, 1) +
     '</b></div><div class="stat">Propreté d’hier<b>' + Math.round(E.proprete * 100) + ' %</b></div><div class="stat">Fournée<b>×' + tailleFournee() + ' · four ' + placesFour() + ' places</b></div></div>';
@@ -4175,7 +4588,7 @@ function htmlBilan() {
   for (const p of LISTE_PRODUITS) if (J.ventes[p] > 0) ventes += J.ventes[p] + ' ' + (J.ventes[p] > 1 ? RECETTES[p].pluriel : RECETTES[p].nom.toLowerCase()) + ', ';
   const sat = J.satisfactions.length ? Math.round(100 * moyenne(J.satisfactions)) : 0;
   let h = '<div class="carte"><h2>' + (E.prologue ? 'Bilan de la journée Chez les voisins' : 'Bilan du jour ' + E.jour + ' · ' + esc(nomAffiche())) + '</h2>';
-  h += '<table class="bilan">' + ligne('Ventes', B.ca) + ligne('Invendus bradés (' + J.invendusBrades + ')', B.braderie) + ligne('Bonus calcul mental (+' + Math.round(CONFIG.bonusSansAide * 100) + ' %)', B.bonusCalcul) + ligne('Seconde boutique', B.boutique2) +
+  h += '<table class="bilan">' + ligne('Ventes', B.ca) + ligne('Invendus bradés (' + J.invendusBrades + ')', B.braderie) + ligne('Coffre du jour', B.coffre) + ligne('Bonus calcul mental (+' + Math.round(CONFIG.bonusSansAide * 100) + ' %)', B.bonusCalcul) + ligne('Seconde boutique', B.boutique2) +
     ligne('Matières premières utilisées', B.matieres, true) + ligne('Loyer et charges', B.charges, true) + ligne('Salaires', B.salaires, true) +
     ligne('Réparation du four', B.reparation, true) + ligne('Amende d’hygiène', B.amende, true) +
     '<tr class="total"><td>Bénéfice du jour</td><td class="' + (B.benefice >= 0 ? 'pos' : 'neg') + '">' + euros(B.benefice) + '</td></tr></table>';
@@ -4238,6 +4651,9 @@ function actionUI(a, v) {
     }
     case 'finMenage': terminerMenage(); return;
     case 'suivante': journeeSuivante(); return;
+    case 'objectifs': toast(S.objectifs.map((o) => (etatObjectif(o, false).fait ? '✅ ' : '• ') + o.texte + ' (' + etatObjectif(o, false).suivi + ')').join('  ·  ')); return;
+    case 'coffre': if (S.recompense && !S.recompense.ouvert) { S.recompense.ouvert = true; son('niveau'); for (let i = 0; i < 60; i++) ajouterParticule(W / 2, H * 0.45, i % 3 ? 'etincelle' : 'piece'); } break;
+    case 'voirBilan': if (S.recompense) S.recompense.vue = true; break;
     case 'repreneur': allerNommage(true); return;
     case 'cadeaux': S.listeCadeaux = true; S.confirmerCadeau = ''; break;
     case 'fermerCadeau': S.cadeauAffiche = null; S.listeCadeaux = false; S.confirmerCadeau = ''; break;
@@ -4305,6 +4721,7 @@ toile.addEventListener('pointerdown', (ev) => {
   if (enPause()) return;
   const mj = S.mj;
   if (mj && S.phase === 'matin') { mjBas(mj, normMJ(p)); return; }
+  if (S.phase === 'menage') { frotter(p.x, p.y, 0); return; }
   pointeur.zone = zoneSous(p);
   if (pointeur.zone && pointeur.zone.glisser) pointeur.glisse = pointeur.zone.glisser;
 });
@@ -4340,8 +4757,14 @@ toile.addEventListener('contextmenu', (ev) => ev.preventDefault());
 function mjBas(mj, q) {
   if (mj.fini) return;
   if (mj.type === 'petrir') { mj.dernier = null; mjBouge(mj, q); }
-  else if (mj.type === 'faconner') { mj.trace = [q]; mj.actif = true; mj.texte = ''; }
-  else { mj.trace = [q]; mj.actif = true; mj.t0 = mj.temps; mj.texte = ''; son('coupe'); }
+  else if (mj.type === 'faconner') {
+    if (mj.prog < 0) {
+      if (dist(q, mj.chemin[0]) < 0.1) { mj.prog = 0; mj.texte = ''; son('clic'); }
+      else mj.texte = 'Pose le doigt sur la boule verte pour démarrer';
+    }
+    mj.trace = [q];
+    mj.actif = true;
+  } else { mj.trace = [q]; mj.actif = true; mj.t0 = mj.temps; mj.texte = ''; }
 }
 /** @param {MiniJeu} mj @param {Point} q */
 function mjBouge(mj, q) {
@@ -4356,10 +4779,9 @@ function mjBouge(mj, q) {
       while (da < -Math.PI) da += Math.PI * 2;
       if (mj.debut < 0) mj.debut = mj.temps;
       mj.angle += da;
-      if (Math.abs(mj.angle) >= Math.PI * 2 * (mj.tours.length + 1)) {
+      if (Math.abs(mj.angle) >= Math.PI * 2 * (mj.tours.length + 1) - 0.25) {
         mj.tours.push(mj.temps);
-        son('pate');
-        if (mj.tours.length >= mj.requis) evaluerPetrissage(mj);
+        jugerTour(mj, mj.temps);
       }
       if (Math.random() < 0.25) { const R = rectMJ(); ajouterParticule(R.x + q.x * R.w, R.y + q.y * R.h, 'farine'); }
     }
@@ -4367,6 +4789,7 @@ function mjBouge(mj, q) {
   } else if (mj.actif) {
     const der = mj.trace[mj.trace.length - 1];
     if (!der || dist(der, q) > 0.004) mj.trace.push(q);
+    if (mj.type === 'faconner' && mj.trace.length > 40) mj.trace.shift();
   }
 }
 /** @param {MiniJeu} mj */
@@ -4375,20 +4798,17 @@ function mjHaut(mj) {
   if (mj.type === 'petrir') { mj.dernier = null; return; }
   if (!mj.actif) return;
   mj.actif = false;
-  if (mj.type === 'faconner') evaluerFaconnage(mj); else evaluerScarification(mj);
+  if (mj.type === 'scarifier') { evaluerScarification(mj); mj.trace = []; }
 }
 /** Geste au clavier (accessibilité). @param {MiniJeu} mj */
 function mjClavier(mj) {
   if (mj.fini) return;
   if (mj.type === 'petrir') {
-    if (mj.debut < 0) { mj.debut = mj.temps; son('pate'); return; }
     mj.tours.push(mj.temps);
     mj.angle += Math.PI * 2;
-    son('pate');
-    if (mj.tours.length >= mj.requis) evaluerPetrissage(mj);
+    jugerTour(mj, mj.temps);
   } else {
     if (mj.type === 'faconner') mj.trace = mj.chemin.slice();
-    else mj.trace = [{ x: 0.3, y: 0.58 }, { x: 0.7, y: 0.42 }];
     finirMiniJeu(mj, 2, 'Geste au clavier');
   }
 }
@@ -4433,8 +4853,8 @@ document.addEventListener('keydown', (ev) => {
     if (ev.key === ' ') {
       ev.preventDefault();
       const M = S.menage;
-      const t = M ? M.taches.find((x) => x.sale > 0) : undefined;
-      if (M && t) { const r = rectZoneMenage(t.zone); frotter(r.x + t.nx * r.w, r.y + t.ny * r.h, 400); }
+      const t = M ? M.taches.find((x) => x.sale > 0 && !x.incrustee) : undefined;
+      if (t) nettoyerTache(t, true);
     }
   }
 });
@@ -4452,6 +4872,8 @@ function redimensionner() {
   toile.height = Math.round(H * DPR);
 }
 window.addEventListener('resize', redimensionner);
+// La barre du bas change de hauteur selon la phase : on suit la taille réelle de la zone de jeu.
+if (typeof ResizeObserver !== 'undefined') new ResizeObserver(() => redimensionner()).observe(scene);
 window.addEventListener('orientationchange', () => setTimeout(redimensionner, 200));
 document.addEventListener('visibilitychange', () => { if (document.hidden && (S.phase === 'preparation' || S.phase === 'bilan')) sauver(); });
 
@@ -4461,9 +4883,18 @@ function maj(dt) {
     if (S.mj) {
       const mj = S.mj;
       mj.temps += dt;
-      if (mj.fini) { mj.finT += dt; if (mj.finT > 1.0) appliquerMiniJeu(); }
-      else if (mj.temps >= mj.limite) {
-        if (mj.type === 'petrir' && mj.tours.length >= 2) evaluerPetrissage(mj);
+      if (mj.fini) { mj.finT += dt; if (mj.finT > 1.1) appliquerMiniJeu(); }
+      else if (mj.type === 'faconner' && mj.prog >= 0) {
+        mj.prog += dt / mj.duree;
+        const b = bouleFaconnage(mj);
+        const q = normMJ({ x: pointeur.x, y: pointeur.y });
+        mj.dessus = pointeur.bas && dist(q, b) < 0.08;
+        mj.mesures++;
+        if (mj.dessus) mj.surCible++;
+        if (mj.prog >= 1) evaluerFaconnage(mj);
+      } else if (mj.temps >= mj.limite) {
+        if (mj.type === 'petrir' && mj.tours.length >= 1) { while (mj.jugements.length < mj.requis) mj.jugements.push('rate'); evaluerPetrissage(mj); }
+        else if (mj.type === 'scarifier' && mj.coupes.length) terminerScarification(mj);
         else finirMiniJeu(mj, 1, 'Temps écoulé');
       }
     }
@@ -4477,10 +4908,7 @@ function maj(dt) {
   else if (S.phase === 'caisse' && S.caisse && S.caisse.resultat !== null) {
     S.caisse.t += dt;
     if (S.caisse.t > 2.2) demarrerMenage();
-  } else if (S.phase === 'menage' && S.menage && !S.menage.fini) {
-    S.menage.temps += dt;
-    if (S.menage.temps >= S.menage.duree) terminerMenage();
-  }
+  } else if (S.phase === 'menage') majMenage(dt);
 }
 function dessiner() {
   ciblesPrecedentes = cibles;

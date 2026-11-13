@@ -14,7 +14,8 @@ Jeu autonome en un seul fichier : `index.html`. Il contient le HTML, le CSS et l
 1. **Préparation** : prévision de la demande, réserve en grammes et kilogrammes, commandes au fournisseur, recettes, équipe, travaux.
 2. **Matin, au fournil** : lancer des fournées, puis réussir les gestes (pétrissage, façonnage, scarification) et défourner dans la zone dorée. Les temps de pousse et de cuisson sont réels : il faut planifier.
 3. **Ouverture, au comptoir** : la boutique ouvre quand vous le décidez, et au plus tard à 11 h ; elle ferme à 19 h. Ouvrir plus tôt donne des heures de vente et des clients en plus. Il faut servir la commande affichée dans la bulle et rendre la monnaie exacte.
-4. **Soir** : compter la caisse, puis faire le ménage. La propreté influence la réputation.
+4. **Soir** : compter la caisse, puis le ménage arcade (15 s). La propreté influence la réputation.
+5. **Fin de journée** : de 1 à 3 étoiles selon les objectifs remplis, puis le coffre de récompense.
 5. **Bilan** : chiffre d'affaires, coûts, pertes, XP, réputation et déblocages.
 
 Jean-Baptiste, patron de la boulangerie Chez les voisins à Frontignan, guide les jours 1 à 3. Le tutoriel peut être ignoré à tout moment (« Passer le tutoriel ») ou désactivé dès le départ (« Nouvelle partie sans tutoriel »).
@@ -39,18 +40,32 @@ Paliers réglables dans `CADEAUX`, au début du script :
 |---|---|---|
 | Lancer une fournée | Toucher la carte recette | Touches 1 à 8 |
 | Geste suivant / défourner | Toucher le bouton ou le four | Espace (Maj + Espace : mode rapide ⚡) |
-| Pétrir | Faire des cercles réguliers | Espace, en rythme régulier |
-| Façonner / scarifier | Tracer le geste | Espace (2 étoiles automatiques) |
+| Pétrir | Un tour complet à chaque battement, en suivant la boule verte | Espace, sur le battement |
+| Façonner | Poser le doigt sur la boule de pâte et la suivre jusqu'au bout | Espace (2 étoiles automatiques) |
+| Scarifier | 3 coups de lame nets sur les pointillés | Espace (2 étoiles automatiques) |
 | Remplir le plateau | Toucher ou glisser un produit | Touches 1 à 8, Retour arrière pour retirer |
 | Servir / rupture | Boutons « Servir » et « Rupture » | Entrée / R |
 | Rendre la monnaie | Toucher les pièces | 1 = 5 €, 2 = 2 €, 3 = 1 €, 4 = 50 c, 5 = 20 c, 6 = 10 c, Entrée |
 | Caisse | Pavé numérique | Chiffres, virgule, Entrée |
-| Ménage | Frotter les taches | Espace |
+| Ménage | Frotter les taches avant qu'elles sèchent, toucher les souris | Espace |
 | Menu | ☰ | Échap |
 
 Réglage « Aide au rendu de monnaie » (menu ☰ ou onglet Journée) : quand elle est activée, le montant à rendre est affiché. Quand elle est désactivée, le joueur calcule lui-même et gagne +10 % (`CONFIG.bonusSansAide`) sur chaque vente où la monnaie est rendue juste. L'aide est toujours affichée pendant les deux premiers jours du tutoriel.
 
 Le bouton 🔊 coupe le son. La partie est sauvegardée automatiquement au début de chaque journée, dans le `localStorage` du navigateur. Le menu ☰ permet de lancer une nouvelle partie.
+
+## Mini-jeux (le skill compte)
+
+- **Pétrir** : un battement lumineux donne le tempo et la boule verte fait exactement un tour par battement. Chaque tour est jugé : PARFAIT (écart < 0,11 s), BIEN (< 0,24 s) ou RATÉ. Les « parfait » enchaînés font un combo.
+- **Façonner** : une boule de pâte avance le long du tracé. Il faut garder le doigt dessus jusqu'au bout. Note : ≥ 85 % du temps sur la boule → ★★★, ≥ 60 % → ★★. La boule va plus vite quand la compétence monte.
+- **Scarifier** : 3 pointillés à couper d'un trait net (position, angle et rectitude). Les 3 coups en moins de 2 s donnent un bonus « rapide ».
+- **Ménage arcade (15 s)** : les taches apparaissent et sèchent au bout de 3,2 s (un anneau montre le temps restant). Les frotter à la suite fait des combos. Une souris attrapée donne +5 % de propreté. Le plongeur nettoie des taches tout seul.
+
+## Objectifs, étoiles et coffre
+
+- Chaque journée a 3 objectifs : un chiffre d'affaires, puis par exemple « 3 fournées ★★★ », « aucun client perdu », « caisse juste » ou « propreté ≥ 90 % ». Chaque objectif rempli vaut une étoile, et une annonce s'affiche dès qu'il est atteint. Le bouton 🎯 de la barre du bas montre la progression.
+- En fin de journée, les étoiles tombent, puis on ouvre le coffre : de l'argent ((8 € + 1,50 € × jour) par étoile), de l'XP, et à partir de 2 étoiles un bonus pour le lendemain (levure magique, four turbo, sourire du patron, pub dans le journal ou livraison offerte).
+- L'onglet Journée affiche une carte des journées avec les étoiles déjà gagnées et les jours cadeaux 🎁.
 
 ## Étoiles
 
@@ -75,7 +90,7 @@ Après chaque geste, l'écran montre la note actuelle de la fournée et le prix 
 
 Tous les réglages se trouvent au début du script, section « 2. ÉQUILIBRAGE ». Les montants sont exprimés en centimes.
 
-- `CONFIG.accelerationJeu` (1,25) : vitesse de l'horloge, de la pousse, de la cuisson, des ouvriers et de l'arrivée des clients. Les gestes du joueur, la patience des clients et le ménage restent en temps réel.
+- `CONFIG.accelerationJeu` (1,25) : vitesse de l'horloge, de la pousse, de la cuisson, des ouvriers et de l'arrivée des clients. Les gestes du joueur, la patience des clients et le ménage restent en temps réel. `CONFIG.dureeMenage` (15 s) règle la durée du ménage.
 - `CONFIG` : capital initial (1 500 €), charges quotidiennes, durées des phases, gains d'XP, seuil du mode rapide, clients par étoile de réputation, patience, bradage des invendus, événements, conditions d'embauche, seuil de faillite.
 - `INGREDIENTS` : prix au kilogramme, stock initial et taille des lots (en grammes).
 - `RECETTES` : dosages en grammes pour une pâte de base, nombre de pièces, prix, étapes, temps de pousse et de cuisson (secondes réelles), niveau de déblocage, popularité.
